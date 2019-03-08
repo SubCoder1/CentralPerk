@@ -6,6 +6,7 @@ from AUth.forms import Registerform
 
 @csrf_protect
 def user_login(request):
+    context = {}
     logout(request)
     if request.POST:
         username = request.POST.get('username')
@@ -18,7 +19,9 @@ def user_login(request):
             login(request, user)
             #return redirect('/home/')
             return redirect('/admin/')
-    return render(request, 'login.html', context={})
+        else:
+            context = { 'error':"Username or Password is incorrect!" }
+    return render(request, 'login.html', context=context)
 
 @csrf_protect
 def register_user(request):
