@@ -36,14 +36,14 @@
 				<span class="contact100-form-title">
 					Say Hello!
 				</span>
-				<div class="wrap-input100 validate-input" data-validate="{{ form.errors.username }}">
-					<span class="label-input100">Username</span>
+				<div class="wrap-input100 validate-input">
+					<span class="label-input100">Username <span style="color:red">{{ username }}</span></span>
 					<input class="input100" type="text" name="username" placeholder="Enter a Username">
 					<span class="focus-input100"></span>
 				</div>
 
-				<div class="wrap-input100 validate-input" data-validate = "{{ form.errors.email }}">
-					<span class="label-input100">Your Email</span>
+				<div class="wrap-input100 validate-input">
+					<span class="label-input100">Email <span style="color:red">{{ email }}</span></span>
 					<input class="input100" type="text" name="email" placeholder="Enter your email addess">
 					<span class="focus-input100"></span>
 				</div>

@@ -13,13 +13,13 @@ class Registerform(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if User.objects.filter(username=username).exists():
-            self.add_error('username', 'username already exists!')
+            self.add_error('username', 'already exists!')
         return username
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            self.add_error('email', 'email already exists!')
+            self.add_error('email', 'already exists!')
         return email
 
     def save(self,commit=True):

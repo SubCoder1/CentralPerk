@@ -25,6 +25,7 @@ def user_login(request):
 
 @csrf_protect
 def register_user(request):
+    context = {}
     form = Registerform(request.POST or None)
     if form.is_valid():
         form.save()
@@ -36,7 +37,11 @@ def register_user(request):
                 login(request, user)
                 #return redirect('/home/')
                 return redirect('/admin/')
-    context = { 'form': form }
+    else:
+        if form.has_error('username'):
+            context['username'] = 'already exists!'
+        if form.has_error('email'):
+            context['email'] = 'already exists!'
     return render(request, 'signup.html', context)
 
 """def view_profile(request, email):
