@@ -1,5 +1,6 @@
 from django import forms
 from AUth.models import User
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 class Registerform(forms.ModelForm):
     """ A form for creating new users. Includes all the required fields """
@@ -31,3 +32,17 @@ class Registerform(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+class UserAdminChangeForm(forms.ModelForm):
+    """ A form for updating (Admin) users. Includes all the fields on
+    the user, but replaces the password field with admin's
+    password hash display field. """
+
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        model = User
+        fields = ('username', 'birthdate', 'gender', 'email', 'bio', 'password',)
+ 
+    def clean_password(self):
+        return self.initial["password"]
