@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'CentralPerk.middleware.login_required_middleware',
+    'centralperk.middleware.login_required_middleware',
 ]
 
 ROOT_URLCONF = 'centralperk.urls'
