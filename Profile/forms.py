@@ -2,9 +2,7 @@ from django import forms
 from AUth.models import User
 
 class NonAdminChangeForm(forms.ModelForm):
-    """ A form for updating users. Includes all the fields on
-    the user, but replaces the password field with admin's
-    password hash display field. """
+    """ A form used to edit (non-admin) user profiles """
     class Meta:
         model = User
         fields = ('username', 'birthdate', 'gender', 'bio', 'email',)
