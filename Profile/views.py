@@ -3,8 +3,14 @@ from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
 from Profile.forms import NonAdminChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
+from AUth.models import User
 
 # Create your views here.
+
+def view_profile(request, username=None):
+    user = request.user if username != request.user.username else User.objects.get(username=username)
+    return render(request, 'view_profile.html', { 'profile':user })
+
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'
 
