@@ -17,8 +17,7 @@ def user_login(request):
             user.active = True
             user.save()
             login(request, user)
-            #return redirect('/home/')
-            return redirect('/admin/')
+            return redirect('/home/')
         else:
             context = { 'error':"Username or Password is incorrect!" }
     return render(request, 'login.html', context=context)
