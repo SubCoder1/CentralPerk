@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 
     #own
     'AUth',
+    'Profile',
 ]
 
 AUTH_USER_MODEL = 'AUth.User'
