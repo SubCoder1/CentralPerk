@@ -48,6 +48,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'CentralPerk.middleware.login_required_middleware',
 ]
 
 ROOT_URLCONF = 'centralperk.urls'
@@ -128,3 +129,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_URL  = '/'
+
+LOGIN_EXEMPT_URL = [
+    '/register/',
+    '/',
+]
