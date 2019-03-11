@@ -23,6 +23,13 @@ def user_login(request):
             context = { 'error':"Username or Password is incorrect!" }
     return render(request, 'login.html', context=context)
 
+def user_logout(request):
+    user = request.user
+    user.active = False
+    user.save()
+    logout(request)
+    return redirect('/')
+
 @csrf_protect
 def register_user(request):
     context = {}
