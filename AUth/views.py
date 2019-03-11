@@ -50,8 +50,3 @@ def register_user(request):
         if form.has_error('email'):
             context['email'] = 'already exists!'
     return render(request, 'signup.html', context)
-
-"""def view_profile(request, email):
-    obj = User.objects.get(email=email)
-    context = { 'object':obj, 'user':request.user }
-    return render(request, 'profile.html', context)"""
