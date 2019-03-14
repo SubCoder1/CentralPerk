@@ -1,0 +1,9 @@
+* {
+    font-family: 'Inconsolata', monospace;
+    color: white;
+}
+
+body {
+    height: 100vh;
+    background: linear-gradient(to right, rgb(233, 100, 67), rgb(144, 78, 149));
+}
