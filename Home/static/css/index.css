@@ -20,7 +20,7 @@ a:hover {
 form > .textbox {
     outline: 0;
     height: 37px;
-    width: 265px;
+    width: 247px;
     line-height: 42px;
     padding: 0 16px;
     background-color:#2c053dfc;
@@ -63,3 +63,81 @@ form > .button {
 form > .button:hover {
     background-color: #ff3814;
 }
+
+/* ------------- status card --------------- */
+.index-card {
+    background:transparent;
+    border: none;
+}
+
+#status-tab { background-color: transparent; }
+
+#image-tab { background-color: transparent; }
+
+#location-tab { background-color: transparent; }
+
+.material-icons:hover { color: black; }
+
+.status {
+    position: absolute;
+    box-sizing: border-box;
+    top: 28%;
+    width: 90%;
+    resize: none;
+    outline: none;
+    font-size: 17px;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 300;
+    overflow: hidden;
+}
+
+.location {
+    position: absolute;
+    width: 93%;
+    bottom: 100px;
+}
+
+.btn-dark {
+    background: black;
+    border-radius: 2.25rem;
+}
+/* ----------------------------------------- */
+
+/* -------------- post card ---------------- */
+.card { border: none; background: transparent; }
+
+.card-header {
+    background-color: transparent;
+    color: white;
+    border-bottom: none;
+}
+
+.card-body {
+    background-color: transparent; 
+    height: 86px;
+    color: navajowhite;
+    overflow: overlay;
+}
+
+.card-footer {
+    padding: .75rem 1.25rem;
+    background-color: transparent;
+    border-top: none;
+}
+/* ------------------------------------------ */
+
+/* ----------- input form control ------------ */
+.form-control {
+    border-radius: 2.25rem;
+    background-color: #2c053dfc;
+    color: white;
+    border: none;
+    padding: 0.9rem .75rem;
+    position: absolute;
+}
+.form-control:focus {
+    background-color: #2c053dfc;
+    color: white;
+    border: none;
+}
+/* -------------------------------------------- */
