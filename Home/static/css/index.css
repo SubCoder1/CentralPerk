@@ -98,10 +98,18 @@ form > .button:hover {
 }
 
 .btn-dark {
-    background: black;
+    background: white;
     border-radius: 2.25rem;
+    border: none;
+    color: black;
 }
 /* ----------------------------------------- */
+
+.border {
+    height: 6px;
+    width: 100px;
+    background: white;
+}
 
 /* -------------- post card ---------------- */
 .card { border: none; background: transparent; }
