@@ -16,7 +16,16 @@ a:hover {
     color: black;
 }
 
+.card { border: none; background: transparent; }
+
 /* ----------- nav search bar, btn ------------ */
+@media only screen and (min-width: 768px) {
+    #search {
+        position: relative;
+        transition: top 0.2s;
+    }
+}
+
 form > .textbox {
     outline: 0;
     height: 37px;
@@ -94,7 +103,7 @@ form > .button:hover {
 .location {
     position: absolute;
     width: 93%;
-    bottom: 100px;
+    bottom: 90px;
 }
 
 .btn-dark {
@@ -112,7 +121,19 @@ form > .button:hover {
 }
 
 /* -------------- post card ---------------- */
-.card { border: none; background: transparent; }
+.post-card {
+    background-image: linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);
+}
+
+.post_profile_img {
+    height: 40px;
+    position: relative;
+    bottom: 3px;
+}
+
+.display-3 {
+    font-size: 1.5rem;
+}
 
 .card-header {
     background-color: transparent;
