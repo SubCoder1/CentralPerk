@@ -1,6 +1,7 @@
 from django.db import models
 import uuid
 from AUth.models import User
+from django.utils import timezone
 # Create your models here.
 
 class PostModel(models.Model):
@@ -23,3 +24,9 @@ class PostModel(models.Model):
             return 'status ' + self.post_id 
         else:
             return 'pic ' + self.post_id
+
+    def save(self, *args, **kwargs):
+        ''' On save, update post date_time '''
+        self.date_time = timezone.now()
+        self.post_id = str(self.unique_id)[:8]
+        return super(PostModel, self).save(*args, **kwargs)
