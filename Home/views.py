@@ -19,8 +19,6 @@ class home_view(TemplateView):
         form = PostForm(request.POST or None)
         if form.is_valid():
             post = form.save(commit=False)
-            post.post_id = str(post.unique_id)[:8]
-            post.date_time = datetime.datetime.now()
             post.user = request.user
             post.save()
 
