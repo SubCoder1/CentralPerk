@@ -24,11 +24,11 @@
         <div class="collapse navbar-collapse" id="collapsibleNavbar" data-target="collapsibleNavbar">
           <ul class="navbar-nav ml-auto">
                 <!-- Dropdown --> 
-                <li class="nav-item body">
-                    <form method="POST">
+                <li class="nav-item">
+                    <form method="POST" id="search">
                       {% csrf_token %}
-                      <input type="text" class="textbox" placeholder="Search for friends...">
-                      <input title="Search" value="&#x1F50E" type="submit" class="button">
+                        <input type="text" class="textbox" placeholder="Search for friends...">
+                        <input title="Search" value="&#x1F50E" type="submit" class="button">
                     </form>
                 </li>
           </ul>
@@ -107,7 +107,36 @@
         <div class="col-lg-6">
           <h3>Posts<h3>
           <div class="border"></div>
-        
+          <br>
+          {% for post in posts %}
+            <div class="card post-card">
+                <div class="card-header">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <div class="mr-2">
+                        <img src="{{ post.user.profile_pic.url }}" class="rounded-circle post_profile_img">
+                      </div>
+                      <div class="ml-2">
+                        <div class="h5 m-0 body">
+                          <a class="body_link" href="{% url 'view_profile' post.user.username %}" style="text-decoration: none;">{{ post.user.username }}</a>
+                        </div>
+                        {% if post.location %}
+                          <h6>{{ post.location }}</h6>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+                <div class="card-body">
+                  <div class="text-align-left display-3">
+                    {{ post.status }}
+                  </div>
+                </div>
+                <div class="card-footer" style="border-top:0px">
+                  <a href="#" class="card-link"><i class="fas fa-fire-alt"></i></a>
+                </div>
+            </div>
+          {% endfor %}
         </div>
         <div class="col-lg-3">
       </div>
@@ -116,5 +145,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="{% static 'js/index.js' %}"></script>
   </body>
 </html>
