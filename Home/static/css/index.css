@@ -107,10 +107,16 @@ form > .button:hover {
 }
 
 .btn-dark {
-    background: white;
+    background: transparent;
     border-radius: 2.25rem;
-    border: none;
+    color: white;
+    border-color: white;
+}
+
+.btn-dark:hover {
     color: black;
+    background-color: white;
+    border-color: white;
 }
 /* ----------------------------------------- */
 
