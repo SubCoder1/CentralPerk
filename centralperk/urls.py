@@ -15,4 +15,4 @@ urlpatterns = [
     path('profile/<str:username>', view_profile, name='view_profile'),
     path('home/', home_view.as_view(), name='home_view'),
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
