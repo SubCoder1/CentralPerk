@@ -9,12 +9,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    {% block title %}
     <title>Landing Page</title>
+    {% endblock %}
   </head>
   <body>
     <nav class="navbar navbar-expand-sm bg-1 sticky-top">
         <!-- Brand -->
-        <a class="navbar-brand body mr-auto" href="{% url 'home_view' %}">Centr<i class="fas fa-mug-hot" style="color:black"></i>lPerk</a>
+        <a class="navbar-brand" href="{% url 'home_view' %}">Centr<i class="fas fa-mug-hot" style="color:black"></i>lPerk</a>
       
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
           <span class="navbar-toggler-icon"></span>
@@ -34,7 +37,7 @@
           </ul>
           <ul class="navbar-nav ml-auto">    
             <li class="nav-item">
-              <a class="nav-link" href="#">DJoker</a>
+              <a class="nav-link" href="{% url 'view_profile' user.username %}">DJoker</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="{% url 'user_logout' %}">Log Out</a>
@@ -46,22 +49,23 @@
     <br><br>
     <div class="container-fluid">
       <div class="row">
+      {% block upperbody %}
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <div class="card">
               <div class="card-header">
                 <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
-                  <li class="nav-item">
+                  <li class="nav-item px-1">
                     <a class="nav-link link active body" id="status-tab" data-toggle="tab" href="#status" role="tab" aria-controls="status" aria-selected="true" style="height: 41px;">
                         <i class="material-icons">notes</i>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <li class="nav-item px-1">
                     <a class="nav-link link body" id="image-tab" data-toggle="tab" href="#image" role="tab" aria-controls="image" aria-selected="true" style="height: 41px;">
                       <i class="material-icons">insert_photo</i>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <li class="nav-item px-1">
                     <a class="nav-link link body" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="true" style="height: 41px;">
                       <i class="material-icons">place</i>
                     </a>
@@ -76,7 +80,6 @@
                       <div class="form-group">
                         <label class="sr-only" for="message">post</label>
                         <textarea class="form-control form-alignment status" id="status" name="status"  placeholder="What are you thinking?" style="height:96px"></textarea>
-
                       </div>
                     </div> 
                     <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
@@ -99,10 +102,12 @@
             </div>
         </div>
         <div class="col-lg-4"></div>
+      {% endblock %}
       </div>
       <br><br>
       
       <div class="row">
+      {% block lowerbody %}
         <div class="col-lg-3"></div>
         <div class="col-lg-6">
           <h3>Posts<h3>
@@ -139,6 +144,7 @@
           {% endfor %}
         </div>
         <div class="col-lg-3">
+      {% endblock %}
       </div>
 
     </div>
