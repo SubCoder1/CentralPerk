@@ -9,7 +9,7 @@ from AUth.models import User
 
 def view_profile(request, username=None):
     user = request.user if username != request.user.username else User.objects.get(username=username)
-    return render(request, 'view_profile.html', { 'profile':user })
+    return render(request, 'profile.html', { 'profile':user })
 
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'
