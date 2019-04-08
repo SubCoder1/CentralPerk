@@ -1,0 +1,9 @@
+.profile-pic-rounded {
+    border-radius: 50%!important;
+    overflow: hidden;
+    height: 142px;
+  }
+
+.profile-pic {
+    text-align: center;
+}
