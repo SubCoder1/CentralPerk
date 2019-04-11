@@ -8,3 +8,13 @@
   font-family: "Segoe UI",Arial,sans-serif;
   font-size: 2.25rem;
 }
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: #fff;
+  background-color: transparent;
+  opacity: 1;
+}
+
+.nav-pills .nav-link {
+  opacity: 0.5;
+}
