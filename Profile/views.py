@@ -8,7 +8,7 @@ from AUth.models import User
 # Create your views here.
 
 def view_profile(request, username=None):
-    user = request.user if username != request.user.username else User.objects.get(username=username)
+    user = request.user if username == request.user.username else User.objects.get(username=username)
     return render(request, 'profile.html', { 'profile':user })
 
 class edit_profile(TemplateView):
