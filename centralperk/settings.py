@@ -23,8 +23,8 @@ SECRET_KEY = '1gq7wi=xyw=pxqt_4#49v^pl*q)u7a!7ff5i&w53esd!ljd*om'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost']
-
+ALLOWED_HOSTS = ['localhost',]
+INTERNAL_IPS = ['127.0.0.1',]
 
 # Application definition
 INSTALLED_APPS = [
@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #third party
-
+    'debug_toolbar',
     #own
     'AUth',
     'Profile',
@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'centralperk.middleware.login_required_middleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'centralperk.urls'
