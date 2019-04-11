@@ -9,8 +9,11 @@
 <div class="col-lg-3"></div>
 <div class="col-lg-6">
     <div class="profile-pic">
-        <img src="{{ user.profile_pic.url }}" class="profile-pic-rounded" style="height: 142px">
+        <img src="{{ user.profile_pic.url }}" class="profile-pic-rounded">
     </div>
+    <br>
+    <h2 class="display-2">{{ user.username }}</h2>
+    <h4>{{ user.bio }}</h4>
 </div>
 <div class="col-lg-3"></div>
 {% endblock %}
