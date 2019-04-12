@@ -147,10 +147,10 @@ form > .button:hover {
     border-bottom: none;
 }
 
-.card-body {
+.index-post-card-body {
     background-color: transparent; 
     height: 86px;
-    color: navajowhite;
+    color: white;
     overflow: overlay;
 }
 
