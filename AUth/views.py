@@ -17,11 +17,17 @@ def user_login(request):
             user.active = True
             user.save()
             login(request, user)
-            #return redirect('/home/')
-            return redirect('/admin/')
+            return redirect('/home/')
         else:
             context = { 'error':"Username or Password is incorrect!" }
     return render(request, 'login.html', context=context)
+
+def user_logout(request):
+    user = request.user
+    user.active = False
+    user.save()
+    logout(request)
+    return redirect('/')
 
 @csrf_protect
 def register_user(request):
@@ -43,8 +49,3 @@ def register_user(request):
         if form.has_error('email'):
             context['email'] = 'already exists!'
     return render(request, 'signup.html', context)
-
-"""def view_profile(request, email):
-    obj = User.objects.get(email=email)
-    context = { 'object':obj, 'user':request.user }
-    return render(request, 'profile.html', context)"""
