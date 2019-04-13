@@ -10,11 +10,18 @@
 }
 
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-  color: #fff;
+  color: white;
   background-color: transparent;
   opacity: 1;
+  padding-left: 2px;
 }
 
 .nav-pills .nav-link {
   opacity: 0.5;
+  padding-left: 2px;
+}
+
+.posts {
+  display: flex;
+  align-items: flex-start;
 }
