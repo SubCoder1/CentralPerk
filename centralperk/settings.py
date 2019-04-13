@@ -3,6 +3,9 @@ import os
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
 #SESSION_COOKIE_SECURE = False
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 10 * 60
+SESSION_SAVE_EVERY_REQUEST = True 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,8 +23,8 @@ SECRET_KEY = '1gq7wi=xyw=pxqt_4#49v^pl*q)u7a!7ff5i&w53esd!ljd*om'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['localhost',]
+INTERNAL_IPS = ['127.0.0.1',]
 
 # Application definition
 INSTALLED_APPS = [
@@ -33,9 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     #third party
-
+    'debug_toolbar',
     #own
     'AUth',
+    'Profile',
+    'Home',
 ]
 
 AUTH_USER_MODEL = 'AUth.User'
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'centralperk.middleware.login_required_middleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'centralperk.urls'
@@ -116,7 +122,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Calcutta'
 
 USE_I18N = True
 
@@ -129,6 +135,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATIC_ROOT = 'staticfiles'
 
 LOGIN_URL  = '/'
 

@@ -1,0 +1,27 @@
+.profile-pic-rounded {
+    border-radius: 50%!important;
+    overflow: hidden;
+    height: 150px;
+  }
+
+.display-2 {
+  font-family: "Segoe UI",Arial,sans-serif;
+  font-size: 2.25rem;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  color: white;
+  background-color: transparent;
+  opacity: 1;
+  padding-left: 2px;
+}
+
+.nav-pills .nav-link {
+  opacity: 0.5;
+  padding-left: 2px;
+}
+
+.posts {
+  display: flex;
+  align-items: flex-start;
+}
