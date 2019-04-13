@@ -18,20 +18,35 @@
     <br><br>
     <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
         <li class="nav-item">
-            <a class="nav-link link active" id="post-tab" data-toggle="tab" href="#post" role="tab" aria-controls="post" aria-selected="true" style="height: 41px;">
-                <h4>My Posts</h4>
+            <a class="nav-link link active" id="post-tab" data-toggle="tab" href="#post" role="tab" aria-controls="post" aria-selected="true">
+                <h4>Posts</h4>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link link" id="blank-tab" data-toggle="tab" href="#blank" role="tab" aria-controls="blank" aria-selected="true" style="height: 41px;">
+        <li class="nav-item px-1">
+            <a class="nav-link link" id="blank-tab" data-toggle="tab" href="#blank" role="tab" aria-controls="blank" aria-selected="true">
                 <h4>Blank</h4>
             </a>
         </li>
     </ul>
     <div class="tab-content" id="cardtabContent">
         <div class="tab-pane fade show active" id="post" role="tabpanel" aria-labelledby="post-tab">
-        </div> 
+            {% for post in posts %}
+            <div class="card post-card">
+                <div class="card-body index-post-card-body">
+                  <div class="text-align-left display-3">
+                    {{ post.status }}
+                  </div>
+                </div>
+                <div class="card-footer">
+                    <a href="#" style="float:left"><i class="fas fa-fire-alt"></i></a>
+                    <h6 style="text-align: right">{{ post.date_time }}</h6>    
+                </div>
+            </div>
+            <br>
+          {% endfor %}
+        </div>
         <div class="tab-pane fade" id="blank" role="tabpanel" aria-labelledby="blank-tab">
+            <h5 style="text-align: center">Still Working on it</h5>
         </div>
     </div>
 </div>
