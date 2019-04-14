@@ -10,7 +10,7 @@ class home_view(TemplateView):
 
     def get(self, request):
         form = PostForm()
-        posts = PostModel.objects.all()
+        posts = PostModel.objects.values_list('status', 'location', 'user__username', 'user__profile_pic', named=True)
 
         args = { 'form':form, 'posts':posts }
         return render(request, self.template_name, context=args)
