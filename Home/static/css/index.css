@@ -122,10 +122,12 @@ form > .button:hover {
 
 .border {
     height: 6px;
-    width: 100px;
     background: white;
 }
 
+.index_border {
+    width: 100px;
+}
 /* -------------- post card ---------------- */
 .post-card {
     background-image: linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);
