@@ -11,6 +11,9 @@
     <div class="profile-pic">
         <img src="/media/{{ user.profile_pic }}" class="profile-pic-rounded">
     </div>
+    <div class="edit-prof-link">
+        <a class="btn btn-dark"><span>Edit Profile</span></a>
+    </div>
     <br>
     <h2 class="display-2">{{ user.username }}</h2>
     <h4>{{ user.bio }}</h4>
@@ -50,7 +53,8 @@
         </div>
     </div>
 </div>
-<div class="col-lg-3"></div>
+<div class="col-lg-3">
+</div>
 {% endblock %}
 
 {% block lowerbody %}
