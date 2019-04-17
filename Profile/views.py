@@ -8,9 +8,9 @@ from AUth.models import User
 # Create your views here.
 
 def view_profile(request, username=None):
-    user = request.user if username == request.user.username else User.objects.get(username=username)
-    user_posts = user.postmodel_set.all()
-    return render(request, 'profile.html', { 'profile':user, 'posts':user_posts })
+    user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
+    user_posts = user.postmodel_set.values_list('status', 'location', 'date_time', named=True)
+    return render(request, 'profile.html', { 'profile':user, 'posts':user_posts, 'edit':editable, })
 
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'

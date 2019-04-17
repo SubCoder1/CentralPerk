@@ -1,0 +1,87 @@
+{% extends 'index.html' %}
+
+{% block title %}
+<title>Edit Post</title>
+{% endblock %}
+
+{% block body %}
+<div class="col-lg-3"></div>
+<div class="col-lg-6">
+    <h2 class="display-2">Edit Profile</h2>
+    <div class="border edit_prof_border"></div>
+    <br>
+    <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link link active" id="edit_prof-tab" data-toggle="tab" href="#edit_prof" role="tab" aria-controls="edit_prof" aria-selected="true">
+                <h4>Edit Info</h4>
+            </a>
+        </li>
+        <li class="nav-item px-1">
+            <a class="nav-link link" id="change_pass-tab" data-toggle="tab" href="#change_pass" role="tab" aria-controls="change_pass" aria-selected="true">
+                <h4>Change Password</h4>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content" id="cardtabContent">
+        <div class="tab-pane fade show active" id="edit_prof" role="tabpanel" aria-labelledby="edit_profile-tab">
+            <form method="POST">
+                <br>
+                {% csrf_token %}
+                <div class="form-group edit-prof-form-group">
+                    <label for="example-text-input" class="col-2 col-form-label">Username</label>
+                    <input class="form-control edit-prof-form-control" type="text" value="{{ user.username }}" name="username">
+                </div>
+                <br>
+                <div class="form-group edit-prof-form-group">
+                    <label for="example-email-input" class="col-2 col-form-label">Email</label>
+                    <input class="form-control edit-prof-form-control" type="email" value="{{ user.email }}" name="email">
+                        {{ edit_form.errors }}
+                </div>
+                <br>
+                <div class="form-group edit-prof-form-group">
+                    <label for="example-date-input" class="col-2 col-form-label">Birthdate</label>
+                    <input class="form-control  edit-prof-form-control" type="date" value="{{ user.birthdate }}" name="birthdate">
+                </div>
+                <br>
+                <div class="form-group edit-prof-form-group">
+                    <label for="gender" class="col-2 col-form-label">Gender</label>
+                    <select class="form-control edit-prof-form-control" id="gender" name="gender">
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Others</option>
+                    </select>
+                </div>
+                <br>
+                <div class="form-group edit-prof-form-group">
+                    <label for="example-text-input" class="col-2 col-form-label">Bio</label>
+                    <input class="form-control edit-prof-form-control" type="text" value="{{ user.bio }}" name="bio">
+                </div>
+                <br>
+                <button class="btn btn-dark" type="submit"]>Submit</button>
+                <br><br>
+            </form>
+        </div>
+        <div class="tab-pane fade" id="change_pass" role="tabpanel" aria-labelledby="change_pass-tab">
+            <form method="POST">
+            <br>
+            {% csrf_token %}
+            <div class="form-group edit-prof-form-group">
+                <label for="example-text-input" class="col-2 col-form-label">Old Password</label>
+                <input class="form-control edit-prof-form-control" type="password" name="old_password">
+            </div>
+            <div class="form-group edit-prof-form-group">
+                <label for="example-text-input" class="col-2 col-form-label">New Password</label>
+                <input class="form-control edit-prof-form-control" type="password" name="new_password1">
+            </div>
+            <div class="form-group edit-prof-form-group">
+                <label for="example-text-input" class="col-2 col-form-label">And Again!</label>
+                <input class="form-control edit-prof-form-control" type="password" name="new_password2">
+            </div>
+            <br>
+            <button class="btn btn-dark" type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="col-lg-3"></div>
+{% endblock %}
