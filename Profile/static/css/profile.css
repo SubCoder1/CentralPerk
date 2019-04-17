@@ -35,3 +35,20 @@ a:hover span {
   position: relative;
   bottom: 85px;
 }
+/* ----- edit_profile.html ------ */
+
+.edit-prof-form-group {
+  margin-bottom: 0rem;
+}
+.edit_prof_border {
+  width: 12rem;
+}
+
+.edit-prof-form-control {
+  padding: 0.5rem .75rem;
+  position: unset;
+}
+
+.col-form-label {
+  padding-left: 3px;
+}
