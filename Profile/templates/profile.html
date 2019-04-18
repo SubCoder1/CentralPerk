@@ -9,14 +9,16 @@
 <div class="col-lg-3"></div>
 <div class="col-lg-6">
     <div class="profile-pic">
-        <img src="/media/{{ user.profile_pic }}" class="profile-pic-rounded">
+        <img src="/media/{{ profile.profile_pic }}" class="profile-pic-rounded">
     </div>
     <div class="edit-prof-link">
+    {% if edit %}
         <a class="btn btn-dark" href="{% url 'edit_profile' user.username %}"><span>Edit Profile</span></a>
+    {% endif %}
     </div>
     <br>
-    <h2 class="display-2">{{ user.username }}</h2>
-    <h4>{{ user.bio }}</h4>
+    <h2 class="display-2">{{ profile.username }}</h2>
+    <h4>{{ profile.bio }}</h4>
     
     <br><br>
     <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
