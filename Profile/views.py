@@ -4,8 +4,19 @@ from django.contrib.auth import update_session_auth_hash
 from Profile.forms import NonAdminChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
 from AUth.models import User
+from Profile.models import Friends
 
 # Create your views here.
+
+def manage_relation(request, username, option=None):
+    current_user = request.user
+    follow_unfollow_user = User.objects.get(username=username)
+
+    if option == 'follow':  
+        Friends.follow(current_user, follow_unfollow_user)
+    else:
+        Friends.unfollow(current_user, follow_unfollow_user)
+    return view_profile(request, username=username)
 
 def view_profile(request, username=None):
     user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
