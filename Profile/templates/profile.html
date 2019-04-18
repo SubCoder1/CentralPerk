@@ -15,6 +15,9 @@
     {% if edit %}
         <a class="btn btn-dark" href="{% url 'edit_profile' user.username %}"><span>Edit Profile</span></a>
     {% endif %}
+    {% if not edit %}
+        <a class="btn btn-dark" href="#"><span>Follow</span></a>
+    {% endif %}
     </div>
     <br>
     <h2 class="display-2">{{ profile.username }}</h2>
