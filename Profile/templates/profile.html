@@ -13,16 +13,19 @@
     </div>
     <div class="edit-prof-link">
     {% if edit %}
-        <a class="btn btn-dark" href="{% url 'edit_profile' user.username %}"><span>Edit Profile</span></a>
+        <a class="btn btn-dark" href="{% url 'edit_profile' profile.username %}"><span>Edit Profile</span></a>
     {% endif %}
     {% if not edit %}
-        <a class="btn btn-dark" href="#"><span>Follow</span></a>
+        {% if isFollowing %}
+        <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'unfollow' %}"><span>Unfollow</span></a>
+        {% else %}
+        <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'follow' %}"><span>Follow</span></a>
+        {% endif %}
     {% endif %}
     </div>
     <br>
     <h2 class="display-2">{{ profile.username }}</h2>
     <h4>{{ profile.bio }}</h4>
-    
     <br><br>
     <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
         <li class="nav-item">
