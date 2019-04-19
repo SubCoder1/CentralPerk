@@ -37,6 +37,7 @@ INSTALLED_APPS = [
 
     #third party
     'debug_toolbar',
+    'django_extensions',
     #own
     'AUth',
     'Profile',
