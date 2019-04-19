@@ -22,11 +22,16 @@ def view_profile(request, username=None):
     user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
     user_posts = user.postmodel_set.values_list('status', 'location', 'date_time', named=True)
 
-    current_user, created = Friends.objects.get_or_create(current_user=request.user)
+    current_user, created = Friends.objects.get_or_create(current_user=user)
     del created
-    isFollowing = True if current_user.following.filter(username=user.username).exists() else False
+    isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
 
-    return render(request, 'profile.html', { 'profile':user, 'posts':user_posts, 'edit':editable, 'isFollowing':isFollowing })
+    follow_count = current_user.following.count()
+    follower_count = current_user.followers.count()
+
+    return render(request, 'profile.html', { 'profile':user, 'posts':user_posts, 
+                                             'edit':editable, 'isFollowing':isFollowing,
+                                             'follow_count':follow_count, 'follower_count':follower_count, })
 
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'
