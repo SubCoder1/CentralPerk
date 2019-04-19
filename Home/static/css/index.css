@@ -5,7 +5,7 @@
 
 body {
     height: 100vh;
-    background: linear-gradient(to right, rgb(233, 100, 67), rgb(144, 78, 149));
+    background: linear-gradient(to right, blueviolet, #4158d0);
 }
 
 a {
@@ -130,7 +130,7 @@ form > .button:hover {
 }
 /* -------------- post card ---------------- */
 .post-card {
-    background-image: linear-gradient(to right, #ed6ea0 0%, #ec8c69 100%);
+    background: cornflowerblue;
 }
 
 .post_profile_img {
