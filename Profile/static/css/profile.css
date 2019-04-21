@@ -40,6 +40,11 @@ a:hover span {
   margin-right: 32px;
   float: left;
 }
+
+.following-counter {
+  margin-right: 32px;
+  float: left;
+}
 /* ----- edit_profile.html ------ */
 
 .edit-prof-form-group {
