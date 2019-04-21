@@ -34,6 +34,14 @@
         <h3>{{ follow_count }}</h3>
         <h4 style="opacity: 0.5">Following</h4>
     </div>
+    <div class="activity-counter">
+        {% if activity == 'online' %}
+            <h3><i class="material-icons" style="color:#adff2f; font-size:8px">lens</i></h3>
+        {% else %}
+            <h3>{{ activity }}</h3>
+        {% endif %}
+        <h4 style="opacity: 0.5">Activity</h4>
+    </div>
     <br><br>
     <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
         <li class="nav-item">
