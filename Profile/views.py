@@ -5,6 +5,7 @@ from Profile.forms import NonAdminChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
 from AUth.models import User
 from Profile.models import Friends
+from Profile.last_activity import activity
 
 # Create your views here.
 
@@ -25,13 +26,24 @@ def view_profile(request, username=None):
     current_user, created = Friends.objects.get_or_create(current_user=user)
     del created
     isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
+    
+    active = ''
+    if editable:
+        active = 'online'
+    elif isFollowing:
+        if user.is_active():
+            active = 'online'
+        else:
+            active = activity(user.last_login)
+        
 
     follow_count = current_user.following.count()
     follower_count = current_user.followers.count()
 
     return render(request, 'profile.html', { 'profile':user, 'posts':user_posts, 
                                              'edit':editable, 'isFollowing':isFollowing,
-                                             'follow_count':follow_count, 'follower_count':follower_count, })
+                                             'follow_count':follow_count, 'follower_count':follower_count,
+                                             'activity':active, })
 
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'
