@@ -140,7 +140,7 @@ form > .button:hover {
 }
 
 .display-3 {
-    font-size: 1.5rem;
+    font-size: 18px;
 }
 
 .card-header {
@@ -151,9 +151,12 @@ form > .button:hover {
 
 .index-post-card-body {
     background-color: transparent; 
-    height: 86px;
     color: white;
     overflow: overlay;
+}
+
+.fa-fire-alt {
+    font-size: 20px;
 }
 
 .card-footer {
@@ -169,8 +172,9 @@ form > .button:hover {
     background-color: #2c053dfc;
     color: white;
     border: none;
-    padding: 0.9rem .75rem;
+    padding: 0.9rem 1.75rem;
     position: absolute;
+    line-height: 1.0;
 }
 .form-control:focus {
     background-color: #2c053dfc;
