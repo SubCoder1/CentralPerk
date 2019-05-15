@@ -130,11 +130,9 @@
                       </div>
                     </div>
                   </div>
-                </div> 
-                <div class="card-body index-post-card-body">
-                  <div class="text-align-left display-3">
-                    {{ post.status }}
-                  </div>
+                </div>
+                <div class="card-body text-align-left display-3 index-post-card-body" id="post-container"> 
+                    {{ post.status|json_script:"post-data" }}
                 </div>
                 <div class="card-footer" style="border-top:0px">
                   <a href="#" class="card-link"><i class="fas fa-fire-alt"></i></a>
