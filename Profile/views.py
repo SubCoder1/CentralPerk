@@ -29,7 +29,7 @@ def view_profile(request, username=None):
     
     active = ''
     if editable:
-        active = 'online'
+        active = '#'
     elif isFollowing:
         if user.is_active():
             active = 'online'
