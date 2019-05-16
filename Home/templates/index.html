@@ -134,9 +134,10 @@
                 <div class="card-body text-align-left display-3 index-post-card-body" id="post-container"> 
                     {{ post.status|json_script:"post-data" }}
                 </div>
-                <div class="card-footer" style="border-top:0px">
-                  <a href="#" class="card-link"><i class="fas fa-fire-alt"></i></a>
-                </div>
+                <div class="card-footer">
+                  <a href="#" style="float:left"><i class="fas fa-fire-alt"></i></a>
+                  <h6 style="text-align: right">{{ post.date_time }}</h6>    
+              </div>
             </div>
             <br>
           {% endfor %}
