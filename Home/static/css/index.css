@@ -132,6 +132,7 @@ form > .button:hover {
 /* -------------- post card ---------------- */
 .post-card {
     background: cornflowerblue;
+    border-radius: 1.00rem;
 }
 
 .post_profile_img {
