@@ -36,6 +36,11 @@ a:hover span {
   bottom: 85px;
 }
 
+.post-counter {
+  margin-right: 32px;
+  float: left;
+}
+
 .follow-counter {
   margin-right: 32px;
   float: left;

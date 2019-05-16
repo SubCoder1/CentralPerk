@@ -26,6 +26,10 @@
     <br>
     <h2 class="display-2">{{ profile.username }}</h2>
     <h4>{{ profile.bio }}</h4>
+    <div class="post-counter">
+        <h3>{{ posts|length }}</h4>
+        <h4 style="opacity: 0.5">Posts</h4>
+    </div>
     <div class="follow-counter">
         <h3>{{ follower_count }}</h4>
         <h4 style="opacity: 0.5">Followers</h4>
