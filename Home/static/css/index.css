@@ -10,11 +10,11 @@ body {
 
 a {
     color: white;
-    text-decoration: none;
 }
 
 a:hover {
     color: black;
+    text-decoration: none;
 }
 
 .card { border: none; background: transparent; }
@@ -172,7 +172,6 @@ form > .button:hover {
 
 .read-more:hover {
     color: black;
-    text-decoration: none;
 }
 /* ------------------------------------------ */
 
