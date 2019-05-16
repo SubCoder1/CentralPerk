@@ -122,7 +122,7 @@
                       </div>
                       <div class="ml-2">
                         <div class="h5 m-0 body">
-                          <a class="body_link" href="{% url 'view_profile' post.user__username %}" style="text-decoration: none;">{{ post.user__username }}</a>
+                          <a class="body_link" href="{% url 'view_profile' post.user__username %}">{{ post.user__username }}</a>
                         </div>
                         {% if post.location %}
                           <h6>{{ post.location }}</h6>
