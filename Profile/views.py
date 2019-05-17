@@ -6,6 +6,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from AUth.models import User
 from Profile.models import Friends
 from Profile.last_activity import activity
+from django.http import HttpResponse
+import json
 
 # Create your views here.
 
@@ -27,15 +29,17 @@ def view_profile(request, username=None):
     del created
     isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
     
-    active = ''
-    if editable:
-        active = '#'
-    elif isFollowing:
-        if user.is_active():
-            active = 'online'
-        else:
-            active = activity(user.last_login)
-        
+    active = '#'
+    if request.POST and not editable:
+        ajax_request = request.POST.get("activity")
+        if isFollowing and ajax_request is not None:
+            if user.is_active():
+                active = 'online'
+            else:
+                active = activity(user.last_login)
+            return HttpResponse(json.dumps(active), content_type='application/json')
+    elif request.POST and editable:
+        return HttpResponse(json.dumps(active), content_type='application/json')
 
     follow_count = current_user.following.count()
     follower_count = current_user.followers.count()
