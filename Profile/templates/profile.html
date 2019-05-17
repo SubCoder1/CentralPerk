@@ -24,7 +24,10 @@
     {% endif %}
     </div>
     <br>
-    <h2 class="display-2">{{ profile.username }}</h2>
+    <h2 class="display-2">
+        {{ profile.username }}
+        {{ profile.usename|json_script:"profile_name" }}
+    </h2>
     <h4>{{ profile.bio }}</h4>
     <div class="post-counter">
         <h3>{{ posts|length }}</h4>
@@ -38,20 +41,10 @@
         <h3>{{ follow_count }}</h3>
         <h4 style="opacity: 0.5">Following</h4>
     </div>
-    {% if activity == 'online' %}
-        <div class="activity-counter">
-            <h3><i class="material-icons" style="color:#adff2f; font-size:8px">lens</i></h3>
-            <h4 style="opacity: 0.5">Activity</h4>
-        </div>
-    {% elif activity != '#' %}
-        <div class="activity-counter">
-            <h3>{{ activity }}</h3>
-            <h4 style="opacity: 0.5">Activity</h4>
-        </div>
-    {% else %}
-        <br/><br/>
+    <div class="activity-counter" id="id_activity" style="float: left;"></div>
+    {% if activity == "#" %}
+        <br/><br/><br/><br/>
     {% endif %}
-    <br/><br/>
     <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
         <li class="nav-item">
             <a class="nav-link link active" id="post-tab" data-toggle="tab" href="#post" role="tab" aria-controls="post" aria-selected="true">
@@ -86,4 +79,8 @@
 </div>
 <div class="col-lg-3">
 </div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/profile.js' %}"></script>
 {% endblock %}
