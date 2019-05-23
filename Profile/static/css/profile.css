@@ -4,11 +4,6 @@
     height: 150px;
   }
 
-.display-2 {
-  font-family: "Segoe UI",Arial,sans-serif;
-  font-size: 2.25rem;
-}
-
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
   color: white;
   background-color: transparent;

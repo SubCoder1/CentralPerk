@@ -18,7 +18,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # trailing slash.
 MEDIA_URL = '/media/'
 
-SECRET_KEY = '1gq7wi=xyw=pxqt_4#49v^pl*q)u7a!7ff5i&w53esd!ljd*om'
+SECRET_KEY = 'yoursecretkey'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

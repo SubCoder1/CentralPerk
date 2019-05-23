@@ -1,3 +1,5 @@
-django==2.1.6
+django
 pytz
-Pillow==5.4.1
+Pillow
+django-debug-toolbar
+django_extensions

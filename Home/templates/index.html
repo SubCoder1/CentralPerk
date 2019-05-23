@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300&display=swap" rel="stylesheet">
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
     <link href="{% static 'css/profile.css' %}" rel="stylesheet">
     {% block title %}
@@ -109,7 +110,7 @@
       <div class="row">
         <div class="col-lg-3"></div>
         <div class="col-lg-6">
-          <h3>Posts<h3>
+          <h3 class="display-2" style="font-size: 2rem">Posts<h3>
           <div class="border index_border"></div>
           <br>
           {% for post in posts %}
