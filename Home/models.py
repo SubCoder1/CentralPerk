@@ -13,7 +13,6 @@ class PostModel(models.Model):
     caption = models.CharField(max_length=200, blank=True)
     location = models.CharField(max_length=200, blank=True, null=True)
     pic = models.ImageField(upload_to='post_images', blank=True)
-    like = models.ManyToManyField(User, related_name='likes')
     objects = models.Manager()
 
     class Meta:
