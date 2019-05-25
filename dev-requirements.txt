@@ -3,3 +3,4 @@ pytz
 Pillow
 django-debug-toolbar
 django_extensions
+django_redis
