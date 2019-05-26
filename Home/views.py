@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from Home.models import PostModel
 from Home.forms import PostForm
+from Profile.models import Friends
 import datetime
 # Create your views here.
 
@@ -23,5 +24,10 @@ class home_view(TemplateView):
             post.user = request.user
             post.save()
             post.send_to.add(request.user)
+            following_list, created = Friends.objects.get_or_create(current_user=request.user)
+            if not created:
+                users = following_list.followers.all()
+                for user in users:
+                    post.send_to.add(user)
 
             return redirect('/home/')
