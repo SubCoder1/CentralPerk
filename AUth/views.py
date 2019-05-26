@@ -42,7 +42,7 @@ def register_user(request):
             if user.is_active:
                 login(request, user)
                 #return redirect('/home/')
-                return redirect('/admin/')
+                return redirect('/home/')
     else:
         if form.has_error('username'):
             context['username'] = 'already exists!'
