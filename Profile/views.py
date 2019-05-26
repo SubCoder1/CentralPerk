@@ -23,7 +23,7 @@ def manage_relation(request, username, option=None):
 
 def view_profile(request, username=None):
     user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
-    user_posts = user.postmodel_set.values_list('status', 'location', 'date_time', named=True)
+    user_posts = user.posts.values_list('status', 'location', 'date_time', named=True)
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
     del created
