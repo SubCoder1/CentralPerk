@@ -11,14 +11,6 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home2/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# URL that handles the media served from MEDIA_ROOT. Make sure to use a
-# trailing slash.
-MEDIA_URL = '/media/'
-
 SECRET_KEY = 'yoursecretkey'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -136,7 +128,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Calcutta'
+TIME_ZONE = 'Asia/Kolkata'
 
 USE_I18N = True
 
@@ -144,6 +136,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home2/media/media.lawrence.com/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# URL that handles the media served from MEDIA_ROOT.
+MEDIA_URL = '/media/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
