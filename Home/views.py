@@ -6,11 +6,12 @@ import datetime
 # Create your views here.
 
 class home_view(TemplateView):
-    template_name='index.html'
+    template_name = 'index.html'
 
     def get(self, request):
         form = PostForm()
-        posts = PostModel.objects.values_list('status', 'location', 'user__username', 'user__profile_pic', 'date_time', named=True)
+        #posts = PostModel.objects.values_list('status', 'location', 'user__username', 'user__profile_pic', 'date_time', named=True)
+        posts = request.user.connections.all().values_list('status', 'location', 'user__username', 'user__profile_pic', 'date_time', named=True)
 
         args = { 'form':form, 'posts':posts }
         return render(request, self.template_name, context=args)
@@ -21,5 +22,6 @@ class home_view(TemplateView):
             post = form.save(commit=False)
             post.user = request.user
             post.save()
+            post.send_to.add(request.user)
 
             return redirect('/home/')
