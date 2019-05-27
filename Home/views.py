@@ -4,6 +4,8 @@ from Home.models import PostModel
 from Home.forms import PostForm
 from Profile.models import Friends
 import datetime
+from Home.tasks import share_posts
+from django.core.serializers import serialize
 # Create your views here.
 
 class home_view(TemplateView):
@@ -24,10 +26,5 @@ class home_view(TemplateView):
             post.user = request.user
             post.save()
             post.send_to.add(request.user)
-            following_list, created = Friends.objects.get_or_create(current_user=request.user)
-            if not created:
-                users = following_list.followers.all()
-                for user in users:
-                    post.send_to.add(user)
-
+            share_posts.delay(request.user.username, post.unique_id)   # Celery handling the task to share the post to user's followers
             return redirect('/home/')
