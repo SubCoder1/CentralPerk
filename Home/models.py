@@ -8,6 +8,7 @@ import pytz
 class PostModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='posts')
     send_to = models.ManyToManyField(User, related_name='connections', default=1)
+    likes = models.ManyToManyField(User, related_name='likes', default=1)
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post_id = models.CharField(max_length=10, editable=False, default='')
     date_time = models.DateTimeField(blank=True)
