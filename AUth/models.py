@@ -71,7 +71,6 @@ class User(AbstractBaseUser):
     gender = models.CharField(max_length=20, choices=GENDER)
     email = models.EmailField(max_length=255,unique=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    post_liked = models.ForeignKey('Home.PostModel', on_delete=models.DO_NOTHING, related_name='likes', null=True, blank=True)
     profile_pic = models.ImageField(upload_to='profile_pics', blank=True)
     admin = models.BooleanField(default=False) # a superuser
     staff = models.BooleanField(default=False) # a admin user; non super-user
