@@ -8,6 +8,7 @@ class PostModelAdmin(admin.ModelAdmin):
         ( 'ID', {'fields' : ('post_id', 'unique_id',)} ),
         ( 'Post', {'fields' : ('status', 'caption', 'pic', 'date_time', 'location', )} ),
         ( 'Send_to', {'fields' : ('send_to', )} ),
+        ( 'Likes', {'fields' : ('likes_count', 'likes')} ),
     )
 
 

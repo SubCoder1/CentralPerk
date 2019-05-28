@@ -163,7 +163,19 @@ form > .button:hover {
 }
 
 .fa-fire-alt {
-    font-size: 20px;
+    font-size: 21px;
+    vertical-align: top;
+}
+
+.likes-counter {
+    font-size: 19px;
+    vertical-align: top;
+    margin-left: 10px;
+}
+
+.post-date-time {
+    font-size: 16px;
+    float: right;
 }
 
 .card-footer {
