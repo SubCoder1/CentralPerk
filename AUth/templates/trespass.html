@@ -1,0 +1,17 @@
+{% extends 'index.html' %}
+
+{% block title %}
+<title>Tresspassing?</title>
+{% endblock %}
+
+{% block body %}
+<div class="col-lg-3"></div>
+<div class="col-lg-6" style="text-align: center;">
+    <h2 class="display-2">Fortunately, You are not the chosen one.</h2>
+    <br/>
+    <div class="btn-group">
+        <a href="{% url 'home_view' %}" class="btn btn-dark body">Back to Kitchen?</a>
+    </div>
+</div>
+<div class="col-lg-3"></div>
+{% endblock %}
