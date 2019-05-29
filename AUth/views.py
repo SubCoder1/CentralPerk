@@ -18,7 +18,7 @@ def user_login(request):
         if user is not None:
             client_ip, is_routed = get_client_ip(request)
             del is_routed
-            update_user_activity.delay(username, client_ip)
+            update_user_activity.delay(username, client_ip) # Celery handling the task to update user activity like updating the active flag etc..
             login(request, user)
             return redirect('/home/')
         else:
