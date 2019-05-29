@@ -3,6 +3,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
 from AUth.models import User
 from AUth.forms import Registerform
+from ipware import get_client_ip
+from AUth.tasks import update_user_activity
 
 @csrf_protect
 def user_login(request):
@@ -14,8 +16,9 @@ def user_login(request):
 
         user = authenticate(username=username, password=password)
         if user is not None:
-            user.active = True
-            user.save()
+            client_ip, is_routed = get_client_ip(request)
+            del is_routed
+            update_user_activity.delay(username, client_ip)
             login(request, user)
             return redirect('/home/')
         else:
@@ -41,7 +44,6 @@ def register_user(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                #return redirect('/home/')
                 return redirect('/home/')
     else:
         if form.has_error('username'):
