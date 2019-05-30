@@ -4,6 +4,8 @@ from celery import shared_task
 from AUth.models import User
 from django.contrib.sessions.models import Session
 from django.core.cache import cache
+from datetime import datetime
+import pytz
 
 @shared_task
 def update_user_activity_on_login(username, session_key=None):
@@ -18,6 +20,8 @@ def update_user_activity_on_logout(username):
     user = User.objects.get(username=username)
     user.active = False
     user.session_key = ''
+    tz = pytz.timezone('Asia/Kolkata')
+    user.last_login = datetime.now().astimezone(tz=tz)
     user.save()
     return "complete :)"
 

@@ -6,7 +6,7 @@ import pytz
 # Create your models here.
 
 class PostModel(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='posts')
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, related_name='posts')
     send_to = models.ManyToManyField(User, related_name='connections', default=1)
     likes = models.ManyToManyField(User, related_name='likes', default=1)
     likes_count = models.PositiveIntegerField(default=0)
