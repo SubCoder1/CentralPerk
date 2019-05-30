@@ -35,10 +35,11 @@ class home_view(TemplateView):
 def manage_likes(request, post_id):
     post = PostModel.objects.get(post_id=post_id)
     if request.user in post.likes.all():
-        # Dislike the post
+        # Dislikes the post
         post.likes_count -= 1
         post.likes.remove(request.user)
     else:
+        # Likes the post
         post.likes_count += 1
         post.likes.add(request.user)
     
