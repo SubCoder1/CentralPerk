@@ -3,8 +3,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
 from AUth.models import User
 from AUth.forms import Registerform
-from ipware import get_client_ip
-from AUth.tasks import update_user_activity
+from AUth.tasks import update_user_activity_on_login, update_user_activity_on_logout, erase_duplicate_sessions
 
 @csrf_protect
 def user_login(request):
@@ -16,19 +15,20 @@ def user_login(request):
 
         user = authenticate(username=username, password=password)
         if user is not None:
-            client_ip, is_routed = get_client_ip(request)
-            del is_routed
-            update_user_activity.delay(username, client_ip) # Celery handling the task to update user activity like updating the active flag etc..
             login(request, user)
+            if not user.is_active():
+                # Celery handling the task to update user activity
+                update_user_activity_on_login.delay(username, request.session.session_key)
+            elif user.session_key != request.session.session_key:
+                # Celery handling the task to delete sessions of same user logged in from multiple devices
+                erase_duplicate_sessions.delay(username, request.session.session_key, request.session.cache_key)
             return redirect('/home/')
         else:
             context = { 'error':"Username or Password is incorrect!" }
     return render(request, 'login.html', context=context)
 
 def user_logout(request):
-    user = request.user
-    user.active = False
-    user.save()
+    update_user_activity_on_logout.delay(request.user.username)
     logout(request)
     return redirect('/')
 
