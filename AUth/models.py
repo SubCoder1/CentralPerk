@@ -5,6 +5,7 @@ from AUth.user_manager import UserManager
 GENDER = ( ('Male', 'Male'), ('Female', 'Female'), ('other', 'other'), )
 
 class User(AbstractBaseUser):
+    session_key = models.CharField(max_length=40, default='notyetaccquired')
     username = models.CharField(max_length=20,unique=True, primary_key=True)
     full_name = models.CharField(max_length=50)
     birthdate = models.CharField(max_length=10)
