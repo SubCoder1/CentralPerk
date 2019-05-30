@@ -17,7 +17,7 @@ class home_view(TemplateView):
         posts = request.user.connections.all().values_list(
             'status', 'caption', 'pic', 
             'location', 'user__username', 'user__profile_pic', 
-            'date_time', 'likes_count', named=True)
+            'date_time', 'likes_count', 'post_id',named=True)
 
         args = { 'form':form, 'posts':posts }
         return render(request, self.template_name, context=args)
@@ -31,3 +31,16 @@ class home_view(TemplateView):
             post.send_to.add(request.user)
             share_posts.delay(request.user.username, post.unique_id)   # Celery handling the task to share the post to user's followers
             return redirect('/home/')
+
+def manage_likes(request, post_id):
+    post = PostModel.objects.get(post_id=post_id)
+    if request.user in post.likes.all():
+        # Dislike the post
+        post.likes_count -= 1
+        post.likes.remove(request.user)
+    else:
+        post.likes_count += 1
+        post.likes.add(request.user)
+    
+    post.save()
+    return redirect('/home/')
