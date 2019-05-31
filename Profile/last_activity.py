@@ -6,12 +6,9 @@ def activity(log):
     tz = pytz.timezone('Asia/Kolkata')
 
     duration = datetime.datetime.now().astimezone(tz) - log.astimezone(tz)
-    print(duration)
     days = duration.days
     mins = round(duration.seconds / 60)
     hours = round(mins / 60)
-
-    print(f"Hours = {hours}, mins = {mins}")
 
     if days:
         result = f"{days} days ago"
@@ -21,11 +18,13 @@ def activity(log):
         else:
             result = f"{hours} hour ago"
     elif mins:
-        result = f"{mins} minutes ago"
+        if mins > 1:
+            result = f"{mins} minutes ago"
+        else:
+            result = f"{mins} minute ago"
     else:
         result = "seconds ago"
     
-    print(result)
     return result
     
     
