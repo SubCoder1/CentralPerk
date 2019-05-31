@@ -8,6 +8,7 @@ from Profile.models import Friends
 from Profile.last_activity import activity
 from django.http import HttpResponse
 import json
+from Home.models import PostModel
 
 # Create your views here.
 
@@ -19,11 +20,15 @@ def manage_relation(request, username, option=None):
         Friends.follow(current_user, follow_unfollow_user)
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
-    return redirect('/profile/{username}'.format(username=username))
+    return redirect(f'/profile/{username}')
+
+def manage_profile_post_likes(request, username, post_id):
+    if PostModel.objects.likes_handler(request.user.username, post_id):
+        return redirect(f'/profile/{username}')
 
 def view_profile(request, username=None):
     user, editable = (request.user, True) if username == request.user.username else (User.get_user_obj(username=username), False)
-    user_posts = user.posts.values_list('status', 'location', 'date_time', named=True)
+    user_posts = user.posts.values_list('status', 'location', 'date_time', 'likes_count', 'post_id',named=True)
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
     del created
