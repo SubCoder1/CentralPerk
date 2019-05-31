@@ -1,3 +1,15 @@
+@media only screen and (max-width: 768px) {
+  h4 {
+    font-size: 20px;
+  }
+}
+
+.like-btn {
+  float:left;
+  position: relative;
+  top: 2px;
+}
+
 .profile-pic-rounded {
     border-radius: 50%!important;
     overflow: hidden;
