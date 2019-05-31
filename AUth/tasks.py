@@ -9,7 +9,7 @@ import pytz
 
 @shared_task
 def update_user_activity_on_login(username, session_key=None):
-    user = User.objects.get(username=username)
+    user = User.get_user_obj(username=username)
     user.active = True
     user.session_key = session_key
     user.save()
@@ -17,7 +17,7 @@ def update_user_activity_on_login(username, session_key=None):
 
 @shared_task
 def update_user_activity_on_logout(username):
-    user = User.objects.get(username=username)
+    user = User.get_user_obj(username=username)
     user.active = False
     user.session_key = ''
     tz = pytz.timezone('Asia/Kolkata')
@@ -27,7 +27,7 @@ def update_user_activity_on_logout(username):
 
 @shared_task
 def erase_duplicate_sessions(username, session_key, cache_key):
-    user = User.objects.get(username=username)
+    user = User.get_user_obj(username=username)
     previous_session = user.session_key
     Session.objects.get(session_key=previous_session).delete()
     cache.delete(f"django.contrib.sessions.cached_{cache_key}")
