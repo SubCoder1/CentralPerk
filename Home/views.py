@@ -27,6 +27,6 @@ class home_view(TemplateView):
             share_posts.delay(request.user.username, post.post_id)   # Celery handling the task to share the post to user's followers
             return redirect('/home/')
 
-def manage_likes(request, post_id):
+def manage_home_post_likes(request, post_id):
     if PostModel.objects.likes_handler(request.user.username, post_id):
         return redirect('/home/')
