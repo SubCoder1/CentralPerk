@@ -13,9 +13,9 @@ class PostModelManager(models.Manager):
         return post.likes.all()
     
     def likes_handler(self, username, post_id):
-        user = User.objects.get(username=username)
+        user = User.get_user_obj(username=username)
         post = self.get_post(post_id)
-        if user in post:
+        if user in post.likes.all():
             # Dislike post
             post.likes_count -= 1
             post.likes.remove(user)
