@@ -3,9 +3,8 @@ from django.views.generic import TemplateView
 from Home.models import PostModel
 from Home.forms import PostForm
 from Profile.models import Friends
-import datetime
 from Home.tasks import share_posts
-from django.core.serializers import serialize
+from AUth.models import User
 # Create your views here.
 
 class home_view(TemplateView):
@@ -13,15 +12,11 @@ class home_view(TemplateView):
 
     def get(self, request):
         form = PostForm()
-        #posts = PostModel.objects.values_list('status', 'location', 'user__username', 'user__profile_pic', 'date_time', named=True)
-        posts = request.user.connections.all().values_list(
-            'status', 'caption', 'pic', 
-            'location', 'user__username', 'user__profile_pic', 
-            'date_time', 'likes_count', 'post_id',named=True)
+        posts = User.get_user_wall(username=request.user.username, is_namedtuple=True)
 
         args = { 'form':form, 'posts':posts }
         return render(request, self.template_name, context=args)
-    
+
     def post(self, request):
         form = PostForm(request.POST or None)
         if form.is_valid():
@@ -29,19 +24,9 @@ class home_view(TemplateView):
             post.user = request.user
             post.save()
             post.send_to.add(request.user)
-            share_posts.delay(request.user.username, post.unique_id)   # Celery handling the task to share the post to user's followers
+            share_posts.delay(request.user.username, post.post_id)   # Celery handling the task to share the post to user's followers
             return redirect('/home/')
 
 def manage_likes(request, post_id):
-    post = PostModel.objects.get(post_id=post_id)
-    if request.user in post.likes.all():
-        # Dislikes the post
-        post.likes_count -= 1
-        post.likes.remove(request.user)
-    else:
-        # Likes the post
-        post.likes_count += 1
-        post.likes.add(request.user)
-    
-    post.save()
-    return redirect('/home/')
+    if PostModel.objects.likes_handler(request.user.username, post_id):
+        return redirect('/home/')

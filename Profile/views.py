@@ -13,7 +13,7 @@ import json
 
 def manage_relation(request, username, option=None):
     current_user = request.user
-    follow_unfollow_user = User.objects.get(username=username)
+    follow_unfollow_user = User.get_user_obj(username=username)
 
     if option == 'follow':  
         Friends.follow(current_user, follow_unfollow_user)
@@ -22,7 +22,7 @@ def manage_relation(request, username, option=None):
     return redirect('/profile/{username}'.format(username=username))
 
 def view_profile(request, username=None):
-    user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
+    user, editable = (request.user, True) if username == request.user.username else (User.get_user_obj(username=username), False)
     user_posts = user.posts.values_list('status', 'location', 'date_time', named=True)
 
     current_user, created = Friends.objects.get_or_create(current_user=user)

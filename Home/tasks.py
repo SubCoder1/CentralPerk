@@ -7,9 +7,9 @@ from Home.models import PostModel
 from AUth.models import User
 
 @shared_task
-def share_posts(username, unique_id):
-    request_user = User.objects.get(username=username)
-    post = PostModel.objects.get(unique_id=unique_id)
+def share_posts(username, post_id):
+    request_user = User.get_user_obj(username=username)
+    post = PostModel.objects.get_post(post_id=post_id)
     following_list, created = Friends.objects.get_or_create(current_user=request_user)
     if not created:
         users = following_list.followers.all()
