@@ -49,10 +49,10 @@ def view_profile(request, username=None):
     follow_count = current_user.following.count()
     follower_count = current_user.followers.count()
 
-    return render(request, 'profile.html', { 'profile':user, 'posts':user_posts, 
-                                             'edit':editable, 'isFollowing':isFollowing,
-                                             'follow_count':follow_count, 'follower_count':follower_count,
-                                             'activity':active, })
+    context = { 'profile':user, 'posts':user_posts, 'edit':editable, 'isFollowing':isFollowing,
+                'follow_count':follow_count, 'follower_count':follower_count, 'activity':active, }
+
+    return render(request, 'profile.html', context=context)
 
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'
