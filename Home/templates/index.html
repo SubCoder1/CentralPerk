@@ -10,7 +10,8 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300&display=swap" rel="stylesheet">
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
-    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+    {% block head %}
+    {% endblock %}
     {% block title %}
     <title>Landing Page</title>
     {% endblock %}
@@ -136,7 +137,7 @@
                     {{ post.status|json_script:"post-data" }}
                 </div>
                 <div class="card-footer">
-                  <a href="{% url 'post_like' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
+                  <a href="{% url 'post_like_home' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
                   <span class="likes-counter">{{ post.likes_count }}</span>
                   <span class="post-date-time">{{ post.date_time }}</span>    
               </div>
