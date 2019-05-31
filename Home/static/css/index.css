@@ -24,6 +24,20 @@ a:hover {
     font-size: 2.25rem;
   }
 
+/* ---------------- nav links ----------------- */
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    color: white;
+    background-color: transparent;
+    opacity: 1;
+    padding-left: 2px;
+}
+  
+.nav-pills .nav-link {
+    opacity: 0.5;
+    padding-left: 2px;
+}
+/* -------------------------------------------- */
+
 /* ----------- nav search bar, btn ------------ */
 @media only screen and (min-width: 768px) {
     #search {
