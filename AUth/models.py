@@ -40,3 +40,15 @@ class User(AbstractBaseUser):
         return True
 
     objects = UserManager()
+    
+    @classmethod
+    def get_user_obj(cls, username):
+        return cls.objects.get(username=username)
+
+    @classmethod
+    def get_user_wall(cls, username, is_namedtuple):
+        user = cls.objects.get(username=username)
+        return user.connections.all().values_list(
+            'status', 'caption', 'pic', 
+            'location', 'user__username', 'user__profile_pic', 
+            'date_time', 'likes_count', 'post_id', named=is_namedtuple)
