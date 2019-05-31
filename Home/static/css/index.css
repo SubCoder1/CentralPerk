@@ -126,6 +126,7 @@ form > .button:hover {
 }
 /* ----------------------------------------- */
 
+/* ----- That white border under Posts ----- */
 .border {
     height: 6px;
     background: white;
@@ -134,6 +135,8 @@ form > .button:hover {
 .index_border {
     width: 100px;
 }
+/* ----------------------------------------- */
+
 /* -------------- post card ---------------- */
 .post-card {
     background: cornflowerblue;
