@@ -5,6 +5,10 @@
 <title>Profile Page</title>
 {% endblock %}
 
+{% block head %}
+    <link href="{% static 'css/profile.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block body %}
 <div class="col-lg-3"></div>
 <div class="col-lg-6">
@@ -65,8 +69,9 @@
                     {{ post.status|json_script:"post-data" }}
                 </div>
                 <div class="card-footer">
-                    <a href="#" style="float:left"><i class="fas fa-fire-alt"></i></a>
-                    <h6 style="text-align: right">{{ post.date_time }}</h6>    
+                    <a href="{% url 'post_like_profile' profile.username post.post_id %}" class="like-btn"><i class="fas fa-fire-alt"></i></a>
+                    <span class="likes-counter">{{ post.likes_count }}</span>
+                    <span class="post-date-time">{{ post.date_time }}</span>    
                 </div>
             </div>
             <br>
