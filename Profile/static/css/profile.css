@@ -4,45 +4,35 @@
   }
 }
 
+/* ----------- Like btn on posts ----------- */
 .like-btn {
   float:left;
   position: relative;
   top: 2px;
 }
+/* ----------------------------------------- */
 
+/* ------------- Profile Pic --------------- */
 .profile-pic-rounded {
     border-radius: 50%!important;
     overflow: hidden;
     height: 150px;
-  }
-
-.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
-  color: white;
-  background-color: transparent;
-  opacity: 1;
-  padding-left: 2px;
 }
+/* ----------------------------------------- */
 
-.nav-pills .nav-link {
-  opacity: 0.5;
-  padding-left: 2px;
-}
-
-.posts {
-  display: flex;
-  align-items: flex-start;
-}
-
-a:hover span {
-  color: black;
-}
-
+/* ----------- Edit Profile btn ------------ */
 .edit-prof-link {
   float:right;
   position: relative;
   bottom: 85px;
 }
 
+a:hover span {
+  color: black;
+}
+/* ----------------------------------------- */
+
+/* ------------ Details counter ------------ */
 .post-counter {
   margin-right: 32px;
   float: left;
@@ -57,3 +47,4 @@ a:hover span {
   margin-right: 32px;
   float: left;
 }
+/* ----------------------------------------- */
