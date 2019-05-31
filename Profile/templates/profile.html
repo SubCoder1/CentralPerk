@@ -33,22 +33,24 @@
         {{ profile.usename|json_script:"profile_name" }}
     </h2>
     <h4>{{ profile.bio }}</h4>
-    <div class="post-counter">
-        <h3>{{ posts|length }}</h4>
-        <h4 style="opacity: 0.5">Posts</h4>
+    <div class="details-counter">
+        <div class="post-counter">
+            <h3>{{ posts|length }}</h4>
+            <h4 style="opacity: 0.5">Posts</h4>
+        </div>
+        <div class="follow-counter">
+            <h3>{{ follower_count }}</h4>
+            <h4 style="opacity: 0.5">Followers</h4>
+        </div>
+        <div class="following-counter">
+            <h3>{{ follow_count }}</h3>
+            <h4 style="opacity: 0.5">Following</h4>
+        </div>
+        <div class="activity-counter" id="id_activity" style="float: left;"></div>
+        {% if activity == "#" %}
+            <br/><br/><br/><br/>
+        {% endif %}
     </div>
-    <div class="follow-counter">
-        <h3>{{ follower_count }}</h4>
-        <h4 style="opacity: 0.5">Followers</h4>
-    </div>
-    <div class="following-counter">
-        <h3>{{ follow_count }}</h3>
-        <h4 style="opacity: 0.5">Following</h4>
-    </div>
-    <div class="activity-counter" id="id_activity" style="float: left;"></div>
-    {% if activity == "#" %}
-        <br/><br/><br/><br/>
-    {% endif %}
     <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
         <li class="nav-item">
             <a class="nav-link link active" id="post-tab" data-toggle="tab" href="#post" role="tab" aria-controls="post" aria-selected="true">
