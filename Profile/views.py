@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
 from Profile.forms import NonAdminChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
-from AUth.models import User
+from Profile.models import User
 from Profile.models import Friends
 from Profile.last_activity import activity
 from django.http import HttpResponse
