@@ -3,31 +3,40 @@ from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
 from Profile.forms import NonAdminChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
-from Profile.models import User
-from Profile.models import Friends
+from Profile.models import User, Friends
 from Profile.last_activity import activity
 from django.http import HttpResponse
-import json
+import json, pytz
 from Home.models import PostModel
-
+from Home.tasks import send_notifications
+from datetime import datetime
 # Create your views here.
 
 def manage_relation(request, username, option=None):
     current_user = request.user
     follow_unfollow_user = User.get_user_obj(username=username)
 
-    if option == 'follow':  
+    if option == 'follow':
+        tz = pytz.timezone('Asia/Kolkata')
+        now = datetime.now().astimezone(tz)
+        # Notify the user to whom this follow request is being sent
+        send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", date_time=now, send_to_username=follow_unfollow_user.username)
         Friends.follow(current_user, follow_unfollow_user)
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
     return redirect(f'/profile/{username}')
 
 def manage_profile_post_likes(request, username, post_id):
-    if PostModel.objects.likes_handler(request.user.username, post_id):
-        return redirect(f'/profile/{username}')
+    if PostModel.objects.likes_handler(request.user.username, post_id) == 'Liked':
+        tz = pytz.timezone('Asia/Kolkata')
+        now = datetime.now().astimezone(tz)
+        # Notify the user whose post is being liked
+        send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
+        
+    return redirect(f'/profile/{username}')
 
 def view_profile(request, username=None):
-    user, editable = (request.user, True) if username == request.user.username else (User.get_user_obj(username=username), False)
+    user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
     user_posts = user.posts.values_list('status', 'location', 'date_time', 'likes_count', 'post_id',named=True)
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
