@@ -1,10 +1,11 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
-from Profile.models import Friends
+from Profile.models import Friends, User
 from django.contrib.auth import get_user_model
-from Home.models import PostModel
-from AUth.models import User
+from Home.models import PostModel, UserNotification
+from datetime import datetime
+import pytz
 
 @shared_task
 def share_posts(username, post_id):
@@ -18,3 +19,17 @@ def share_posts(username, post_id):
         return "complete :)"
     else:
         return "user is lonely :("
+
+@shared_task
+def send_notifications(username, reaction, date_time, send_to_username=None, post_id=None):
+    print(post_id)
+    if post_id:
+        post = PostModel.objects.get_post(post_id=post_id)
+        send_to = post.user
+
+        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, date_time=date_time,post_obj=post):
+            return "sent successfully :)"
+    else:
+        send_to = User.get_user_obj(username=send_to_username)
+        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, date_time=date_time):
+            return "sent successfully :)"
