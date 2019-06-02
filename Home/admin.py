@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Home.models import PostModel
+from Home.models import PostModel, UserNotification
 
 class PostModelAdmin(admin.ModelAdmin):
     readonly_fields = ('unique_id','post_id')
@@ -11,5 +11,11 @@ class PostModelAdmin(admin.ModelAdmin):
         ( 'Likes', {'fields' : ('likes_count', 'likes')} ),
     )
 
+class UserNotificationAdmin(admin.ModelAdmin):
+    fieldsets = (
+        ('Notified to', {'fields' : ('user_to_notify',)} ),
+        ('Reaction', {'fields' : ('poked_by', 'reaction', 'post')} ),
+    )
 
+admin.site.register(UserNotification, UserNotificationAdmin)
 admin.site.register(PostModel, PostModelAdmin)
