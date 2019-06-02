@@ -1,8 +1,8 @@
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
-from AUth.models import User
-from AUth.forms import Registerform
+from Profile.models import User
+from Profile.forms import Registerform
 from AUth.tasks import update_user_activity_on_login, update_user_activity_on_logout, erase_duplicate_sessions
 
 @csrf_protect
