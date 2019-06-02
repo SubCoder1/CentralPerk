@@ -4,7 +4,7 @@ from Home.models import PostModel
 from Home.forms import PostForm
 from Profile.models import Friends
 from Home.tasks import share_posts
-from AUth.models import User
+from Profile.models import User
 # Create your views here.
 
 class home_view(TemplateView):
