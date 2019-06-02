@@ -1,6 +1,6 @@
 from django.db import models
 import uuid
-from AUth.models import User
+from Profile.models import User
 from datetime import datetime
 import pytz
 # Create your models here.
