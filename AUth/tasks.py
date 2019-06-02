@@ -1,7 +1,7 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
-from AUth.models import User
+from Profile.models import User
 from django.contrib.sessions.models import Session
 from django.core.cache import cache
 from datetime import datetime
