@@ -13,7 +13,10 @@ class home_view(TemplateView):
 
     def get(self, request):
         form = PostForm()
-        posts = User.get_user_wall(username=request.user.username, is_namedtuple=True)
+        posts = request.user.connections.all().values_list(
+            'status', 'caption', 'pic', 
+            'location', 'user__username', 'user__profile_pic', 
+            'date_time', 'likes_count', 'post_id', named=True)
 
         args = { 'form':form, 'posts':posts }
         return render(request, self.template_name, context=args)
@@ -29,10 +32,21 @@ class home_view(TemplateView):
             return redirect('/home/')
 
 def manage_home_post_likes(request, post_id):
-    tz = pytz.timezone('Asia/Kolkata')
-    now = datetime.now().astimezone(tz)
+    user = request.user
+    post = PostModel.objects.get_post(post_id=post_id)
 
-    if PostModel.objects.likes_handler(request.user.username, post_id) == 'Liked':
+    if user in post.likes.all():
+        # Dislike post
+        post.likes_count -= 1
+        post.likes.remove(user)
+    else:
+        # Like post
+        post.likes_count += 1
+        post.likes.add(user)
+        tz = pytz.timezone('Asia/Kolkata')
+        now = datetime.now().astimezone(tz)
         # Notify the user whose post is being liked
         send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
+
+    post.save()
     return redirect('/home/')
