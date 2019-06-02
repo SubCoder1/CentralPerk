@@ -13,7 +13,7 @@ a {
 }
 
 a:hover {
-    color: black;
+    color: #a7a2a2;
     text-decoration: none;
 }
 
@@ -22,7 +22,24 @@ a:hover {
 .display-2 {
     font-family: 'Poppins', sans-serif;
     font-size: 2.25rem;
-  }
+}
+
+.board {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 58px;
+    z-index: 1020;
+    background: #413780;
+    border-radius: 1.00rem;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ------------------ Notify ------------------ */
+.notify-border {
+    width: 150px;
+}
+
+/* -------------------------------------------- */
 
 /* ---------------- nav links ----------------- */
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
@@ -52,8 +69,8 @@ form > .textbox {
     width: 247px;
     line-height: 42px;
     padding: 0 16px;
-    background-color:#2c053dfc;
-    color: white;
+    background-color: white;
+    color: black;
     border: 0;
     float: left;
     -webkit-border-radius: 4px 0 0 4px;
@@ -64,14 +81,14 @@ form > .textbox {
   
 form > .textbox:focus {
     outline: 0;
-    background-color: #2c053dfc;
-    color: white;
+    background-color: whitesmoke;
+    color: black;
 }
 
 form > .button {
     outline: 0;
     background: none;
-    background-color: blueviolet;
+    background-color: #342782;
     float: left;
     height: 39px;
     width: 40px;
@@ -142,7 +159,7 @@ form > .button:hover {
 
 /* ----- That white border under Posts ----- */
 .border {
-    height: 6px;
+    height: 2px;
     background: white;
 }
 
@@ -153,7 +170,7 @@ form > .button:hover {
 
 /* -------------- post card ---------------- */
 .post-card {
-    background: cornflowerblue;
+    background: #413780;
     border-radius: 1.00rem;
 }
 
@@ -182,6 +199,7 @@ form > .button:hover {
 .fa-fire-alt {
     font-size: 21px;
     vertical-align: top;
+    color: orangered;
 }
 
 .likes-counter {
@@ -210,19 +228,19 @@ form > .button:hover {
 }
 /* ------------------------------------------ */
 
-/* ----------- input form control ------------ */
+/* ----- input form control (status box)----- */
 .form-control {
     border-radius: 2.25rem;
-    background-color: #2c053dfc;
-    color: white;
+    background-color: white;
+    color: black;
     border: none;
     padding: 0.9rem 1.75rem;
     position: absolute;
     line-height: 1.0;
 }
 .form-control:focus {
-    background-color: #2c053dfc;
-    color: white;
+    background-color: whitesmoke;
+    color: black;
     border: none;
 }
 /* -------------------------------------------- */
