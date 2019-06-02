@@ -87,4 +87,4 @@ class Friends(models.Model):
         friend.followers.remove(current_user)
 
     class Meta:
-        verbose_name = 'Relations'
+        verbose_name = 'Relation'
