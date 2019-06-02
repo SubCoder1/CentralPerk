@@ -11,23 +11,6 @@ class PostModelManager(models.Manager):
     def get_liked_user_list(self, post_id):
         post = self.get_post(post_id)
         return post.likes.all()
-    
-    def likes_handler(self, username, post_id):
-        user = User.get_user_obj(username=username)
-        post = self.get_post(post_id)
-        flag = False
-        if user in post.likes.all():
-            # Dislike post
-            post.likes_count -= 1
-            post.likes.remove(user)
-        else:
-            # Like post
-            post.likes_count += 1
-            post.likes.add(user)
-            flag = True
-
-        post.save()
-        return "Liked" if flag else "Disliked"
         
 
 class PostModel(models.Model):
