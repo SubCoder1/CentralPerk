@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from Home.models import PostModel
+from Home.models import PostModel, UserNotification
 from Home.forms import PostForm
 from Profile.models import Friends, User
 from Home.tasks import share_posts, send_notifications
@@ -17,8 +17,10 @@ class home_view(TemplateView):
             'status', 'caption', 'pic', 
             'location', 'user__username', 'user__profile_pic', 
             'date_time', 'likes_count', 'post_id', named=True)
+        notifications = request.user.notifications.all().values_list(
+            'poked_by', 'date_time', 'reaction', 'id', named=True)
 
-        args = { 'form':form, 'posts':posts }
+        args = { 'form':form, 'posts':posts, 'notifications':notifications }
         return render(request, self.template_name, context=args)
 
     def post(self, request):
