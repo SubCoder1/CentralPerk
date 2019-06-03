@@ -38,10 +38,6 @@ class PostModel(models.Model):
             return 'pic ' + self.post_id
 
     def save(self, *args, **kwargs):
-        ''' On save, update post date_time '''
-        tz = pytz.timezone('Asia/Kolkata')
-        self.date_time = datetime.now().astimezone(tz)
-        self.post_id = str(self.unique_id)[:8]
         return super(PostModel, self).save(*args, **kwargs)
 
 REACTION = ( ('Liked', 'Liked'), ('Commented', 'Commented'), ('Sent Follow Request', 'Sent Follow Request'), )
