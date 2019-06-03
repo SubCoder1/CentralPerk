@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import include, path
 from AUth.views import register_user, user_login, user_logout
 from Profile.views import view_profile, edit_profile, manage_relation
-from Home.views import home_view
+from Home.views import home_view, clear_all_notification
 from Home.views import manage_home_post_likes as manage_likes_home
 from Profile.views import manage_profile_post_likes as manage_likes_profile
 from django.conf import settings
@@ -20,6 +20,7 @@ urlpatterns = [
     path('profile/<str:username>/<str:option>', manage_relation, name='manage_relation'),
     path('home/', home_view.as_view(), name='home_view'),
     path('home/<str:post_id>/like', manage_likes_home, name='post_like_home'),
+    path('home/notifications/del_all', clear_all_notification, name='clear_notifications'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
