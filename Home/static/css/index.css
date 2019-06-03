@@ -17,6 +17,10 @@ a:hover {
     text-decoration: none;
 }
 
+.sticky-top {
+    position: fixed;
+    width: 100%;
+}
 .card { border: none; background: transparent; }
 
 .display-2 {
@@ -53,6 +57,12 @@ a:hover {
 
 .clear-notify:hover i {
     color: darkorange;
+}
+
+.notify-pic-rounded {
+    border-radius: 50%!important;
+    overflow: hidden;
+    height: 40px;
 }
 
 .notify-border {
