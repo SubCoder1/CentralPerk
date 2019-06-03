@@ -53,11 +53,12 @@
       <div class="row">
       {% block body %}
         <div class="col-lg-4">
+          <br/><br/><br/>
           <div class="board">
             <div class="card">
               <div class="card-header">
                 <h4 class="display-2 notif-headline">Notifications</h4>
-                <a href="#" class="clear-notify"><i class="material-icons">clear_all</i></a>
+                <a href="{% url 'clear_notifications' %}" class="clear-notify"><i class="material-icons">clear_all</i></a>
                 <br/>
                 <div class="border notify-border"></div>
                 <br/>
@@ -68,12 +69,16 @@
                         {% if notification.reaction == 'Liked' %}
                           <h4 style="font-size: 18px">
                             <a href="{% url 'view_profile' notification.poked_by %}">
+                              <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
                               {{ notification.poked_by }}
                             </a> Liked your status.
                           </h4>
                         {% elif notification.reaction == 'Sent Follow Request' %}
                           <h4 style="font-size: 18px">
-                              <a href="{% url 'view_profile' notification.poked_by %}">{{ notification.poked_by }}</a> started to follow you.
+                              <a href="{% url 'view_profile' notification.poked_by %}">
+                                <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                                {{ notification.poked_by }}
+                              </a> started to follow you.
                           </h4>
                         {% endif %}
                       </div>
@@ -89,6 +94,7 @@
           </div>
         </div>
         <div class="col-lg-4">
+          <br/>
             <div class="card">
               <div class="card-header">
                 <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
@@ -138,18 +144,12 @@
                 </div>
               </form>
             </div>
-        </div>
-        <div class="col-lg-4"></div>
-      </div>
-      
-      <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4">
-          <h3 class="display-2" style="font-size: 2rem">Posts<h3>
-          <div class="border index_border"></div>
-          <br>
-          {% for post in posts %}
-            <div class="card post-card">
+            <br/><br/>
+            <h3 class="display-2" style="font-size: 2rem">Posts<h3>
+            <div class="border index_border"></div>
+            <br>
+            {% for post in posts %}
+              <div class="card post-card">
                 <div class="card-header">
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex justify-content-between align-items-center">
@@ -168,22 +168,22 @@
                   </div>
                 </div>
                 <div class="card-body text-align-left display-3 index-post-card-body" id="post-container"> 
-                    {{ post.status|json_script:"post-data" }}
+                  {{ post.status|json_script:"post-data" }}
                 </div>
                 <div class="card-footer">
                   <a href="{% url 'post_like_home' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
                   <span class="likes-counter">{{ post.likes_count }}</span>
                   <span class="post-date-time">{{ post.date_time }}</span>    
+                </div>
               </div>
-            </div>
-            <br>
-          {% endfor %}
+              <br>
+            {% endfor %}
         </div>
-        <div class="col-lg-4">
-      {% endblock %}
+        <div class="col-lg-4"></div>
       </div>
-
+      {% endblock %}
     </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
