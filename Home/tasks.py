@@ -22,7 +22,6 @@ def share_posts(username, post_id):
 
 @shared_task
 def send_notifications(username, reaction, date_time, send_to_username=None, post_id=None):
-    print(post_id)
     if post_id:
         post = PostModel.objects.get_post(post_id=post_id)
         send_to = post.user
