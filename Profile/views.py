@@ -27,12 +27,23 @@ def manage_relation(request, username, option=None):
     return redirect(f'/profile/{username}')
 
 def manage_profile_post_likes(request, username, post_id):
-    if PostModel.objects.likes_handler(request.user.username, post_id) == 'Liked':
+    user = request.user
+    post = PostModel.objects.get_post(post_id=post_id)
+
+    if user in post.likes.all():
+        # Dislike post
+        post.likes_count -= 1
+        post.likes.remove(user)
+    else:
+        # Like post
+        post.likes_count += 1
+        post.likes.add(user)
         tz = pytz.timezone('Asia/Kolkata')
         now = datetime.now().astimezone(tz)
         # Notify the user whose post is being liked
         send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
-        
+
+    post.save()
     return redirect(f'/profile/{username}')
 
 def view_profile(request, username=None):
