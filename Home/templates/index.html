@@ -54,10 +54,35 @@
       {% block body %}
         <div class="col-lg-4">
           <div class="board">
-            <div class="card notify">
+            <div class="card">
               <div class="card-header">
-                <h4 class="display-2" style="font-size: 22px">Notifications</h4>
+                <h4 class="display-2 notif-headline">Notifications</h4>
+                <a href="#" class="clear-notify"><i class="material-icons">clear_all</i></a>
+                <br/>
                 <div class="border notify-border"></div>
+                <br/>
+                {% for notification in notifications %}
+                  <div class="notifications">
+                    <div class="card notification">
+                      <div class="card-body notify-body">
+                        {% if notification.reaction == 'Liked' %}
+                          <h4 style="font-size: 18px">
+                            <a href="{% url 'view_profile' notification.poked_by %}">
+                              {{ notification.poked_by }}
+                            </a> Liked your status.
+                          </h4>
+                        {% elif notification.reaction == 'Sent Follow Request' %}
+                          <h4 style="font-size: 18px">
+                              <a href="{% url 'view_profile' notification.poked_by %}">{{ notification.poked_by }}</a> started to follow you.
+                          </h4>
+                        {% endif %}
+                      </div>
+                      <div class="card-footer">
+                        <h4 class="notify-date-time">{{ notification.date_time }}</h4>
+                      </div>
+                    </div>
+                  </div>
+                {% endfor %}
                 <br/>
               </div>
             </div>
@@ -116,7 +141,6 @@
         </div>
         <div class="col-lg-4"></div>
       </div>
-      <br><br>
       
       <div class="row">
         <div class="col-lg-4"></div>
