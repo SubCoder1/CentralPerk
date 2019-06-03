@@ -18,7 +18,7 @@ class home_view(TemplateView):
             'location', 'user__username', 'user__profile_pic', 
             'date_time', 'likes_count', 'post_id', named=True)
         notifications = request.user.notifications.all().values_list(
-            'poked_by', 'date_time', 'reaction', 'id', named=True)
+            'poked_by', 'date_time', 'reaction', 'poked_by__profile_pic',named=True)
 
         args = { 'form':form, 'posts':posts, 'notifications':notifications }
         return render(request, self.template_name, context=args)
@@ -32,6 +32,10 @@ class home_view(TemplateView):
             post.send_to.add(request.user)
             share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
             return redirect('/home/')
+
+def clear_all_notification(request):
+    request.user.notifications.all().delete()
+    return redirect('/home/')
 
 def manage_home_post_likes(request, post_id):
     user = request.user
