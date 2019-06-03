@@ -25,9 +25,12 @@ class home_view(TemplateView):
 
     def post(self, request):
         form = PostForm(request.POST or None)
+        tz = pytz.timezone('Asia/Kolkata')
         if form.is_valid():
             post = form.save(commit=False)
             post.user = request.user
+            post.post_id = str(post.unique_id)[:8]
+            post.date_time = datetime.now().astimezone(tz)
             post.save()
             post.send_to.add(request.user)
             share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
