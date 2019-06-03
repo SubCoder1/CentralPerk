@@ -1,17 +1,33 @@
-/* ----- edit_profile.html ------ */
-
+/* ----------------- field labels, group ---------------- */
+.col-form-label {
+  padding-left: 3px;
+}
 .edit-prof-form-group {
-    margin-bottom: 0rem;
-  }
-  .edit_prof_border {
-    width: 12rem;
-  }
-  
-  .edit-prof-form-control {
-    padding: 0.5rem .75rem;
-    position: unset;
-  }
-  
-  .col-form-label {
-    padding-left: 3px;
-  }
+  margin-bottom: 0rem;
+}
+/* ------------------------------------------------------ */
+
+/* ---------------- border under headline --------------- */
+.edit_prof_border {
+  width: 200px;
+}
+/* ------------------------------------------------------ */
+
+/* ------------- edit profile text fields --------------- */
+.edit-prof-form-control {
+  padding: 0.5rem .75rem;
+  position: unset;
+  background: darkslateblue;
+  color: white;
+}
+
+.edit-prof-form-control:hover {
+  color: white;
+  background: darkslateblue;
+}
+
+.edit-prof-form-control:focus {
+  background: darkslateblue;
+  color: white;
+}
+/* ------------------------------------------------------ */
