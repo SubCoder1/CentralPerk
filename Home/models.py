@@ -49,7 +49,7 @@ REACTION = ( ('Liked', 'Liked'), ('Commented', 'Commented'), ('Sent Follow Reque
 class UserNotification(models.Model):
     user_to_notify = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, related_name='notifications', verbose_name="to_notify")
     # User who liked/commented 'to_notify's post or send him/her a follow request
-    poked_by = models.CharField(max_length=20, blank=False, verbose_name="reacting_user")
+    poked_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, blank=False, verbose_name="reacting_user")
     post = models.ForeignKey(PostModel, on_delete=models.CASCADE, related_name="post", null=True, blank=True)
     date_time = models.DateTimeField(blank=True)
     reaction = models.CharField(max_length=20, choices=REACTION)
@@ -60,16 +60,17 @@ class UserNotification(models.Model):
 
     @classmethod
     def create_notify_obj(cls, to_notify, by, reaction, date_time, post_obj=None):
-        obj = cls.objects.create(user_to_notify=to_notify, poked_by=by, post=post_obj, date_time=date_time, reaction=reaction)
+        poked_user = User.objects.get(username=by)
+        obj = cls.objects.create(user_to_notify=to_notify, poked_by=poked_user, post=post_obj, date_time=date_time, reaction=reaction)
         return obj
 
     def __str__(self):
         if self.post:
             if self.reaction == 'Liked':
-                display = self.poked_by + " " + self.reaction + " " + self.user_to_notify.username + "'s " + self.post.post_id
+                display = self.poked_by.username + " " + self.reaction + " " + self.user_to_notify.username + "'s " + self.post.post_id
             elif self.reaction == 'Commented':
-                display = self.poked_by + " " + self.reaction + " on " + self.user_to_notify.username + "'s " + self.post.post_id
+                display = self.poked_by.username + " " + self.reaction + " on " + self.user_to_notify.username + "'s " + self.post.post_id
         else:
-            display = self.poked_by + " " + self.reaction + " to " + self.user_to_notify.username
+            display = self.poked_by.username + " " + self.reaction + " to " + self.user_to_notify.username
         
         return display
