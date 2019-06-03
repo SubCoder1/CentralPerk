@@ -17,11 +17,11 @@ def manage_relation(request, username, option=None):
     follow_unfollow_user = User.get_user_obj(username=username)
 
     if option == 'follow':
+        Friends.follow(current_user, follow_unfollow_user)
         tz = pytz.timezone('Asia/Kolkata')
         now = datetime.now().astimezone(tz)
         # Notify the user to whom this follow request is being sent
         send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", date_time=now, send_to_username=follow_unfollow_user.username)
-        Friends.follow(current_user, follow_unfollow_user)
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
     return redirect(f'/profile/{username}')
