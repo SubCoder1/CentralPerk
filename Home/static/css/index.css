@@ -24,6 +24,7 @@ a:hover {
     font-size: 2.25rem;
 }
 
+/* ------------------ Notify ------------------ */
 .board {
     position: -webkit-sticky;
     position: sticky;
@@ -34,11 +35,42 @@ a:hover {
     font-family: 'Poppins', sans-serif;
 }
 
-/* ------------------ Notify ------------------ */
-.notify-border {
-    width: 150px;
+.notification {
+    background: #544a92;
+    border-radius: 1.00rem;
+    margin: 2px;
 }
 
+.notif-headline {
+    font-size: 22px;
+    float: left;
+}
+
+.clear-notify {
+    font-size: 16px;
+    float: right;
+}
+
+.clear-notify:hover i {
+    color: darkorange;
+}
+
+.notify-border {
+    width: 150px;
+    margin: 4px;
+}
+
+.notify-body {
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-bottom: 0px;
+}
+
+.notify-date-time {
+    text-align: right; 
+    font-size: 15px;
+}
 /* -------------------------------------------- */
 
 /* ---------------- nav links ----------------- */
@@ -52,6 +84,10 @@ a:hover {
 .nav-pills .nav-link {
     opacity: 0.5;
     padding-left: 2px;
+}
+
+.nav-link:hover {
+    color: black;
 }
 /* -------------------------------------------- */
 
