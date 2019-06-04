@@ -1,14 +1,32 @@
 @media only screen and (max-width: 768px) {
   h4 {
-    font-size: 20px;
+    font-size: 18px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+  .post-counter {
+    margin-right: 21px;
+    float: left;
+  }
+  
+  .follow-counter {
+    margin-right: 21px;
+    float: left;
+  }
+  
+  .following-counter {
+    margin-right: 21px;
+    float: left;
   }
 }
+
 
 /* ----------- Like btn on posts ----------- */
 .like-btn {
   float:left;
   position: relative;
-  top: 2px;
+  top: 3px;
 }
 /* ----------------------------------------- */
 
@@ -24,7 +42,7 @@
 .edit-prof-link {
   float:right;
   position: relative;
-  bottom: 85px;
+  bottom: 93px;
 }
 
 a:hover span {
@@ -33,18 +51,20 @@ a:hover span {
 /* ----------------------------------------- */
 
 /* ------------ Details counter ------------ */
-.post-counter {
-  margin-right: 32px;
-  float: left;
-}
-
-.follow-counter {
-  margin-right: 32px;
-  float: left;
-}
-
-.following-counter {
-  margin-right: 32px;
-  float: left;
+@media only screen and (min-width: 768px) {
+  .post-counter {
+    margin-right: 32px;
+    float: left;
+  }
+  
+  .follow-counter {
+    margin-right: 32px;
+    float: left;
+  }
+  
+  .following-counter {
+    margin-right: 32px;
+    float: left;
+  }
 }
 /* ----------------------------------------- */
