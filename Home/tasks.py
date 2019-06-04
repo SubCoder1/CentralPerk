@@ -1,5 +1,6 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
+from django.core.exceptions import ObjectDoesNotExist
 from celery import shared_task
 from Profile.models import Friends, User
 from django.contrib.auth import get_user_model
@@ -9,8 +10,12 @@ import pytz
 
 @shared_task
 def share_posts(username, post_id):
+    try:
+        post = PostModel.objects.get_post(post_id=post_id)
+    except ObjectDoesNotExist:
+        return "Task aborted, post not found(del?)"
+
     request_user = User.get_user_obj(username=username)
-    post = PostModel.objects.get_post(post_id=post_id)
     following_list, created = Friends.objects.get_or_create(current_user=request_user)
     if not created:
         users = following_list.followers.all()
@@ -23,7 +28,11 @@ def share_posts(username, post_id):
 @shared_task
 def send_notifications(username, reaction, date_time, send_to_username=None, post_id=None):
     if post_id:
-        post = PostModel.objects.get_post(post_id=post_id)
+        try:
+            post = PostModel.objects.get_post(post_id=post_id)
+        except ObjectDoesNotExist:
+            return "Task aborted, post not found(del?)"
+            
         send_to = post.user
         if send_to.username == username:
             return "User liked his/her own post :|"
