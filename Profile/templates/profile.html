@@ -17,14 +17,16 @@
         <img src="/media/{{ profile.profile_pic }}" class="profile-pic-rounded">
     </div>
     <div class="edit-prof-link">
-    {% if edit %}
+    {% if editable %}
         <a class="btn btn-dark" href="{% url 'edit_profile' profile.username %}"><span>Edit Profile</span></a>
     {% endif %}
-    {% if not edit %}
+    {% if not editable %}
         {% if isFollowing %}
-        <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'unfollow' %}"><span>Unfollow</span></a>
+            <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'unfollow' %}"><span>Unfollow</span></a>
+        {% elif isFollower %}
+            <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'follow' %}"><span>Follow Back</span></a>
         {% else %}
-        <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'follow' %}"><span>Follow</span></a>
+            <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'follow' %}"><span>Follow</span></a>
         {% endif %}
     {% endif %}
     </div>
