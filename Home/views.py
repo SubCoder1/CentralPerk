@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.db.models import F
+from django.core.exceptions import ObjectDoesNotExist
 from Home.models import PostModel, UserNotification
 from Home.forms import PostForm
 from Profile.models import Friends, User
@@ -42,9 +43,12 @@ def clear_all_notification(request):
     return redirect('/home/')
 
 def manage_home_post_likes(request, post_id):
-    user = request.user
-    post = PostModel.objects.get_post(post_id=post_id)
+    try:
+        post = PostModel.objects.get_post(post_id=post_id)
+    except ObjectDoesNotExist:
+        return render(request, 'post_500.html', {})
 
+    user = request.user
     if user in post.likes.all():
         # Dislike post
         post.likes.remove(user)
