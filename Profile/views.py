@@ -54,8 +54,13 @@ def view_profile(request, username=None):
     user_posts = user.posts.values_list('status', 'location', 'date_time', 'likes_count', 'post_id',named=True)
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
-    del created
-    isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
+    isFollower, isFollowing = None, None
+    if not created:
+        # True if request.user follows the user he/she is searching for
+        isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
+        if not isFollowing:
+            # True if request.user is being followed by 'username'
+            isFollower = True if current_user.following.filter(username=request.user).exists() else False
     
     active = '#'
     if request.POST and not editable:
@@ -72,7 +77,8 @@ def view_profile(request, username=None):
     follow_count = current_user.following.count()
     follower_count = current_user.followers.count()
 
-    context = { 'profile':user, 'posts':user_posts, 'edit':editable, 'isFollowing':isFollowing,
+    context = { 'profile':user, 'posts':user_posts, 'editable':editable, 
+                'isFollowing':isFollowing, 'isFollower': isFollower,
                 'follow_count':follow_count, 'follower_count':follower_count, 'activity':active, }
 
     return render(request, 'profile.html', context=context)
