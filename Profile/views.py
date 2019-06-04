@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
-from Profile.forms import NonAdminChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
+from django.http import HttpResponse
+from django.db.models import F
+from Profile.forms import NonAdminChangeForm
 from Profile.models import User, Friends
 from Profile.last_activity import activity
-from django.http import HttpResponse
 import json, pytz
 from Home.models import PostModel
 from Home.tasks import send_notifications
@@ -32,18 +33,20 @@ def manage_profile_post_likes(request, username, post_id):
 
     if user in post.likes.all():
         # Dislike post
-        post.likes_count -= 1
         post.likes.remove(user)
+        post.likes_count = F('likes_count') - 1
+        post.save()
     else:
         # Like post
-        post.likes_count += 1
         post.likes.add(user)
+        post.likes_count = F('likes_count') + 1
+        post.save()
+
         tz = pytz.timezone('Asia/Kolkata')
         now = datetime.now().astimezone(tz)
         # Notify the user whose post is being liked
         send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
 
-    post.save()
     return redirect(f'/profile/{username}')
 
 def view_profile(request, username=None):
