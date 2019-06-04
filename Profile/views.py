@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.forms import NonAdminChangeForm
+from django.core.exceptions import ObjectDoesNotExist
 from Profile.models import User, Friends
 from Profile.last_activity import activity
 import json, pytz
@@ -29,9 +30,12 @@ def manage_relation(request, username, option=None):
     return redirect(f'/profile/{username}')
 
 def manage_profile_post_likes(request, username, post_id):
+    try:
+        post = PostModel.objects.get_post(post_id=post_id)
+    except ObjectDoesNotExist:
+        return render(request, 'post_500.html', {})
+    
     user = request.user
-    post = PostModel.objects.get_post(post_id=post_id)
-
     if user in post.likes.all():
         # Dislike post
         post.likes.remove(user)
