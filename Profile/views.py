@@ -4,6 +4,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponse
 from django.db.models import F
+from django.core.exceptions import ObjectDoesNotExist
 from Profile.forms import NonAdminChangeForm
 from Profile.models import User, Friends
 from Profile.last_activity import activity
@@ -50,7 +51,11 @@ def manage_profile_post_likes(request, username, post_id):
     return redirect(f'/profile/{username}')
 
 def view_profile(request, username=None):
-    user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
+    try:
+        user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
+    except ObjectDoesNotExist:
+        return render(request, 'profile_500.html', {})
+        
     user_posts = user.posts.values_list('status', 'location', 'date_time', 'likes_count', 'post_id',named=True)
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
@@ -61,8 +66,12 @@ def view_profile(request, username=None):
         if not isFollowing:
             # True if request.user is being followed by 'username'
             isFollower = True if current_user.following.filter(username=request.user).exists() else False
+        
+        follow_count = current_user.following.count()
+        follower_count = current_user.followers.count()
     
     active = '#'
+    # Ajax request/response to check user activity, shown iff requset.user follows 'username'
     if request.POST and not editable:
         ajax_request = request.POST.get("activity")
         if isFollowing and ajax_request is not None:
@@ -73,9 +82,6 @@ def view_profile(request, username=None):
             return HttpResponse(json.dumps(active), content_type='application/json')
     elif request.POST and editable:
         return HttpResponse(json.dumps(active), content_type='application/json')
-
-    follow_count = current_user.following.count()
-    follower_count = current_user.followers.count()
 
     context = { 'profile':user, 'posts':user_posts, 'editable':editable, 
                 'isFollowing':isFollowing, 'isFollower': isFollower,
@@ -103,5 +109,5 @@ class edit_profile(TemplateView):
             update_session_auth_hash(request, change_pass_form.user)  # This method keeps the user logged-in even after changing the password
             return redirect('/profile/{username}'.format(username=username))
 
-        context = { 'edit_form':edit_form,'change_pass_form':change_pass_form }
+        context = { 'edit_form':edit_form, 'change_pass_form':change_pass_form }
         return render(request, self.template_name, context)
