@@ -11,7 +11,14 @@ class PostModelManager(models.Manager):
     def get_liked_user_list(self, post_id):
         post = self.get_post(post_id)
         return post.likes.all()
-        
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/user_<username>/<filename>
+    username = instance.user.username
+    name = str(instance.unique_id)
+    extension = filename[len(filename)-4:len(filename)]
+    file_name = name + extension
+    return f"post_images/user_{username}/{file_name}"
 
 class PostModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, related_name='posts')
@@ -21,10 +28,9 @@ class PostModel(models.Model):
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post_id = models.CharField(max_length=10, editable=False, default='')
     date_time = models.DateTimeField(blank=True)
-    status = models.CharField(max_length=500, blank=True)
-    caption = models.CharField(max_length=200, blank=True)
-    location = models.CharField(max_length=200, blank=True, null=True)
-    pic = models.ImageField(upload_to='post_images', blank=True)
+    status_caption = models.CharField(max_length=500, blank=True)
+    location = models.CharField(max_length=200, blank=True)
+    pic = models.ImageField(upload_to=user_directory_path, blank=True)
     objects = PostModelManager()
 
     class Meta:
@@ -32,10 +38,10 @@ class PostModel(models.Model):
         verbose_name = 'Post'
 
     def __str__(self):
-        if self.status:
+        if self.status_caption and not self.pic:
             return 'status ' + self.post_id 
         else:
-            return 'pic ' + self.post_id
+            return 'caption_pic ' + self.post_id
 
     def save(self, *args, **kwargs):
         return super(PostModel, self).save(*args, **kwargs)
