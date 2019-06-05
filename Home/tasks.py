@@ -19,9 +19,12 @@ def share_posts(username, post_id):
     following_list, created = Friends.objects.get_or_create(current_user=request_user)
     if not created:
         users = following_list.followers.all()
-        for user in users:
-            post.send_to.add(user)
-        return "complete :)"
+        if len(users) > 0:
+            for user in users:
+                post.send_to.add(user)
+            return "complete :)"
+        else:
+            return "user is lonely :("
     else:
         return "user is lonely :("
 
