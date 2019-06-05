@@ -162,11 +162,11 @@ form > .button:hover {
     border: none;
 }
 
-#status-tab { background-color: transparent; }
+#status-tab { background-color: transparent; height: 41px; }
 
-#image-tab { background-color: transparent; }
+#image-tab { background-color: transparent; height: 41px; }
 
-#location-tab { background-color: transparent; }
+#location-tab { background-color: transparent; height: 41px; }
 
 .material-icons:hover { color: black; }
 
@@ -181,6 +181,7 @@ form > .button:hover {
     font-family: 'Inconsolata', monospace;
     font-weight: 300;
     overflow: hidden;
+    height:96px;
 }
 
 .location {
@@ -220,6 +221,10 @@ form > .button:hover {
     border-radius: 1.00rem;
 }
 
+.post-card-body-img {
+    width: 100%;
+}
+
 .post_profile_img {
     height: 48px;
     position: relative;
@@ -227,13 +232,17 @@ form > .button:hover {
 }
 
 .display-3 {
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .card-header {
     background-color: transparent;
     color: white;
     border-bottom: none;
+}
+
+.index-img-post-card-body {
+    padding: 0rem;
 }
 
 .index-post-card-body {
@@ -257,6 +266,8 @@ form > .button:hover {
 .post-date-time {
     font-size: 15px;
     float: right;
+    position: relative;
+    top: 2px;
 }
 
 .card-footer {
