@@ -99,33 +99,37 @@
               <div class="card-header">
                 <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
                   <li class="nav-item px-1">
-                    <a class="nav-link link active body" id="status-tab" data-toggle="tab" href="#status" role="tab" aria-controls="status" aria-selected="true" style="height: 41px;">
+                    <a class="nav-link link active" id="status-tab" data-toggle="tab" href="#status" role="tab" aria-controls="status" aria-selected="true">
                         <i class="material-icons">notes</i>
                     </a>
                   </li>
                   <li class="nav-item px-1">
-                    <a class="nav-link link body" id="image-tab" data-toggle="tab" href="#image" role="tab" aria-controls="image" aria-selected="true" style="height: 41px;">
+                    <a class="nav-link link" id="image-tab" data-toggle="tab" href="#image" role="tab" aria-controls="image" aria-selected="true">
                       <i class="material-icons">insert_photo</i>
                     </a>
                   </li>
                   <li class="nav-item px-1">
-                    <a class="nav-link link body" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="true" style="height: 41px;">
+                    <a class="nav-link link" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="true">
                       <i class="material-icons">place</i>
                     </a>
                   </li>
                 </ul>
               </div>
-              <form method="POST">
+              <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card-body">
                   <div class="tab-content" id="cardtabContent">
                     <div class="tab-pane fade show active" id="status" role="tabpanel" aria-labelledby="status-tab">
                       <div class="form-group">
                         <label class="sr-only" for="message">post</label>
-                        <textarea class="form-control form-alignment status" id="status" name="status"  placeholder="What are you thinking?" style="height:96px"></textarea>
+                        <textarea class="form-control form-alignment status" id="status_caption" name="status_caption" placeholder="What's your status?"></textarea>
                       </div>
                     </div> 
                     <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="customFile" name="pic" accept="image/jpg,image/jpeg,image/png,image/gif">
+                        <label class="custom-file-label" for="customFile">Choose file</label>
+                      </div>
                     </div>
                     <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
                       <div class="form-group">
@@ -167,13 +171,33 @@
                     </div>
                   </div>
                 </div>
-                <div class="card-body text-align-left display-3 index-post-card-body" id="post-container"> 
-                  {{ post.status|json_script:"post-data" }}
-                </div>
+                {% if post.status_caption and not post.pic %}
+                  <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container"> 
+                    {{ post.status_caption|json_script:"post-data" }}
+                  </div>
+                {% elif post.status_caption and post.pic %}
+                  <div class="card-body index-img-post-card-body">
+                    <img src="/media/{{ post.pic }}" class="post-card-body-img">
+                  </div>
+                {% else %}
+                  <div class="card-body index-img-post-card-body">
+                    <img src="/media/{{ post.pic }}" class="post-card-body-img">
+                  </div>
+                {% endif %}
+
                 <div class="card-footer">
-                  <a href="{% url 'post_like_home' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
-                  <span class="likes-counter">{{ post.likes_count }}</span>
-                  <span class="post-date-time">{{ post.date_time }}</span>    
+                  <div class="upper-row">
+                    <a href="{% url 'post_like_home' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
+                    <span class="likes-counter">{{ post.likes_count }}</span>
+                    <span class="post-date-time">{{ post.date_time }}</span>
+                  </div>
+                  <div class="lower-row">
+                    {% if post.status_caption and post.pic %}
+                    <div class="text-align-left display-3 index-post-card-body" id="status_caption-container">
+                      {{ post.status_caption|json_script:"post-data" }}
+                    </div>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
               <br>
