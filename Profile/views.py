@@ -60,10 +60,10 @@ def view_profile(request, username=None):
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
         
-    user_posts = user.posts.values_list('status', 'location', 'date_time', 'likes_count', 'post_id',named=True)
+    user_posts = user.posts.values_list('status_caption', 'pic', 'location', 'date_time', 'likes_count', 'post_id', named=True)
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
-    isFollower, isFollowing = None, None
+    isFollower, isFollowing, follow_count, follower_count = None, None, 0, 0
     if not created:
         # True if request.user follows the user he/she is searching for
         isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
