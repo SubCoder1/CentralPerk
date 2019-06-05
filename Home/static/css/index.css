@@ -23,6 +23,10 @@ a:hover {
 }
 .card { border: none; background: transparent; }
 
+.card::-webkit-scrollbar { width: 0 !important; }
+
+.card-body::-webkit-scrollbar { width: 0 !important; }
+
 .display-2 {
     font-family: 'Poppins', sans-serif;
     font-size: 2.25rem;
@@ -39,12 +43,6 @@ a:hover {
     font-family: 'Poppins', sans-serif;
 }
 
-.notification {
-    background: #544a92;
-    border-radius: 1.00rem;
-    margin: 2px;
-}
-
 .notif-headline {
     font-size: 22px;
     float: left;
@@ -59,15 +57,20 @@ a:hover {
     color: darkorange;
 }
 
-.notify-pic-rounded {
-    border-radius: 50%!important;
-    overflow: hidden;
-    height: 40px;
-}
-
 .notify-border {
     width: 150px;
     margin: 4px;
+}
+
+.notify-card-body {
+    height: 450px;
+    overflow-x: auto;
+}
+
+.notification {
+    background: #544a92;
+    border-radius: 1.00rem;
+    margin: 2px;
 }
 
 .notify-body {
@@ -75,6 +78,12 @@ a:hover {
     padding-left: 1rem;
     padding-right: 1rem;
     padding-bottom: 0px;
+}
+
+.notify-pic-rounded {
+    border-radius: 50%!important;
+    overflow: hidden;
+    height: 40px;
 }
 
 .notify-date-time {
