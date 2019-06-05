@@ -1,26 +1,22 @@
-@media only screen and (max-width: 768px) {
-  h4 {
-    font-size: 18px;
-  }
-  h3 {
-    font-size: 18px;
-  }
-  .post-counter {
-    margin-right: 21px;
-    float: left;
-  }
-  
-  .follow-counter {
-    margin-right: 21px;
-    float: left;
-  }
-  
-  .following-counter {
-    margin-right: 21px;
-    float: left;
-  }
+/* ------------- Profile post  ------------- */
+.prof-img-post-card-body {
+  padding: 0rem;
 }
 
+.prof-card-body-img {
+  border-radius: 1rem 1rem 0rem 0rem;
+  width: 100%;
+}
+
+.upper-row {
+  padding-bottom: 5px;
+}
+
+.fa-fire-alt {
+  position: relative;
+  top: 3px;
+}
+/* ----------------------------------------- */
 
 /* ----------- Like btn on posts ----------- */
 .like-btn {
@@ -51,6 +47,29 @@ a:hover span {
 /* ----------------------------------------- */
 
 /* ------------ Details counter ------------ */
+@media only screen and (max-width: 768px) {
+  h4 {
+    font-size: 18px;
+  }
+  h3 {
+    font-size: 18px;
+  }
+  .post-counter {
+    margin-right: 21px;
+    float: left;
+  }
+  
+  .follow-counter {
+    margin-right: 21px;
+    float: left;
+  }
+  
+  .following-counter {
+    margin-right: 21px;
+    float: left;
+  }
+}
+
 @media only screen and (min-width: 768px) {
   .post-counter {
     margin-right: 32px;
