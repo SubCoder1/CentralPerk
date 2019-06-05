@@ -16,7 +16,7 @@ class home_view(TemplateView):
     def get(self, request):
         form = PostForm()
         posts = request.user.connections.all().values_list(
-            'status', 'caption', 'pic', 
+            'status_caption', 'pic', 
             'location', 'user__username', 'user__profile_pic', 
             'date_time', 'likes_count', 'post_id', named=True)
         notifications = request.user.notifications.all().values_list(
@@ -26,7 +26,7 @@ class home_view(TemplateView):
         return render(request, self.template_name, context=args)
 
     def post(self, request):
-        form = PostForm(request.POST or None)
+        form = PostForm(request.POST, request.FILES or None)
         tz = pytz.timezone('Asia/Kolkata')
         if form.is_valid():
             post = form.save(commit=False)
