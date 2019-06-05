@@ -61,7 +61,8 @@
                 <a href="{% url 'clear_notifications' %}" class="clear-notify"><i class="material-icons">clear_all</i></a>
                 <br/>
                 <div class="border notify-border"></div>
-                <br/>
+              </div>
+              <div class="card-body notify-card-body">
                 {% for notification in notifications %}
                   <div class="notifications">
                     <div class="card notification">
