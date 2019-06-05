@@ -10,9 +10,15 @@ var currentScrollPos = window.pageYOffset;
   prevScrollpos = currentScrollPos;
 }
 
+// JS code for uploaded file-name to appear on select
+$(".custom-file-input").on("change", function() {
+  var fileName = $(this).val().split("\\").pop();
+  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+});
+
 // JS code for post-card data overflow management
 var elms = document.querySelectorAll("[id='post-data']");
-var post_container = document.querySelectorAll("[id='post-container']");
+var post_container = document.querySelectorAll("[id='status_caption-container']");
 for(var i=0; i < elms.length; i++) {
   (function (i) {
     var post = JSON.parse(elms[i].textContent);
