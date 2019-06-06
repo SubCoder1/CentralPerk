@@ -193,6 +193,13 @@ form > .button:hover {
     height:96px;
 }
 
+.post-img {
+    position: absolute;
+    width: 93%;
+    bottom: 90px;
+    cursor: pointer;
+}
+
 .location {
     position: absolute;
     width: 93%;
