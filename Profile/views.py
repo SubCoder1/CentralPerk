@@ -93,6 +93,13 @@ def view_profile(request, username=None):
 
     return render(request, 'profile.html', context=context)
 
+def del_user_post(request, post_id):
+    try:
+        request.user.posts.get(post_id=post_id).delete()
+    except ObjectDoesNotExist:
+        pass
+    return redirect(f'/profile/{request.user.username}')
+
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'
 
