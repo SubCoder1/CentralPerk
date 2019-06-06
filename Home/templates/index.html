@@ -63,6 +63,7 @@
                 <div class="border notify-border"></div>
               </div>
               <div class="card-body notify-card-body">
+                {% if notifications %}
                 {% for notification in notifications %}
                   <div class="notifications">
                     <div class="card notification">
@@ -89,6 +90,12 @@
                     </div>
                   </div>
                 {% endfor %}
+                {% else %}
+                  <div class="empty-notif">
+                    <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                    <h5 style="position: relative; left: 2px;">No Notifications</h5>
+                  </div>
+                {% endif %}
                 <br/>
               </div>
             </div>
