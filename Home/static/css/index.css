@@ -165,7 +165,27 @@ form > .button:hover {
     background-color: greenyellow;
 }
 
-/* ------------- status card --------------- */
+/* ----- input form control (status box)----- */
+.form-control {
+    border-radius: 2.25rem;
+    background-color: white;
+    color: black;
+    border: none;
+    padding: 0.9rem 1.75rem;
+    position: absolute;
+    line-height: 1.0;
+}
+.form-control:focus {
+    background-color: whitesmoke;
+    color: black;
+    border: none;
+}
+/* ------------------------------------------ */
+
+/* -------------- status card --------------- */
+.form-group {
+    margin-left: 10px;
+}
 .index-card {
     background:transparent;
     border: none;
@@ -194,6 +214,7 @@ form > .button:hover {
 }
 
 .post-img {
+    text-align: left;
     position: absolute;
     width: 93%;
     bottom: 90px;
@@ -204,6 +225,10 @@ form > .button:hover {
     position: absolute;
     width: 93%;
     bottom: 90px;
+}
+
+.status-card-footer {
+    margin-left: 10px;
 }
 
 .btn-dark {
@@ -300,20 +325,3 @@ form > .button:hover {
     color: black;
 }
 /* ------------------------------------------ */
-
-/* ----- input form control (status box)----- */
-.form-control {
-    border-radius: 2.25rem;
-    background-color: white;
-    color: black;
-    border: none;
-    padding: 0.9rem 1.75rem;
-    position: absolute;
-    line-height: 1.0;
-}
-.form-control:focus {
-    background-color: whitesmoke;
-    color: black;
-    border: none;
-}
-/* -------------------------------------------- */
