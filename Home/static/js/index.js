@@ -10,11 +10,24 @@ var currentScrollPos = window.pageYOffset;
   prevScrollpos = currentScrollPos;
 }
 
-// JS code for uploaded file-name to appear on select
-$(".custom-file-input").on("change", function() {
-  var fileName = $(this).val().split("\\").pop();
-  $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
-});
+// JS code for uploaded file-name to appear on custom-btn
+const realfilebtn = document.getElementById("real-file");
+const custombtn = document.getElementById("img-btn-custom");
+
+if (realfilebtn && custombtn) {
+  custombtn.addEventListener("click", function() {
+    realfilebtn.click();
+  });
+  
+  realfilebtn.addEventListener("change", function() {
+    if (realfilebtn.value) {
+      custombtn.value = realfilebtn.value;
+    } else {
+      custombtn.value = "No files selected";
+    }
+  });
+};
+
 
 // JS code for post-card data overflow management
 var elms = document.querySelectorAll("[id='post-data']");
