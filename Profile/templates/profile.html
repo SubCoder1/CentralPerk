@@ -10,8 +10,8 @@
 {% endblock %}
 
 {% block body %}
-<div class="col-lg-3"></div>
-<div class="col-lg-6">
+<div class="col-lg-4"></div>
+<div class="col-lg-4">
     <br/>
     <div class="profile-pic">
         <img src="/media/{{ profile.profile_pic }}" class="profile-pic-rounded">
@@ -71,7 +71,7 @@
             {% for post in posts %}
             <div class="card post-card">
                 {% if post.status_caption and not post.pic %}
-                  <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container"> 
+                  <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container">
                     {{ post.status_caption|json_script:"post-data" }}
                   </div>
                 {% elif post.status_caption and post.pic %}
@@ -106,7 +106,7 @@
         </div>
     </div>
 </div>
-<div class="col-lg-3">
+<div class="col-lg-4">
 </div>
 {% endblock %}
 
