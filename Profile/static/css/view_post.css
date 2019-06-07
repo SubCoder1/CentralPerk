@@ -1,0 +1,36 @@
+/* ------------ post-img on the left ------------ */
+.post-view-img {
+    width: 50%;
+    float: left;
+}
+
+.post-pic-enlarged-view {
+    width: 100%;
+    border-radius: 1rem 0rem 0rem 1rem;
+}
+/* ---------------------------------------------- */
+
+/* ----------- post-data on the right ----------- */
+.post-view-detail {
+    float: left;
+    width: 38%;
+}
+
+.post-view-card {
+    background: #413780;
+    border-radius: 0;
+    border-radius: 0rem 1rem 1rem 0rem;
+}
+
+.btn-dark:hover {
+    background: indianred;
+    color: black;
+    border: indianred;
+}
+
+.fa-fire-alt {
+    float: left;
+    position: relative;
+    top: 3px;
+}
+/* ---------------------------------------------- */
