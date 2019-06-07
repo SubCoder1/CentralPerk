@@ -150,6 +150,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # URL that handles the media served from MEDIA_ROOT.
 MEDIA_URL = '/media/'
 
+# Max size of post file upload
+DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
