@@ -76,17 +76,17 @@
                   </div>
                 {% elif post.status_caption and post.pic %}
                   <div class="card-body prof-img-post-card-body">
-                    <img src="/media/{{ post.pic }}" class="prof-card-body-img">
+                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
                   </div>
                 {% else %}
                   <div class="card-body profile-img-post-card-body">
-                    <img src="/media/{{ post.pic }}" class="prof-card-body-img">
+                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
                   </div>
                 {% endif %}
                 <div class="card-footer">
                     <div class="upper-row">
                         <a href="{% url 'post_like_profile' profile.username post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
-                        <span class="likes-counter">{{ post.likes_count }}</span>
+                        <a href="{% url 'view_post' post.post_id %}"><span class="likes-counter">{{ post.likes_count }}</span></a>
                         <span class="post-date-time">{{ post.date_time }}</span>
                     </div>
                     <div class="lower-row">
