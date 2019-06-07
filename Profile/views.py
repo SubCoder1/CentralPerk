@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponse
+from django.urls import reverse
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.forms import NonAdminChangeForm
@@ -29,7 +30,7 @@ def manage_relation(request, username, option=None):
         Friends.unfollow(current_user, follow_unfollow_user)
     return redirect(f'/profile/{username}')
 
-def manage_profile_post_likes(request, username, post_id):
+def manage_profile_post_likes(request, username, post_id, view_post=None):
     try:
         post = PostModel.objects.get_post(post_id=post_id)
     except ObjectDoesNotExist:
@@ -51,6 +52,9 @@ def manage_profile_post_likes(request, username, post_id):
         now = datetime.now().astimezone(tz)
         # Notify the user whose post is being liked
         send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
+
+    if view_post:
+        return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
 
     return redirect(f'/profile/{username}')
 
@@ -94,7 +98,18 @@ def view_profile(request, username=None):
     return render(request, 'profile.html', context=context)
 
 def post_view(request, post_id):
-    return render(request, 'view_post.html', {})
+    try:
+        post_obj = PostModel.objects.filter(post_id=post_id)
+        post_data = post_obj.values_list(
+            'status_caption', 'pic', 'location', 
+            'user__username', 'user__profile_pic', 
+            'date_time', 'likes_count', named=True)
+        post_likes_list = post_obj[0].likes.all()
+    except ObjectDoesNotExist:
+        return render(request, 'profile_500.html', {})
+
+    context = { 'post':post_data[0], 'post_id': post_id, 'like_list':post_likes_list }
+    return render(request, 'view_post.html', context=context)
 
 def del_user_post(request, post_id):
     try:
