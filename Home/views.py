@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.db.models import F
+from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from Home.models import PostModel, UserNotification
 from Home.forms import PostForm
@@ -36,11 +37,11 @@ class home_view(TemplateView):
             post.save()
             post.send_to.add(request.user)
             share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
-            return redirect('/home/')
+            return redirect(reverse('home_view'))
 
 def clear_all_notification(request):
     request.user.notifications.all().delete()
-    return redirect('/home/')
+    return redirect(reverse('home_view'))
 
 def manage_home_post_likes(request, post_id):
     try:
@@ -65,4 +66,4 @@ def manage_home_post_likes(request, post_id):
         # Notify the user whose post is being liked
         send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
 
-    return redirect('/home/')
+    return redirect(reverse('home_view'))
