@@ -93,6 +93,9 @@ def view_profile(request, username=None):
 
     return render(request, 'profile.html', context=context)
 
+def post_view(request, post_id):
+    return render(request, 'view_post.html', {})
+
 def del_user_post(request, post_id):
     try:
         request.user.posts.get(post_id=post_id).delete()
