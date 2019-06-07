@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 import uuid
 from Profile.models import User
 from datetime import datetime
@@ -45,6 +47,10 @@ class PostModel(models.Model):
 
     def save(self, *args, **kwargs):
         return super(PostModel, self).save(*args, **kwargs)
+
+@receiver(post_delete, sender=PostModel)
+def submission_delete(sender, instance, **kwargs):
+    instance.pic.delete(False) 
 
 REACTION = ( ('Liked', 'Liked'), ('Commented', 'Commented'), ('Sent Follow Request', 'Sent Follow Request'), )
 
