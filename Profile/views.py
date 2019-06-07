@@ -28,7 +28,7 @@ def manage_relation(request, username, option=None):
         send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", date_time=now, send_to_username=follow_unfollow_user.username)
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
-    return redirect(f'/profile/{username}')
+    return redirect(reverse('view_profile', kwargs={ 'username':username }))
 
 def manage_profile_post_likes(request, username, post_id, view_post=None):
     try:
@@ -56,7 +56,7 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
     if view_post:
         return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
 
-    return redirect(f'/profile/{username}')
+    return redirect(reverse('view_profile', kwargs={ 'username':username }))
 
 def view_profile(request, username=None):
     try:
@@ -116,7 +116,7 @@ def del_user_post(request, post_id):
         request.user.posts.get(post_id=post_id).delete()
     except ObjectDoesNotExist:
         pass
-    return redirect(f'/profile/{request.user.username}')
+    return redirect(reverse('view_profile', kwargs={ 'username':request.user.username }))
 
 class edit_profile(TemplateView):
     template_name = 'edit_profile.html'
@@ -132,11 +132,11 @@ class edit_profile(TemplateView):
         change_pass_form = PasswordChangeForm(data=request.POST or None, user=request.user) # For changing password only
         if edit_form.is_valid():
             edit_form.save()
-            return redirect('/profile/{username}'.format(username=username))
+            return redirect(reverse('view_profile', kwargs={ 'username':username }))
         elif change_pass_form.is_valid():
             change_pass_form.save()
             update_session_auth_hash(request, change_pass_form.user)  # This method keeps the user logged-in even after changing the password
-            return redirect('/profile/{username}'.format(username=username))
+            return redirect(reverse('view_profile', kwargs={ 'username':username }))
 
         context = { 'edit_form':edit_form, 'change_pass_form':change_pass_form }
         return render(request, self.template_name, context)
