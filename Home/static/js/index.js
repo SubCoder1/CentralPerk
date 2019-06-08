@@ -47,7 +47,7 @@ for(var i=0; i < elms.length; i++) {
         for (var j=0; j < 5; j++) {
           post_container[i].innerHTML += read_less[j] + '<br/>';
         }
-        post_container[i].innerHTML += "<a class='body_link read-more' href='#'>Read More..</a>"
+        post_container[i].innerHTML += "<a class='body_link read-more' href='{% static 'view_post' post.post_id %}'>Read More..</a>"
       } else {
         var read_less = lines.slice(0,lines.length);
         for (var j=0; j < lines.length; j++) {
@@ -56,7 +56,7 @@ for(var i=0; i < elms.length; i++) {
       }
     } else if (post.length > 200) {
       post_container[i].innerHTML += post.slice(0,200);
-      post_container[i].innerHTML += "<a class='body_link read-more' href='#'>Read More..</a>"
+      post_container[i].innerHTML += "<a class='body_link read-more' href='{% static 'view_post' post.post_id %}'>Read More..</a>"
     } 
     else {
       post_container[i].innerHTML += post;
