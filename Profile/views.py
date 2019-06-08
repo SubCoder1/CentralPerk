@@ -103,12 +103,16 @@ def post_view(request, post_id):
         post_data = post_obj.values_list(
             'status_caption', 'pic', 'location', 
             'user__username', 'user__profile_pic', 
-            'date_time', 'likes_count', named=True)
+            'date_time', 'likes_count', named=True)[0]
         post_likes_list = post_obj[0].likes.all()
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
-    context = { 'post':post_data[0], 'post_id': post_id, 'like_list':post_likes_list }
+    editable = False
+    if post_data.user__username == request.user.username:
+        editable = True
+    
+    context = { 'post':post_data, 'post_id': post_id, 'like_list':post_likes_list, 'editable':editable }
     return render(request, 'view_post.html', context=context)
 
 def del_user_post(request, post_id):
