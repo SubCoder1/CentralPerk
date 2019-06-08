@@ -10,8 +10,7 @@
 {% endblock %}
 
 {% block body %}
-<div class="col-lg-12">
-    <br/><br/>
+<div class="col-lg-12 view-post-container">
     <div class="post-view-img">
         <img src="/media/{{ post.pic }}" class="post-pic-enlarged-view"/>
     </div>
@@ -32,9 +31,11 @@
                             {% endif %}
                         </div>
                     </div>
+                    {% if editable %}
                     <div class="align-dlt-post">
-                        <a href="{% static 'del_user_post' post_id %}" class="btn btn-dark">Delete</a>
+                        <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark">Delete</a>
                     </div>
+                    {% endif %}
                 </div>
             </div>
             <div class="card-body">
