@@ -35,7 +35,7 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
         post = PostModel.objects.get_post(post_id=post_id)
     except ObjectDoesNotExist:
         return render(request, 'post_500.html', {})
-    
+     
     user = request.user
     if user in post.post_like_obj.likes.all():
         # Dislike post
