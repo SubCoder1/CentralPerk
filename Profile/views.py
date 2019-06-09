@@ -37,14 +37,14 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
         return render(request, 'post_500.html', {})
     
     user = request.user
-    if user in post.likes.all():
+    if user in post.post_like_obj.likes.all():
         # Dislike post
-        post.likes.remove(user)
+        post.post_like_obj.likes.remove(user)
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
         # Like post
-        post.likes.add(user)
+        post.post_like_obj.likes.add(user)
         post.likes_count = F('likes_count') + 1
         post.save()
 
@@ -101,10 +101,10 @@ def post_view(request, post_id):
     try:
         post_obj = PostModel.objects.filter(post_id=post_id)
         post_data = post_obj.values_list(
-            'status_caption', 'pic', 'location', 
+            'status_caption', 'pic', 'location',
             'user__username', 'user__profile_pic', 
             'date_time', 'likes_count', named=True)[0]
-        post_likes_list = post_obj[0].likes.all()
+        post_likes_list = post_obj[0].post_like_obj.likes.values_list('username', 'profile_pic', named=True)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
