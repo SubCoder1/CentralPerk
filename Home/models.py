@@ -10,10 +10,6 @@ class PostModelManager(models.Manager):
     def get_post(self, post_id):
         return self.get(post_id=post_id)
 
-    def get_liked_user_list(self, post_id):
-        post = self.get_post(post_id)
-        return post.likes.all()
-
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<username>/<filename>
     username = instance.user.username
@@ -25,7 +21,6 @@ def user_directory_path(instance, filename):
 class PostModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, related_name='posts')
     send_to = models.ManyToManyField(User, related_name='connections', default=1)
-    likes = models.ManyToManyField(User, related_name='likes', default=1)
     likes_count = models.PositiveIntegerField(default=0)
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post_id = models.CharField(max_length=10, editable=False, default='')
@@ -50,7 +45,15 @@ class PostModel(models.Model):
 
 @receiver(post_delete, sender=PostModel)
 def submission_delete(sender, instance, **kwargs):
-    instance.pic.delete(False) 
+    instance.pic.delete(False)
+
+class PostLikes(models.Model):
+    post_obj = models.OneToOneField(PostModel, on_delete=models.CASCADE, default=1, related_name='post_like_obj')
+    likes = models.ManyToManyField(User, related_name='likes', default=1)
+    objects = models.Manager()
+
+    def __str__(self):
+        return "post object - " + str(self.pk)
 
 REACTION = ( ('Liked', 'Liked'), ('Commented', 'Commented'), ('Sent Follow Request', 'Sent Follow Request'), )
 
@@ -73,12 +76,4 @@ class UserNotification(models.Model):
         return obj
 
     def __str__(self):
-        if self.post:
-            if self.reaction == 'Liked':
-                display = self.poked_by.username + " " + self.reaction + " " + self.user_to_notify.username + "'s " + self.post.post_id
-            elif self.reaction == 'Commented':
-                display = self.poked_by.username + " " + self.reaction + " on " + self.user_to_notify.username + "'s " + self.post.post_id
-        else:
-            display = self.poked_by.username + " " + self.reaction + " to " + self.user_to_notify.username
-        
-        return display
+        return self.pk
