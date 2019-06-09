@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from django.db.models import F
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from Home.models import PostModel, UserNotification
+from Home.models import PostModel, PostLikes, UserNotification
 from Home.forms import PostForm
 from Profile.models import Friends, User
 from Home.tasks import share_posts, send_notifications
@@ -35,6 +35,7 @@ class home_view(TemplateView):
             post.post_id = str(post.unique_id)[:8]
             post.date_time = datetime.now().astimezone(tz)
             post.save()
+            PostLikes.objects.create(post_obj=post)
             post.send_to.add(request.user)
             share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
             return redirect(reverse('home_view'))
@@ -50,14 +51,14 @@ def manage_home_post_likes(request, post_id):
         return render(request, 'post_500.html', {})
 
     user = request.user
-    if user in post.likes.all():
+    if user in post.post_like_obj.likes.all():
         # Dislike post
-        post.likes.remove(user)
+        post.post_like_obj.likes.remove(user)
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
         # Like post
-        post.likes.add(user)
+        post.post_like_obj.likes.add(user)
         post.likes_count = F('likes_count') + 1
         post.save()
 
