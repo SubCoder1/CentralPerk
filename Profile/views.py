@@ -112,7 +112,7 @@ def post_view(request, post_id):
     if post_data.user__username == request.user.username:
         editable = True
     
-    context = { 'post':post_data, 'post_id': post_id, 'like_list':post_likes_list, 'editable':editable }
+    context = { 'post_data':post_obj[0], 'post':post_data, 'post_id': post_id, 'like_list':post_likes_list, 'editable':editable }
     return render(request, 'view_post.html', context=context)
 
 def del_user_post(request, post_id):
