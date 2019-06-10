@@ -18,16 +18,23 @@
         <div class="card wrap-data-view" id="post-data">
             <div class="card-header">
                 <ul class="nav nav-pills" id="cardtab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link link active" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="post" aria-selected="true">
+                    <li class="nav-item px-1">
+                        <a class="nav-link link active" id="post-details-tab" data-toggle="tab" href="#post-details" role="tab" aria-controls="post" aria-selected="true">
+                            <h4 class="detail-tab-icon">
+                                <i class="fas fa-meh-blank"></i>
+                            </h4>
+                        </a>
+                    </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link link" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="true">
                             <h4 style="font-size: 19px">
-                                <i class="fas fa-list-ul"></i>
+                                <i class="fas fa-comment-alt"></i>
                                 <span style="font-size: 19px">1</span>
                             </h4>
                         </a>
                     </li>
                     <li class="nav-item px-1">
-                        <a class="nav-link link" id="like-tab" data-toggle="tab" href="#like" role="tab" aria-controls="blank" aria-selected="true">
+                        <a class="nav-link link" id="like-tab" data-toggle="tab" href="#like" role="tab" aria-controls="like" aria-selected="true">
                             <h4 style="font-size: 19px">
                                 <i class="fas fa-fire-alt"></i>
                                 <span style="font-size: 19px">{{ post.likes_count }}</span>
@@ -41,7 +48,20 @@
             </div>
             <div class="card-body post-view-card-body">
                 <div class="tab-content" id="cardtabContent">
-                    <div class="tab-pane fade show active" id="comment" role="tabpanel" aria-labelledby="comment-tab">
+                    <div class="tab-pane fade show active" id="post-details" role="tabpanel" aria-labelledby="post-details-tab">
+                        <div class="post-user">
+                            <img src="/media/{{ post_data.user.profile_pic }}" class="rounded-circle post-user-profile-pic">
+                            <br/>
+                            <a href="{% url 'view_profile' post_data.user.username %}"><div class="display-2" style="font-size: 20px">{{ post_data.user.username }}</div></a>
+                            <br/>
+                            {{ post_data.date_time }}
+                            <br/><br/>
+                            <div class="post-status-caption">
+                            {{ post_data.status_caption }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="comment-tab">
                         {% if comments %}
 
                         {% else %}
