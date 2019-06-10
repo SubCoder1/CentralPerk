@@ -10,20 +10,19 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding: 15px;
+}
+
+.post-view {
+    display: flex;
+    overflow: hidden;
 }
 
 .wrap-img-view {
-    width: 800px;
-    background: white;
+    flex: 1;
+    width: max-content;
+    height: max-content;
+    background: black;
     overflow: hidden;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -moz-box;
-    display: -ms-flexbox;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     border-radius: 1.5rem 0rem 0rem 1.5rem;
 }
 /* ---------------------------------------------- */
@@ -36,8 +35,8 @@
 /* ---------------------------------------------- */
 
 /* ----------- post-data on the right ----------- */
-.wrap-data-view { 
-    width: 340px;
+.wrap-data-view {
+    flex: 0.5;
     background: #413780;
     border-radius: 0rem 1rem 1rem 0rem;    
 }
