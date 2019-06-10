@@ -20,6 +20,7 @@
 .post-view {
     display: flex;
     overflow: hidden;
+    padding: 15px;
 }
 
 .wrap-img-view {
@@ -62,25 +63,52 @@
     padding: 5px;
     overflow-x: auto;
 }
+
+.display-2:hover {
+    color: #a7a2a2;
+}
+/* ---------------------------------------------- */
+
+/* ---------- post-data detail section ---------- */
+.detail-tab-icon {
+    font-size: 20px;
+    position: relative;
+    bottom: 1px;
+}
+
+.fa-meh-blank {
+    color: springgreen;
+}
+
+.post-user {
+    text-align: center;
+    padding: 5px;
+}
+
+.post-user-profile-pic {
+    height: 100px;
+    position: relative;
+    bottom: 5px;
+}
 /* ---------------------------------------------- */
 
 /* ---------- post-data comment section --------- */
-#empty-comment {
-    position: relative;
+#empty-comment, #empty-like {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
     color: white;
     text-align: center;
     opacity: 0.5;
+}
+
+.fa-comment-alt {
+    color: mediumpurple;
 }
 /* ---------------------------------------------- */
 
-/* ---------- post-data like section --------- */
-#empty-like {
-    position: relative;
-    color: white;
-    text-align: center;
-    opacity: 0.5;
-}
-
+/* ----------- post-data like section ----------- */
 .liked-user {
     margin-left: 5px;
     margin-bottom: 5px;
