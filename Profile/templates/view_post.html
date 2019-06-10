@@ -11,70 +11,71 @@
 
 {% block body %}
 <div class="post-view-container">
-    <div class="wrap-img-view" id="post-img">
-        <img src="/media/{{ post.pic }}" class="post-pic-enlarged-view">
-    </div>
-    <div class="card wrap-data-view" id="post-data">
-        <div class="card-header">
-            <ul class="nav nav-pills" id="cardtab" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link link active" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="post" aria-selected="true">
-                        <h4 style="font-size: 19px">
-                            <i class="fas fa-list-ul"></i>
-                            <span style="font-size: 19px">1</span>
-                        </h4>
-                    </a>
-                </li>
-                <li class="nav-item px-1">
-                    <a class="nav-link link" id="like-tab" data-toggle="tab" href="#like" role="tab" aria-controls="blank" aria-selected="true">
-                        <h4 style="font-size: 19px">
-                            <i class="fas fa-fire-alt"></i>
-                            <span style="font-size: 19px">{{ post.likes_count }}</span>
-                        </h4>
-                    </a>
-                </li>
-            </ul>
-            {% if editable %}
-                <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark">Delete</a>
-            {% endif %}
+    <div class="post-view">
+        <div class="wrap-img-view" id="post-img">
+            <img src="/media/{{ post.pic }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
         </div>
-        <div class="card-body" style="padding: 0">
-            <div class="tab-content" id="cardtabContent">
-                <div class="tab-pane fade show active" id="comment" role="tabpanel" aria-labelledby="comment-tab">
-                    {% if comments %}
+        <div class="card wrap-data-view" id="post-data">
+            <div class="card-header">
+                <ul class="nav nav-pills" id="cardtab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link link active" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="post" aria-selected="true">
+                            <h4 style="font-size: 19px">
+                                <i class="fas fa-list-ul"></i>
+                                <span style="font-size: 19px">1</span>
+                            </h4>
+                        </a>
+                    </li>
+                    <li class="nav-item px-1">
+                        <a class="nav-link link" id="like-tab" data-toggle="tab" href="#like" role="tab" aria-controls="blank" aria-selected="true">
+                            <h4 style="font-size: 19px">
+                                <i class="fas fa-fire-alt"></i>
+                                <span style="font-size: 19px">{{ post.likes_count }}</span>
+                            </h4>
+                        </a>
+                    </li>
+                </ul>
+                {% if editable %}
+                    <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark"><i class="fas fa-trash-alt"></i></a>
+                {% endif %}
+            </div>
+            <div class="card-body" style="padding: 0">
+                <div class="tab-content" id="cardtabContent">
+                    <div class="tab-pane fade show active" id="comment" role="tabpanel" aria-labelledby="comment-tab">
+                        {% if comments %}
 
-                    {% else %}
-                    <div class="empty-comments" id="empty-comment">
-                        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                        <h5 style="position: relative; left: 2px;">No comments</h5>
-                    </div>
-                    {% endif %}
-                </div>
-                <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">
-                    {% if like_list %}
-                    <div class="likes-tab" style="text-align: left">
-                        {% for user in like_list %}
-                        <div class="liked-user">
-                            <a href="{% url 'view_profile' user.username %}">
-                                <img src="/media/{{ user.profile_pic }}" class="rounded-circle post-profile-img">
-                                {{ user.username }}
-                            </a>
-                            <br/>
+                        {% else %}
+                        <div class="empty-comments" id="empty-comment">
+                            <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                            <h5 style="position: relative; left: 2px;">No comments</h5>
                         </div>
-                        {% endfor %}
+                        {% endif %}
                     </div>
-                    {% else %}
-                    <div class="empty-likes" id="empty-like">
-                        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                        <h5 style="position: relative; left: 2px;">No Likes</h5>
-                    </div>
-                    {% endif %}
-                    </div>
+                    <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">
+                        {% if like_list %}
+                        <div class="likes-tab" style="text-align: left">
+                            {% for user in like_list %}
+                            <div class="liked-user">
+                                <a href="{% url 'view_profile' user.username %}">
+                                    <img src="/media/{{ user.profile_pic }}" class="rounded-circle post-profile-img">
+                                    {{ user.username }}
+                                </a>
+                                <br/>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="empty-likes" id="empty-like">
+                            <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                            <h5 style="position: relative; left: 2px;">No Likes</h5>
+                        </div>
+                        {% endif %}
+                        </div>
+                </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block script %}
-<script src="{% static 'js/view_post.js' %}"></script>
 {% endblock %}
