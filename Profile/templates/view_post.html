@@ -29,7 +29,7 @@
                         <a class="nav-link link" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="true">
                             <h4 style="font-size: 19px">
                                 <i class="fas fa-comment-alt"></i>
-                                <span style="font-size: 19px">1</span>
+                                <span style="font-size: 19px">0</span>
                             </h4>
                         </a>
                     </li>
@@ -52,7 +52,7 @@
                         <div class="post-user">
                             <img src="/media/{{ post_data.user.profile_pic }}" class="rounded-circle post-user-profile-pic">
                             <br/>
-                            <a href="{% url 'view_profile' post_data.user.username %}"><div class="display-2" style="font-size: 20px">{{ post_data.user.username }}</div></a>
+                            <a href="{% url 'view_profile' post_data.user.username %}"><div class="display-2 post-username">{{ post_data.user.username }}</div></a>
                             <br/>
                             {{ post_data.date_time }}
                             <br/><br/>
