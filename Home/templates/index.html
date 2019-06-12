@@ -85,7 +85,7 @@
                         {% endif %}
                       </div>
                       <div class="card-footer">
-                        <h4 class="notify-date-time">{{ notification.date_time }}</h4>
+                        <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                       </div>
                     </div>
                   </div>
@@ -197,7 +197,7 @@
                   <div class="upper-row">
                     <a href="{% url 'post_like_home' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
                     <span class="likes-counter">{{ post.likes_count }}</span>
-                    <span class="post-date-time">{{ post.date_time }}</span>
+                    <span class="post-date-time">{{ post.date_time|timesince }} ago</span>
                   </div>
                   <div class="lower-row">
                     {% if post.status_caption and post.pic %}
@@ -205,6 +205,13 @@
                       {{ post.status_caption|json_script:"post-data" }}
                     </div>
                     {% endif %}
+                    <br/>
+                    <form method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="post_id" value="{{ post.post_id }}">
+                      <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment"></textarea>
+                      <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
+                    </form>
                   </div>
                 </div>
               </div>
