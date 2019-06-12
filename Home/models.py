@@ -54,23 +54,31 @@ class PostLikes(models.Model):
     objects = models.Manager()
 
     class Meta:
-        verbose_name = 'Post_Likes'
+        verbose_name = 'Post_Like'
 
     def __str__(self):
-        return "post object - " + str(self.pk)
+        return str(self.post_obj)
 
 class PostComments(models.Model):
-    post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_cmmnt_obj')
+    post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_comment_obj')
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='by')
     comment = models.TextField(max_length=500, blank=False)
     reply = models.ForeignKey('PostComments', on_delete=models.SET_NULL, blank=True, null=True, related_name='replies')
     date_time = models.DateTimeField(auto_now_add=True)
+    objects = models.Manager()
 
     class Meta:
-        verbose_name = 'Post_Comments'
+        verbose_name = 'Post_Comment'
+        ordering = ('date_time',)
 
     def __str__(self):
-        return "comment object - " + str(self.pk)
+        return str(self.post_obj)
+
+    @property
+    def has_replies(self):
+        if self.reply is not None:
+            return True
+        return False
 
 REACTION = ( ('Liked', 'Liked'), ('Commented', 'Commented'), ('Sent Follow Request', 'Sent Follow Request'), )
 
@@ -87,7 +95,7 @@ class UserNotification(models.Model):
         ordering = ('-date_time',)
 
     def __str__(self):
-        return self.pk
+        return str(self.poked_by) + " --> " + str(self.user_to_notify)
 
     @classmethod
     def create_notify_obj(cls, to_notify, by, reaction, post_obj=None):
