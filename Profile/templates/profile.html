@@ -88,7 +88,7 @@
                     <div class="upper-row">
                         <a href="{% url 'like_from_profile_post' profile.username post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
                         <span class="likes-counter">{{ post.likes_count }}</span>
-                        <span class="post-date-time">{{ post.date_time }}</span>
+                        <span class="post-date-time">{{ post.date_time|timesince }} ago</span>
                     </div>
                     <div class="lower-row">
                         {% if post.status_caption and post.pic %}
