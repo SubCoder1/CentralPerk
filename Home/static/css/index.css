@@ -21,6 +21,7 @@ a:hover {
     position: fixed;
     width: 100%;
 }
+
 .card { border: none; background: transparent; }
 
 .card::-webkit-scrollbar { width: 0 !important; }
@@ -337,5 +338,49 @@ form > .button:hover {
 
 .read-more:hover {
     color: black;
+}
+
+/* --------- post card comment box ---------- */
+.comment-input {
+    position: relative;
+    bottom: 4px;
+    padding: 0.9rem 0.1rem;
+    background-color: #413780;
+    color: white;
+    overflow-x: auto;
+    resize: none;
+    border-radius: 0rem;
+    height: 45px;
+    float: left;
+    width: 92%;
+}
+
+.comment-input::-webkit-scrollbar { width: 0 !important; }
+
+.comment-input:focus {
+    background-color: #413780;
+    box-shadow: none;
+    color: white;
+}
+
+.comment-send-btn {
+    border-radius: 50% !important;
+    height: 39px;
+    width: 40px;
+}
+
+.comment-send-btn:hover {
+    background-color:  darkorange;
+    border-color: darkorange;
+}
+
+.cmmnt-send-ico {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.btn-dark:hover .cmmnt-send-ico {
+    color: black;
+    border: none;
 }
 /* ------------------------------------------ */
