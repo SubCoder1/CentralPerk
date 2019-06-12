@@ -49,19 +49,20 @@
     float: left;
 }
 
-.btn-dark {
+.del-post-btn {
     float: right;
 }
 
-.btn-dark:hover {
+.del-post-btn:hover {
     background: indianred;
     color: black;
     border: 1px solid indianred;
 }
 
 .post-view-card-body {
-    padding: 5px;
+    padding: 10px;
     overflow-x: auto;
+    position: relative;
 }
 
 .display-2:hover {
@@ -111,6 +112,24 @@
 
 .fa-comment-alt {
     color: mediumpurple;
+}
+
+.comment-user {
+    margin-left: 5px;
+    margin-bottom: 5px;
+}
+
+.comment-input {
+    position: absolute;
+    bottom: 9px;
+    padding: 0.9rem 0.1rem 0.9rem 16px;
+    width: 85%;
+}
+
+.comment-send-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 87%;
 }
 /* ---------------------------------------------- */
 
