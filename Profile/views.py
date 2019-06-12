@@ -10,10 +10,10 @@ from Profile.forms import NonAdminChangeForm
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.models import User, Friends
 from Profile.last_activity import activity
-import json, pytz
 from Home.models import PostModel
 from Home.tasks import send_notifications
-from datetime import datetime
+from Home.forms import CommentForm
+import json
 # Create your views here.
 
 def manage_relation(request, username, option=None):
@@ -22,10 +22,8 @@ def manage_relation(request, username, option=None):
 
     if option == 'follow':
         Friends.follow(current_user, follow_unfollow_user)
-        tz = pytz.timezone('Asia/Kolkata')
-        now = datetime.now().astimezone(tz)
         # Notify the user to whom this follow request is being sent
-        send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", date_time=now, send_to_username=follow_unfollow_user.username)
+        send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
     return redirect(reverse('view_profile', kwargs={ 'username':username }))
@@ -48,10 +46,8 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
         post.likes_count = F('likes_count') + 1
         post.save()
 
-        tz = pytz.timezone('Asia/Kolkata')
-        now = datetime.now().astimezone(tz)
         # Notify the user whose post is being liked
-        send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
+        send_notifications.delay(username=request.user.username, reaction="Liked", post_id=post_id)
 
     if view_post:
         return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
@@ -90,29 +86,35 @@ def view_profile(request, username=None):
             return HttpResponse(json.dumps(active), content_type='application/json')
     elif request.POST and editable:
         return HttpResponse(json.dumps(active), content_type='application/json')
-
+    
     context = { 'profile':user, 'posts':user_posts, 'editable':editable, 
                 'isFollowing':isFollowing, 'isFollower': isFollower,
-                'follow_count':follow_count, 'follower_count':follower_count, 'activity':active, }
+                'follow_count':follow_count, 'follower_count':follower_count, 'activity':active,
+             }
 
     return render(request, 'profile.html', context=context)
 
 def post_view(request, post_id):
+    if request.POST:
+        form = CommentForm(request.POST or None)
+        if form.is_valid():
+            post_comment = form.save(commit=False)
+            post_comment.post_obj = PostModel.objects.get_post(post_id=request.POST.get('post_id'))
+            post_comment.user = request.user
+            post_comment.comment = form.cleaned_data.get('comment')
+            post_comment.save()
     try:
-        post_obj = PostModel.objects.filter(post_id=post_id)
-        post_data = post_obj.values_list(
-            'status_caption', 'pic', 'location',
-            'user__username', 'user__profile_pic', 
-            'date_time', 'likes_count', named=True)[0]
-        post_likes_list = post_obj[0].post_like_obj.likes.values_list('username', 'profile_pic', named=True)
+        post_obj = PostModel.objects.get_post(post_id=post_id)
+        post_likes_list = post_obj.post_like_obj.likes.all().values_list('username', 'profile_pic', named=True)
+        post_comments = post_obj.post_comment_obj.values_list('user__username', 'user__profile_pic', 'comment', 'date_time', named=True)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
     editable = False
-    if post_data.user__username == request.user.username:
+    if post_obj.user.username == request.user.username:
         editable = True
     
-    context = { 'post_data':post_obj[0], 'post':post_data, 'post_id': post_id, 'like_list':post_likes_list, 'editable':editable }
+    context = { 'post_data':post_obj, 'post_id': post_id, 'like_list':post_likes_list, 'editable':editable, 'comments':post_comments }
     return render(request, 'view_post.html', context=context)
 
 def del_user_post(request, post_id):
