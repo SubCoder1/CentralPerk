@@ -3,8 +3,8 @@ from django.views.generic import TemplateView
 from django.db.models import F
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
-from Home.models import PostModel, PostLikes, UserNotification
-from Home.forms import PostForm
+from Home.models import PostModel, PostLikes, PostComments, UserNotification
+from Home.forms import PostForm, CommentForm
 from Profile.models import Friends, User
 from Home.tasks import share_posts, send_notifications
 from datetime import datetime
@@ -23,22 +23,29 @@ class home_view(TemplateView):
         notifications = request.user.notifications.all().values_list(
             'poked_by', 'date_time', 'reaction', 'poked_by__profile_pic',named=True)
 
-        args = { 'form':form, 'posts':posts, 'notifications':notifications }
+        args = { 'form':form, 'posts':posts, 'notifications':notifications, }
         return render(request, self.template_name, context=args)
 
     def post(self, request):
-        form = PostForm(request.POST, request.FILES or None)
-        tz = pytz.timezone('Asia/Kolkata')
+        form = CommentForm(request.POST or None)
         if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.post_id = str(post.unique_id)[:8]
-            post.date_time = datetime.now().astimezone(tz)
-            post.save()
-            PostLikes.objects.create(post_obj=post)
-            post.send_to.add(request.user)
-            share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
-            return redirect(reverse('home_view'))
+            post_comment = form.save(commit=False)
+            post_comment.post_obj = PostModel.objects.get_post(post_id=request.POST.get('post_id'))
+            post_comment.user = request.user
+            post_comment.comment = form.cleaned_data.get('comment')
+            post_comment.save()
+        else:
+            form = PostForm(request.POST, request.FILES or None)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.user = request.user
+                post.post_id = str(post.unique_id)[:8]
+                post.save()
+                PostLikes.objects.create(post_obj=post)
+                post.send_to.add(request.user)
+                share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
+        
+        return redirect(reverse('home_view'))
 
 def clear_all_notification(request):
     request.user.notifications.all().delete()
@@ -62,9 +69,7 @@ def manage_home_post_likes(request, post_id):
         post.likes_count = F('likes_count') + 1
         post.save()
 
-        tz = pytz.timezone('Asia/Kolkata')
-        now = datetime.now().astimezone(tz)
         # Notify the user whose post is being liked
-        send_notifications.delay(username=request.user.username, reaction="Liked", date_time=now, post_id=post_id)
+        send_notifications.delay(username=request.user.username, reaction="Liked", post_id=post_id)
 
     return redirect(reverse('home_view'))
