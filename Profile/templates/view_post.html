@@ -13,7 +13,7 @@
 <div class="post-view-container">
     <div class="post-view">
         <div class="wrap-img-view" id="post-img">
-            <img src="/media/{{ post.pic }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
+            <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
         </div>
         <div class="card wrap-data-view" id="post-data">
             <div class="card-header">
@@ -29,7 +29,7 @@
                         <a class="nav-link link" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="true">
                             <h4 style="font-size: 19px">
                                 <i class="fas fa-comment-alt"></i>
-                                <span style="font-size: 19px">0</span>
+                                <span style="font-size: 19px">{{ comments|length }}</span>
                             </h4>
                         </a>
                     </li>
@@ -37,13 +37,13 @@
                         <a class="nav-link link" id="like-tab" data-toggle="tab" href="#like" role="tab" aria-controls="like" aria-selected="true">
                             <h4 style="font-size: 19px">
                                 <i class="fas fa-fire-alt"></i>
-                                <span style="font-size: 19px">{{ post.likes_count }}</span>
+                                <span style="font-size: 19px">{{ post_data.likes_count }}</span>
                             </h4>
                         </a>
                     </li>
                 </ul>
                 {% if editable %}
-                    <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark"><i class="fas fa-trash-alt"></i></a>
+                    <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark del-post-btn"><i class="fas fa-trash-alt"></i></a>
                 {% endif %}
             </div>
             <div class="card-body post-view-card-body">
@@ -54,7 +54,7 @@
                             <br/>
                             <a href="{% url 'view_profile' post_data.user.username %}"><div class="display-2 post-username">{{ post_data.user.username }}</div></a>
                             <br/>
-                            {{ post_data.date_time }}
+                            {{ post_data.date_time|timesince }} ago
                             <br/><br/>
                             <div class="post-status-caption">
                             {{ post_data.status_caption }}
@@ -63,13 +63,28 @@
                     </div>
                     <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="comment-tab">
                         {% if comments %}
-
+                            {% for comment in comments %}
+                                <div class="comment-user">
+                                    <a href="{% url 'view_profile' user.username %}">
+                                        <img src="/media/{{ comment.user__profile_pic }}" class="rounded-circle post-profile-img">
+                                        {{ comment.user__username }}
+                                    </a>
+                                    : {{ comment.comment }}
+                                    <br/>
+                            </div>
+                            {% endfor %}
                         {% else %}
                         <div class="empty-comments" id="empty-comment">
                             <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
                             <h5 style="position: relative; left: 2px;">No comments</h5>
                         </div>
                         {% endif %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value="{{ post_id }}">
+                            <textarea type="text" class="form-control comment-input" id="id_comment" name="comment" placeholder="Post a comment"></textarea>
+                            <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
+                        </form>
                     </div>
                     <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">
                         {% if like_list %}
