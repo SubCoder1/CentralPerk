@@ -29,7 +29,7 @@ def share_posts(username, post_id):
         return "user is lonely :("
 
 @shared_task
-def send_notifications(username, reaction, date_time, send_to_username=None, post_id=None):
+def send_notifications(username, reaction, send_to_username=None, post_id=None):
     if post_id:
         try:
             post = PostModel.objects.get_post(post_id=post_id)
@@ -40,9 +40,9 @@ def send_notifications(username, reaction, date_time, send_to_username=None, pos
         if send_to.username == username:
             return "User liked his/her own post :|"
 
-        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, date_time=date_time, post_obj=post):
+        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post):
             return "sent successfully :)"
     else:
         send_to = User.get_user_obj(username=send_to_username)
-        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, date_time=date_time):
+        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction):
             return "sent successfully :)"
