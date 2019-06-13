@@ -40,6 +40,7 @@
 
 /* ----------- post-data on the right ----------- */
 .wrap-data-view {
+    position: relative;
     flex: 0.5;
     background: #413780;
     border-radius: 0rem 1rem 1rem 0rem;    
@@ -59,12 +60,6 @@
     border: 1px solid indianred;
 }
 
-.post-view-card-body {
-    padding: 10px;
-    overflow-x: auto;
-    position: relative;
-}
-
 .display-2:hover {
     color: #a7a2a2;
 }
@@ -81,13 +76,19 @@
     color: springgreen;
 }
 
+.detail-view-card-body {
+    padding: 10px;
+    overflow-x: auto;
+    position: relative;
+}
+
 .post-user {
     text-align: center;
     padding: 5px;
 }
 
 .post-username {
-    font-size: 20px;
+    font-size: 22px;
     position: relative;
     right: 1px;
 }
@@ -100,6 +101,12 @@
 /* ---------------------------------------------- */
 
 /* ---------- post-data comment section --------- */
+.comment-view-card-body {
+    padding: 5px 10px 10px 10px;
+    overflow-x: auto;
+    position: relative;
+}
+
 #empty-comment, #empty-like {
     position: absolute;
     top: 50%;
@@ -110,26 +117,25 @@
     opacity: 0.5;
 }
 
+.m-0 { font-size: 17px; }
+
+.ml-2 { font-size: 15px; }
+
 .fa-comment-alt {
     color: mediumpurple;
 }
 
 .comment-user {
     margin-left: 5px;
-    margin-bottom: 5px;
+    margin-bottom: -5px;
+    overflow-x: auto;
+    line-height: 1;
 }
 
-.comment-input {
-    position: absolute;
-    bottom: 9px;
-    padding: 0.9rem 0.1rem 0.9rem 16px;
-    width: 85%;
-}
+.comment-input { width: 90%; }
 
 .comment-send-btn {
-    position: absolute;
-    bottom: 10px;
-    left: 87%;
+    float: right;
 }
 /* ---------------------------------------------- */
 
@@ -137,6 +143,17 @@
 .liked-user {
     margin-left: 5px;
     margin-bottom: 5px;
+    font-size: 17px;
+}
+
+.like-view-card-body {
+    padding: 5px 10px 10px 5px;
+    overflow-x: auto;
+    position: relative;
+}
+
+.post-profile-img {
+    margin-right: 5px;
 }
 /* ---------------------------------------------- */
 
@@ -158,8 +175,8 @@
         border-radius: 0rem 0rem 2rem 2rem;
     }
 
-    .post-view-card-body {
-        height: 200px;
+    .post-view-card-body, .comment-view-card-body {
+        height: 240px;
     }
 }
 /* ---------------------------------------------- */
