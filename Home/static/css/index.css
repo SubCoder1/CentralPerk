@@ -9,7 +9,7 @@ body {
 }
 
 a {
-    color: white;
+    color: burlywood;
 }
 
 a:hover {
@@ -119,6 +119,8 @@ a:hover {
     opacity: 0.5;
     padding-left: 2px;
 }
+
+.nav-link { color: white; }
 
 .nav-link:hover {
     color: black;
