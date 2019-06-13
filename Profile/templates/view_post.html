@@ -15,8 +15,8 @@
         <div class="wrap-img-view" id="post-img">
             <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
         </div>
-        <div class="card wrap-data-view" id="post-data">
-            <div class="card-header">
+        <div class="card wrap-data-view" id="id_view-post-card">
+            <div class="card-header" id='id_view-post-card-header'>
                 <ul class="nav nav-pills" id="cardtab" role="tablist">
                     <li class="nav-item px-1">
                         <a class="nav-link link active" id="post-details-tab" data-toggle="tab" href="#post-details" role="tab" aria-controls="post" aria-selected="true">
@@ -46,13 +46,15 @@
                     <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark del-post-btn"><i class="fas fa-trash-alt"></i></a>
                 {% endif %}
             </div>
-            <div class="card-body post-view-card-body">
-                <div class="tab-content" id="cardtabContent">
-                    <div class="tab-pane fade show active" id="post-details" role="tabpanel" aria-labelledby="post-details-tab">
+            <div class="tab-content" id="cardtabContent">
+                <div class="tab-pane fade show active" id="post-details" role="tabpanel" aria-labelledby="post-details-tab">
+                    <div class="card-body detail-view-card-body">
                         <div class="post-user">
                             <img src="/media/{{ post_data.user.profile_pic }}" class="rounded-circle post-user-profile-pic">
                             <br/>
-                            <a href="{% url 'view_profile' post_data.user.username %}"><div class="display-2 post-username">{{ post_data.user.username }}</div></a>
+                            <div class="display-2 post-username">
+                                <a href="{% url 'view_profile' post_data.user.username %}">{{ post_data.user.username }}</a>
+                            </div>
                             <br/>
                             {{ post_data.date_time|timesince }} ago
                             <br/><br/>
@@ -61,17 +63,23 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="comment-tab">
+                </div>
+                <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="comment-tab">
+                    <div class="card-body comment-view-card-body" id='id_view-post-comment-body'>
                         {% if comments %}
                             {% for comment in comments %}
-                                <div class="comment-user">
-                                    <a href="{% url 'view_profile' user.username %}">
+                                <div class="d-flex">
+                                    <div class="mr-1">
                                         <img src="/media/{{ comment.user__profile_pic }}" class="rounded-circle post-profile-img">
-                                        {{ comment.user__username }}
-                                    </a>
-                                    : {{ comment.comment }}
-                                    <br/>
-                            </div>
+                                    </div>
+                                    <div class="ml-2">
+                                        <div class="m-0">
+                                            <a href="{% url 'view_profile' comment.user__username %}">{{ comment.user__username }}</a> :
+                                        </div>
+                                        {{ comment.comment }}
+                                    </div>
+                                </div>
+                                <br/>
                             {% endfor %}
                         {% else %}
                         <div class="empty-comments" id="empty-comment">
@@ -79,24 +87,27 @@
                             <h5 style="position: relative; left: 2px;">No comments</h5>
                         </div>
                         {% endif %}
+                    </div>
+                    <div class="card-footer" id='id_view-post-comment-card-footer'>
                         <form method="POST">
                             {% csrf_token %}
-                            <input type="hidden" name="post_id" value="{{ post_id }}">
-                            <textarea type="text" class="form-control comment-input" id="id_comment" name="comment" placeholder="Post a comment"></textarea>
+                            <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment"></textarea>
                             <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
                         </form>
                     </div>
-                    <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">
+                </div>
+                <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">
+                    <div class="card-body like-view-card-body">
                         {% if like_list %}
                         <div class="likes-tab" style="text-align: left">
                             {% for user in like_list %}
-                            <div class="liked-user">
-                                <a href="{% url 'view_profile' user.username %}">
-                                    <img src="/media/{{ user.profile_pic }}" class="rounded-circle post-profile-img">
-                                    {{ user.username }}
-                                </a>
-                                <br/>
-                            </div>
+                                <div class="liked-user">
+                                    <a href="{% url 'view_profile' user.username %}">
+                                        <img src="/media/{{ user.profile_pic }}" class="rounded-circle post-profile-img">
+                                        {{ user.username }}
+                                    </a>
+                                    <br/>
+                                </div>
                             {% endfor %}
                         </div>
                         {% else %}
@@ -105,9 +116,13 @@
                             <h5 style="position: relative; left: 2px;">No Likes</h5>
                         </div>
                         {% endif %}
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/view_post.js' %}"></script>
 {% endblock %}
