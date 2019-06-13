@@ -8,7 +8,7 @@ from Home.forms import PostForm, CommentForm
 from Profile.models import Friends, User
 from Home.tasks import share_posts, send_notifications
 from datetime import datetime
-import pytz
+import pytz, uuid
 # Create your views here.
 
 class home_view(TemplateView):
@@ -33,6 +33,7 @@ class home_view(TemplateView):
             post_comment.post_obj = PostModel.objects.get_post(post_id=request.POST.get('post_id'))
             post_comment.user = request.user
             post_comment.comment = form.cleaned_data.get('comment')
+            post_comment.comment_id = str(uuid.uuid4)[:8]
             post_comment.save()
         else:
             form = PostForm(request.POST, request.FILES or None)
