@@ -102,9 +102,13 @@
 
 /* ---------- post-data comment section --------- */
 .comment-view-card-body {
-    padding: 5px 10px 10px 10px;
+    padding: 5px 15px 10px 10px;
     overflow-x: auto;
     position: relative;
+}
+
+.fa-comment-alt {
+    color: mediumpurple;
 }
 
 #empty-comment, #empty-like {
@@ -121,8 +125,9 @@
 
 .ml-2 { font-size: 15px; }
 
-.fa-comment-alt {
-    color: mediumpurple;
+.comment-date-time {
+    font-size: 12px;
+    text-align: right;
 }
 
 .comment-user {
