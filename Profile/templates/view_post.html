@@ -77,6 +77,8 @@
                                             <a href="{% url 'view_profile' comment.user__username %}">{{ comment.user__username }}</a> :
                                         </div>
                                         {{ comment.comment }}
+                                        <br/>
+                                        <h6 class="comment-date-time">{{ comment.date_time|timesince }} ago</h6>
                                     </div>
                                 </div>
                                 <br/>
