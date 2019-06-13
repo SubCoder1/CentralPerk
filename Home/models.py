@@ -62,7 +62,7 @@ class PostLikes(models.Model):
 class PostComments(models.Model):
     post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_comment_obj')
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='by')
-    comment = models.TextField(max_length=500, blank=False)
+    comment = models.TextField(blank=False)
     reply = models.ForeignKey('PostComments', on_delete=models.SET_NULL, blank=True, null=True, related_name='replies')
     date_time = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
