@@ -23,7 +23,7 @@ class PostModel(models.Model):
     send_to = models.ManyToManyField(User, related_name='connections', default=1)
     likes_count = models.PositiveIntegerField(default=0)
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    post_id = models.CharField(max_length=10, editable=False, default='')
+    post_id = models.CharField(max_length=10, editable=False, default='', db_index=True)
     date_time = models.DateTimeField(auto_now_add=True)
     status_caption = models.CharField(max_length=500, blank=True)
     location = models.CharField(max_length=200, blank=True)
@@ -60,6 +60,7 @@ class PostLikes(models.Model):
         return str(self.post_obj)
 
 class PostComments(models.Model):
+    comment_id = models.CharField(primary_key=True, max_length=10, editable=False, default='')
     post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_comment_obj')
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='by')
     comment = models.TextField(blank=False)
@@ -72,7 +73,7 @@ class PostComments(models.Model):
         ordering = ('date_time',)
 
     def __str__(self):
-        return str(self.post_obj)
+        return str(self.post_obj) + "c_id-" + self.comment_id
 
     @property
     def has_replies(self):
