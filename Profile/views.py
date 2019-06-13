@@ -99,7 +99,7 @@ def post_view(request, post_id):
         form = CommentForm(request.POST or None)
         if form.is_valid():
             post_comment = form.save(commit=False)
-            post_comment.post_obj = PostModel.objects.get_post(post_id=request.POST.get('post_id'))
+            post_comment.post_obj = PostModel.objects.get_post(post_id=post_id)
             post_comment.user = request.user
             post_comment.comment = form.cleaned_data.get('comment')
             post_comment.save()
