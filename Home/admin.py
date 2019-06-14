@@ -13,11 +13,11 @@ class PostModelAdmin(admin.ModelAdmin):
     )
 
 class PostCommentsAdmin(admin.ModelAdmin):
-    list_display = ('post_obj', 'user', 'date_time')
-    readonly_fields = ('post_id', 'date_time',)
+    list_display = ('comment_id', 'user', 'date_time')
+    readonly_fields = ('comment_id', 'date_time',)
     fieldsets = (
         ( 'Commented by', {'fields' : ('user',)} ),
-        ( 'Post_ID', {'fields' : ('post_id',)} ),
+        ( 'Comment_ID', {'fields' : ('comment_id',)} ),
         ( 'Commented on', {'fields' : ('post_obj', )} ),
         ( 'Comment', {'fields' : ('comment',)} ),
         ( 'Date_time', {'fields' : ('date_time',)} ),
