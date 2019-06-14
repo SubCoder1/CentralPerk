@@ -10,7 +10,7 @@ from Profile.forms import NonAdminChangeForm
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.models import User, Friends
 from Profile.last_activity import activity
-from Home.models import PostModel
+from Home.models import PostModel, PostComments
 from Home.tasks import send_notifications
 from Home.forms import CommentForm
 import json
@@ -98,11 +98,10 @@ def post_view(request, post_id):
     if request.POST:
         form = CommentForm(request.POST or None)
         if form.is_valid():
-            post_comment = form.save(commit=False)
-            post_comment.post_obj = PostModel.objects.get_post(post_id=post_id)
-            post_comment.user = request.user
-            post_comment.comment = form.cleaned_data.get('comment')
-            post_comment.save()
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+            post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
+            post_obj=post_obj, post_id=post_id, comment=form.cleaned_data.get('comment')))
+            post_obj.save()
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
         post_likes_list = post_obj.post_like_obj.likes.all().values_list('username', 'profile_pic', named=True)
