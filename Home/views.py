@@ -32,8 +32,7 @@ class home_view(TemplateView):
             post_id = request.POST.get('post_id')
             post_obj = PostModel.objects.get_post(post_id=post_id)
             post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
-            post_obj=post_obj, post_id=post_id, comment=form.cleaned_data.get('comment')))
-            post_obj.save()
+            post_obj=post_obj, comment=form.cleaned_data.get('comment')))
         else:
             form = PostForm(request.POST, request.FILES or None)
             if form.is_valid():
