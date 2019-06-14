@@ -1,10 +1,9 @@
 from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
-import uuid
+import uuid, pytz
 from Profile.models import User
 from datetime import datetime
-import pytz
 # Create your models here.
 class PostModelManager(models.Manager):
     def get_post(self, post_id):
@@ -59,21 +58,28 @@ class PostLikes(models.Model):
     def __str__(self):
         return str(self.post_obj)
 
+class PostCommentsManager(models.Manager):
+    def create(self, user, post_obj, comment):
+        comment_id = str(uuid.uuid4())[:8]
+        comment_obj = super(PostCommentsManager, self).create(user=user, post_obj=post_obj, comment_id=comment_id, comment=comment)
+        comment_obj.save()
+        return comment_obj
+
 class PostComments(models.Model):
-    post_id = models.CharField(max_length=10, editable=False, default='')
+    comment_id = models.CharField(primary_key=True, max_length=10, editable=False, default='')
     post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_comment_obj')
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='by')
     comment = models.TextField(blank=False)
     reply = models.ForeignKey('PostComments', on_delete=models.SET_NULL, blank=True, null=True, related_name='replies')
     date_time = models.DateTimeField(auto_now_add=True)
-    objects = models.Manager()
+    objects = PostCommentsManager()
 
     class Meta:
         verbose_name = 'Post_Comment'
         ordering = ('date_time',)
 
     def __str__(self):
-        return str(self.post_obj) + "c_id-" + self.post_id
+        return self.comment_id
 
     @property
     def has_replies(self):
