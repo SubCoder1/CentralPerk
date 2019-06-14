@@ -29,12 +29,11 @@ class home_view(TemplateView):
     def post(self, request):
         form = CommentForm(request.POST or None)
         if form.is_valid():
-            post_comment = form.save(commit=False)
-            post_comment.post_obj = PostModel.objects.get_post(post_id=request.POST.get('post_id'))
-            post_comment.user = request.user
-            post_comment.comment = form.cleaned_data.get('comment')
-            post_comment.comment_id = str(uuid.uuid4)[:8]
-            post_comment.save()
+            post_id = request.POST.get('post_id')
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+            post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
+            post_obj=post_obj, post_id=post_id, comment=form.cleaned_data.get('comment')))
+            post_obj.save()
         else:
             form = PostForm(request.POST, request.FILES or None)
             if form.is_valid():
