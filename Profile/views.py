@@ -100,8 +100,7 @@ def post_view(request, post_id):
         if form.is_valid():
             post_obj = PostModel.objects.get_post(post_id=post_id)
             post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
-            post_obj=post_obj, post_id=post_id, comment=form.cleaned_data.get('comment')))
-            post_obj.save()
+            post_obj=post_obj, comment=form.cleaned_data.get('comment')))
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
         post_likes_list = post_obj.post_like_obj.likes.all().values_list('username', 'profile_pic', named=True)
