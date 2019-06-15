@@ -104,7 +104,7 @@ def post_view(request, post_id):
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
         post_likes_list = post_obj.post_like_obj.likes.all().values_list('username', 'profile_pic', named=True)
-        post_comments = post_obj.post_comment_obj.values_list('user__username', 'user__profile_pic', 'comment', 'date_time', named=True)
+        post_comments = post_obj.post_comment_obj.values_list('user__username', 'user__profile_pic', 'comment', 'date_time', 'comment_id', named=True)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
