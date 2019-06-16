@@ -1,16 +1,15 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponse
-from django.urls import reverse
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.forms import NonAdminChangeForm
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.models import User, Friends
 from Profile.last_activity import activity
-from Home.models import PostModel, PostComments
+from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications
 from Home.forms import CommentForm
 import json
@@ -35,14 +34,14 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
         return render(request, 'post_500.html', {})
      
     user = request.user
-    if user in post.post_like_obj.likes.all():
+    if user in post.post_like_obj.user.all():
         # Dislike post
-        post.post_like_obj.likes.remove(user)
+        PostLikes.objects.get(user=request.user).delete()
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
         # Like post
-        post.post_like_obj.likes.add(user)
+        post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
         post.likes_count = F('likes_count') + 1
         post.save()
 
@@ -99,12 +98,23 @@ def post_view(request, post_id):
         form = CommentForm(request.POST or None)
         if form.is_valid():
             post_obj = PostModel.objects.get_post(post_id=post_id)
-            post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
-            post_obj=post_obj, comment=form.cleaned_data.get('comment')))
+            comment_id = str(request.POST.get('reply'))
+            if comment_id == '':
+                post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
+                post_obj=post_obj, comment=form.cleaned_data.get('comment')))
+            else:
+                try:
+                    parent_comment = PostComments.objects.get(comment_id=comment_id)
+                    parent_comment.replies.add(PostComments.objects.create(user=request.user,
+                    post_obj=post_obj, comment=form.cleaned_data.get('comment'), parent=False))
+                except ObjectDoesNotExist:
+                    pass
+
+        return redirect(reverse('view_post', kwargs={'post_id':post_id}))
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
-        post_likes_list = post_obj.post_like_obj.likes.all().values_list('username', 'profile_pic', named=True)
-        post_comments = post_obj.post_comment_obj.values_list('user__username', 'user__profile_pic', 'comment', 'date_time', 'comment_id', named=True)
+        post_likes_list = post_obj.post_like_obj.all().values_list('user__username', 'user__profile_pic', 'date_time', named=True)
+        post_comments = post_obj.post_comment_obj.get_comments(post_id=post_id)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
