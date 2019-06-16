@@ -102,7 +102,7 @@
 
 /* ---------- post-data comment section --------- */
 .comment-view-card-body {
-    padding: 5px 15px 10px 10px;
+    padding: 5px 20px 10px 10px;
     overflow-x: auto;
     position: relative;
 }
@@ -123,11 +123,17 @@
 
 .m-0 { font-size: 17px; }
 
-.ml-2 { font-size: 15px; }
+.ml-2 { font-size: 15px; width: 100%; }
+
+.comment-reply-margin { 
+    margin-left: 53px;
+    border-left: 2px solid burlywood;
+}
 
 .comment-date-time {
     font-size: 12px;
-    text-align: right;
+    float: right;
+    line-height: 2.5;
 }
 
 .comment-user {
@@ -152,13 +158,20 @@
 }
 
 .like-view-card-body {
-    padding: 5px 10px 10px 5px;
+    padding: 5px 20px 10px 10px;
     overflow-x: auto;
     position: relative;
 }
 
-.post-profile-img {
+.like-prof-margin {
     margin-right: 5px;
+}
+
+.like-date-time {
+    text-align: right;
+    float: right;
+    line-height: 3.3;
+    font-size: 15px;
 }
 /* ---------------------------------------------- */
 
