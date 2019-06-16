@@ -40,7 +40,6 @@ class home_view(TemplateView):
                 post.user = request.user
                 post.post_id = str(post.unique_id)[:8]
                 post.save()
-                PostLikes.objects.create(post_obj=post)
                 post.send_to.add(request.user)
                 share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
         
@@ -57,14 +56,14 @@ def manage_home_post_likes(request, post_id):
         return render(request, 'post_500.html', {})
 
     user = request.user
-    if user in post.post_like_obj.likes.all():
+    if PostLikes.objects.filter(user=user).exists():
         # Dislike post
-        post.post_like_obj.likes.remove(user)
+        PostLikes.objects.get(user=request.user).delete()
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
         # Like post
-        post.post_like_obj.likes.add(user)
+        post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
         post.likes_count = F('likes_count') + 1
         post.save()
 
