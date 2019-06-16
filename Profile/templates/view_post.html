@@ -68,21 +68,48 @@
                     <div class="card-body comment-view-card-body" id='id_view-post-comment-body'>
                         {% if comments %}
                             {% for comment in comments %}
+                            <blockquote>
                                 <div class="d-flex">
                                     <div class="mr-1">
-                                        <img src="/media/{{ comment.user__profile_pic }}" class="rounded-circle post-profile-img">
+                                        <img src="/media/{{ comment.profile_pic }}" class="rounded-circle post-profile-img">
                                     </div>
                                     <div class="ml-2">
                                         <div class="m-0">
-                                            <a href="{% url 'view_profile' comment.user__username %}">{{ comment.user__username }}</a> :
+                                            <a href="{% url 'view_profile' comment.username %}" class="comment-username">
+                                                {{ comment.username }}
+                                            </a> :
                                         </div>
-                                        {{ comment.comment }}
-                                        <br/>
+                                        <div class="comment-content">
+                                            {{ comment.comment }}
+                                        </div>
+                                        <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
                                         <h6 class="comment-date-time">{{ comment.date_time|timesince }} ago</h6>
                                     </div>
                                 </div>
+                                {% for reply in comment.reply %}
+                                <blockquote>
+                                    <div class="d-flex">
+                                        <div class="mr-1 comment-reply-margin">
+                                            <img src="/media/{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="margin-left: 5px;">
+                                        </div>
+                                        <div class="ml-2">
+                                            <div class="m-0">
+                                                <a href="{% url 'view_profile' reply.username %}" class="comment-username">
+                                                    {{ reply.username }}
+                                                </a> :
+                                            </div>
+                                            <div class="comment-content">
+                                                {{ reply.comment }}
+                                            </div>
+                                            <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
+                                            <h6 class="comment-date-time">{{ reply.date_time|timesince }} ago</h6>
+                                        </div>
+                                    </div>
+                                </blockquote>
+                                {% endfor %}
                                 <br/>
                             {% endfor %}
+                            </blockquote>
                         {% else %}
                         <div class="empty-comments" id="empty-comment">
                             <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
@@ -93,7 +120,8 @@
                     <div class="card-footer" id='id_view-post-comment-card-footer'>
                         <form method="POST">
                             {% csrf_token %}
-                            <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment"></textarea>
+                            <input type="hidden" class="reply-to" name="reply" value="">
+                            <textarea type="text" class="form-control comment-input" autocomplete="off" id="comment_box" name="comment" placeholder="Post a comment"></textarea>
                             <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
                         </form>
                     </div>
@@ -104,10 +132,11 @@
                         <div class="likes-tab" style="text-align: left">
                             {% for user in like_list %}
                                 <div class="liked-user">
-                                    <a href="{% url 'view_profile' user.username %}">
-                                        <img src="/media/{{ user.profile_pic }}" class="rounded-circle post-profile-img">
-                                        {{ user.username }}
+                                    <a href="{% url 'view_profile' user.user__username %}">
+                                        <img src="/media/{{ user.user__profile_pic }}" class="rounded-circle post-profile-img like-prof-margin">
+                                        {{ user.user__username }}
                                     </a>
+                                    <span class="like-date-time">{{ user.date_time|timesince }}</span>
                                     <br/>
                                 </div>
                             {% endfor %}
