@@ -4,6 +4,8 @@ from django.dispatch import receiver
 import uuid, pytz
 from Profile.models import User
 from datetime import datetime
+from collections import namedtuple
+
 # Create your models here.
 class PostModelManager(models.Manager):
     def get_post(self, post_id):
@@ -47,8 +49,8 @@ def submission_delete(sender, instance, **kwargs):
     instance.pic.delete(False)
 
 class PostLikes(models.Model):
-    post_obj = models.OneToOneField(PostModel, on_delete=models.CASCADE, default=1, related_name='post_like_obj')
-    likes = models.ManyToManyField(User, related_name='likes', default=1)
+    post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_like_obj')
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='liked_by')
     date_time = models.DateTimeField(auto_now_add=True)
     objects = models.Manager()
 
@@ -59,19 +61,51 @@ class PostLikes(models.Model):
         return str(self.post_obj)
 
 class PostCommentsManager(models.Manager):
-    def create(self, user, post_obj, comment):
+    def parent(self):
+        qs = super(PostCommentsManager, self).filter(parent=True)
+        return qs
+
+    def get_comments(self, post_id):
+            post = PostModel.objects.get_post(post_id=post_id)
+            qs = []
+            layout = namedtuple("comment", ["profile_pic", "username", "comment", "comment_id", "date_time", "reply"])
+
+            for parent_comment in post.post_comment_obj.parent().select_related('user', 'reply'):
+                prof_pic = parent_comment.user.profile_pic
+                username = parent_comment.user.username
+                comment = parent_comment.comment
+                c_id = parent_comment.comment_id
+                date_time = parent_comment.date_time
+                replies = []
+
+                for reply in parent_comment.replies.all().select_related('user'):
+                    reply_prof_pic = reply.user.profile_pic
+                    reply_username = reply.user.username
+                    reply_comment = reply.comment
+                    reply_id = reply.comment_id
+                    reply_dt = reply.date_time
+                    replies.append(layout(profile_pic=reply_prof_pic, username=reply_username, comment=reply_comment, 
+                    comment_id=reply_id, date_time=reply_dt, reply=None))
+                
+                qs.append(layout(profile_pic=prof_pic, username=username, comment=comment, comment_id=c_id, 
+                date_time=date_time, reply=replies))
+            
+            return qs
+
+    def create(self, user, post_obj, comment, parent=True, reply=None):
         comment_id = str(uuid.uuid4())[:8]
-        comment_obj = super(PostCommentsManager, self).create(user=user, post_obj=post_obj, comment_id=comment_id, comment=comment)
+        comment_obj = super(PostCommentsManager, self).create(user=user, post_obj=post_obj, comment_id=comment_id, comment=comment, parent=parent, reply=reply)
         comment_obj.save()
         return comment_obj
 
 class PostComments(models.Model):
     comment_id = models.CharField(primary_key=True, max_length=10, editable=False, default='')
     post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_comment_obj')
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='by')
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comment_by')
     comment = models.TextField(blank=False)
-    reply = models.ForeignKey('PostComments', on_delete=models.SET_NULL, blank=True, null=True, related_name='replies')
+    reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     date_time = models.DateTimeField(auto_now_add=True)
+    parent = models.BooleanField(default=True)
     objects = PostCommentsManager()
 
     class Meta:
