@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from Profile.models import User, Friends
 from Profile.last_activity import activity
 from Home.models import PostModel, PostComments, PostLikes
-from Home.tasks import send_notifications
+from Home.tasks import send_notifications, del_notifications
 from Home.forms import CommentForm
 import json
 # Create your views here.
@@ -25,6 +25,7 @@ def manage_relation(request, username, option=None):
         send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
+        del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
     return redirect(reverse('view_profile', kwargs={ 'username':username }))
 
 def manage_profile_post_likes(request, username, post_id, view_post=None):
@@ -36,7 +37,7 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
     user = request.user
     if post.post_like_obj.filter(user=user).exists():
         # Dislike post
-        PostLikes.objects.get(user=request.user).delete()
+        post.post_like_obj.filter(user=user).delete()
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
