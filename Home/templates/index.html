@@ -82,6 +82,20 @@
                                 {{ notification.poked_by }}
                               </a> started to follow you.
                           </h4>
+                        {% elif notification.reaction == 'Commented' %}
+                          <h4 style="font-size: 18px">
+                              <a href="{% url 'view_profile' notification.poked_by %}">
+                                <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                                {{ notification.poked_by }}
+                              </a> commented on your post.
+                          </h4>
+                        {% elif notification.reaction == 'Replied' %}
+                          <h4 style="font-size: 18px">
+                              <a href="{% url 'view_profile' notification.poked_by %}">
+                                <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                                {{ notification.poked_by }}
+                              </a> replied to your comment.
+                          </h4>
                         {% endif %}
                       </div>
                       <div class="card-footer">
