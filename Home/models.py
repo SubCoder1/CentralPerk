@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Prefetch
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 import uuid, pytz
@@ -9,7 +10,7 @@ from collections import namedtuple
 # Create your models here.
 class PostModelManager(models.Manager):
     def get_post(self, post_id):
-        return self.get(post_id=post_id)
+        return self.filter(post_id=post_id).select_related('user').first()
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<username>/<filename>
@@ -65,20 +66,24 @@ class PostCommentsManager(models.Manager):
         qs = super(PostCommentsManager, self).filter(parent=True)
         return qs
 
-    def get_comments(self, post_id):
-            post = PostModel.objects.get_post(post_id=post_id)
+    def get_comments(self, post):
+            #post = PostModel.objects.get_post(post_id=post_id)
             qs = []
             layout = namedtuple("comment", ["profile_pic", "username", "comment", "comment_id", "date_time", "reply"])
+            comment_count = 0
+            parent_comment_qs = post.post_comment_obj.parent().select_related('user')
+            comments = parent_comment_qs.prefetch_related(Prefetch('replies',queryset=PostComments.objects.select_related('user')))
 
-            for parent_comment in post.post_comment_obj.parent().select_related('user', 'reply'):
+            for parent_comment in comments:
                 prof_pic = parent_comment.user.profile_pic
                 username = parent_comment.user.username
                 comment = parent_comment.comment
                 c_id = parent_comment.comment_id
                 date_time = parent_comment.date_time
                 replies = []
+                comment_count += 1
 
-                for reply in parent_comment.replies.all().select_related('user'):
+                for reply in parent_comment.replies.all():
                     reply_prof_pic = reply.user.profile_pic
                     reply_username = reply.user.username
                     reply_comment = reply.comment
@@ -86,11 +91,12 @@ class PostCommentsManager(models.Manager):
                     reply_dt = reply.date_time
                     replies.append(layout(profile_pic=reply_prof_pic, username=reply_username, comment=reply_comment, 
                     comment_id=reply_id, date_time=reply_dt, reply=None))
+                    comment_count += 1
                 
                 qs.append(layout(profile_pic=prof_pic, username=username, comment=comment, comment_id=c_id, 
                 date_time=date_time, reply=replies))
             
-            return qs
+            return (qs, comment_count)
 
     def create(self, user, post_obj, comment, parent=True, reply=None):
         comment_id = str(uuid.uuid4())[:8]
@@ -121,7 +127,8 @@ class PostComments(models.Model):
             return True
         return False
 
-REACTION = ( ('Liked', 'Liked'), ('Commented', 'Commented'), ('Sent Follow Request', 'Sent Follow Request'), )
+REACTION = (('Liked', 'Liked'), ('Commented', 'Commented'), ('Mentioned', 'Mentioned'),
+            ('Sent Follow Request', 'Sent Follow Request'), ('Replied', 'Replied'),)
 
 class UserNotification(models.Model):
     user_to_notify = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='notifications', verbose_name="to_notify")
@@ -140,6 +147,6 @@ class UserNotification(models.Model):
 
     @classmethod
     def create_notify_obj(cls, to_notify, by, reaction, post_obj=None):
-        poked_user = User.objects.get(username=by)
+        poked_user = User.get_user_obj(username=by)
         obj = cls.objects.create(user_to_notify=to_notify, poked_by=poked_user, post=post_obj, reaction=reaction)
         return obj
