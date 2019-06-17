@@ -38,6 +38,7 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
     if post.post_like_obj.filter(user=user).exists():
         # Dislike post
         post.post_like_obj.filter(user=user).delete()
+        del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=username, post_id=post_id)
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
