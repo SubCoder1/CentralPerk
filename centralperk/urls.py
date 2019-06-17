@@ -28,8 +28,8 @@ Profile = [
     path('profile/<str:username>', view_profile, name='view_profile'),
     path('profile/<str:username>/edit', edit_profile.as_view(), name='edit_profile'),
     path('profile/<str:post_id>/view', post_view, name='view_post'),
-    path('profile/<str:username>/<str:post_id>/like/<str:view_post>', manage_likes_profile, name='like_from_post_view'),
-    path('profile/<str:username>/<str:post_id>/like', manage_likes_profile, name='like_from_profile_post'),
+    path('profile/<str:post_id>/like/<str:view_post>', manage_likes_profile, name='like_from_post_view'),
+    path('profile/<str:post_id>/like', manage_likes_profile, name='like_from_profile_post'),
     path('profile/<str:post_id>/del', del_user_post, name='del_user_post'),
     path('profile/<str:username>/<str:option>', manage_relation, name='manage_relation'),
 ]
