@@ -28,7 +28,7 @@ def manage_relation(request, username, option=None):
         del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
     return redirect(reverse('view_profile', kwargs={ 'username':username }))
 
-def manage_profile_post_likes(request, username, post_id, view_post=None):
+def manage_profile_post_likes(request, post_id, username=None, view_post=None):
     try:
         post = PostModel.objects.get_post(post_id=post_id)
     except ObjectDoesNotExist:
@@ -38,7 +38,7 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
     if post.post_like_obj.filter(user=user).exists():
         # Dislike post
         post.post_like_obj.filter(user=user).delete()
-        del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=username, post_id=post_id)
+        del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
@@ -53,7 +53,7 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
     if view_post:
         return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
 
-    return redirect(reverse('view_profile', kwargs={ 'username':username }))
+    return redirect(reverse('view_profile', kwargs={ 'username':post.user.username }))
 
 def view_profile(request, username=None):
     try:
