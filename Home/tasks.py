@@ -67,9 +67,19 @@ def del_notifications(username, reaction, send_to_username=None, post_id=None):
         query = Q(user_to_notify=to_notify)
         query.add(Q(poked_by=poked_by), Q.AND)
         query.add(Q(reaction='Sent Follow Request'), Q.AND)
+    elif reaction == 'Disliked':
+        try:
+            post = PostModel.objects.get(post_id=post_id)
+        except ObjectDoesNotExist:
+            return "Task aborted! No posts found(del by user?)"
+        query = Q(user_to_notify=to_notify)
+        query.add(Q(poked_by=poked_by), Q.AND)
+        query.add(Q(reaction='Liked'), Q.AND)
+        query.add(Q(post=post), Q.AND)
+
     if UserNotification.objects.filter(query).exists():
         UserNotification.objects.filter(query).first().delete()
-        return 'follow_notif deleted successfully :)'
+        return 'notif deleted successfully :)'
     else:
         return "filtered query doesn't exist.(Maybe user cleared his/her notif?)"       
         
