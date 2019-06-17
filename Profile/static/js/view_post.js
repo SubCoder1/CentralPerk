@@ -11,19 +11,20 @@ var comment_body_height = document.getElementById('id_view-post-comment-body');
 comment_body_height.setAttribute('style', attribute);
 
 
-//JS code for handling comment replies
+// JS code for handling comment replies
 var length = 0;
 var replies = document.querySelectorAll('.comment-reply');
 replies.forEach(function(reply){
     reply.addEventListener("click", function() {
-        document.querySelector(".reply-to").value = reply.id;
-        var value = "@" + reply.parentElement.querySelector('.m-0').getElementsByTagName('a')[0].innerText + "";
-        document.getElementById('comment_box').value = value;
+        var value = reply.parentElement.querySelector('.m-0').getElementsByTagName('a')[0].innerText;
+        document.querySelector(".reply-to").value = reply.id + "_" + value;
+        //console.log(document.querySelector(".reply-to").value);
+        document.getElementById('comment_box').value = "@" + value + "";
         length = value.length;
         document.getElementById('comment_box').focus();
     });
 });
-
+// JS code that removes comment-reply-link if reply-to-username is removed from comment-box
 var comment_textbox = document.getElementById('comment_box');
 comment_textbox.addEventListener('input', function() {
     if (comment_textbox.value.length < length-1) {
