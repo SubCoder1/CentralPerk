@@ -1,12 +1,10 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from celery import shared_task
 from Profile.models import Friends, User
-from django.contrib.auth import get_user_model
 from Home.models import PostModel, UserNotification
-from datetime import datetime
-import pytz
 
 @shared_task
 def share_posts(username, post_id):
@@ -40,7 +38,6 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
         if send_to.username == username:
             return "User liked/commented_on his/her own post :|"
         
-
         if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post):
             if reaction == 'Liked':
                 return "like_notif sent successfully :)"
@@ -56,3 +53,23 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
                 return "follow_notif sent successfully :)"
             else:
                 return "reply_notif sent successfully :)"
+
+@shared_task
+def del_notifications(username, reaction, send_to_username=None, post_id=None):
+    try:
+        to_notify = User.objects.get(username=send_to_username)
+        poked_by = User.objects.get(username=username)
+    except ObjectDoesNotExist:
+        return "task aborted! No users found."
+    
+    query = None
+    if reaction == 'Sent Follow Request':
+        query = Q(user_to_notify=to_notify)
+        query.add(Q(poked_by=poked_by), Q.AND)
+        query.add(Q(reaction='Sent Follow Request'), Q.AND)
+    if UserNotification.objects.filter(query).exists():
+        UserNotification.objects.filter(query).first().delete()
+        return 'follow_notif deleted successfully :)'
+    else:
+        return "filtered query doesn't exist.(Maybe user cleared his/her notif?)"       
+        
