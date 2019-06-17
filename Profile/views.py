@@ -100,6 +100,7 @@ def post_view(request, post_id):
         form = CommentForm(request.POST or None)
         if form.is_valid():
             post_obj = PostModel.objects.get_post(post_id=post_id)
+            post_obj.comment_count = F('comment_count') + 1
             reply = str(request.POST.get('reply'))
             if "_" in reply:
                 index = reply.index("_")
@@ -128,7 +129,7 @@ def post_view(request, post_id):
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
         post_likes_list = post_obj.post_like_obj.select_related('user')
-        post_comments, comment_count = post_obj.post_comment_obj.get_comments(post_obj)
+        post_comments = post_obj.post_comment_obj.get_comments(post_obj)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
@@ -138,7 +139,7 @@ def post_view(request, post_id):
     
     context = { 'post_data':post_obj, 'post_id': post_id, 
     'liked_user_list':post_likes_list, 'editable':editable, 
-    'comments':post_comments, 'comment_count':comment_count }
+    'comments':post_comments, 'comment_count':post_obj.comment_count }
 
     return render(request, 'view_post.html', context=context)
 
