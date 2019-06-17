@@ -29,7 +29,7 @@
                         <a class="nav-link link" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="true">
                             <h4 style="font-size: 19px">
                                 <i class="fas fa-comment-alt"></i>
-                                <span style="font-size: 19px">{{ comments|length }}</span>
+                                <span style="font-size: 19px">{{ comment_count }}</span>
                             </h4>
                         </a>
                     </li>
@@ -68,7 +68,6 @@
                     <div class="card-body comment-view-card-body" id='id_view-post-comment-body'>
                         {% if comments %}
                             {% for comment in comments %}
-                            <blockquote>
                                 <div class="d-flex">
                                     <div class="mr-1">
                                         <img src="/media/{{ comment.profile_pic }}" class="rounded-circle post-profile-img">
@@ -87,7 +86,6 @@
                                     </div>
                                 </div>
                                 {% for reply in comment.reply %}
-                                <blockquote>
                                     <div class="d-flex">
                                         <div class="mr-1 comment-reply-margin">
                                             <img src="/media/{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="margin-left: 5px;">
@@ -105,11 +103,8 @@
                                             <h6 class="comment-date-time">{{ reply.date_time|timesince }} ago</h6>
                                         </div>
                                     </div>
-                                </blockquote>
                                 {% endfor %}
-                                <br/>
                             {% endfor %}
-                            </blockquote>
                         {% else %}
                         <div class="empty-comments" id="empty-comment">
                             <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
@@ -128,15 +123,15 @@
                 </div>
                 <div class="tab-pane fade" id="like" role="tabpanel" aria-labelledby="like-tab">
                     <div class="card-body like-view-card-body">
-                        {% if like_list %}
+                        {% if liked_user_list %}
                         <div class="likes-tab" style="text-align: left">
-                            {% for user in like_list %}
+                            {% for liked_user in liked_user_list %}
                                 <div class="liked-user">
-                                    <a href="{% url 'view_profile' user.user__username %}">
-                                        <img src="/media/{{ user.user__profile_pic }}" class="rounded-circle post-profile-img like-prof-margin">
-                                        {{ user.user__username }}
+                                    <a href="{% url 'view_profile' liked_user.user.username %}">
+                                        <img src="/media/{{ liked_user.user.profile_pic }}" class="rounded-circle post-profile-img like-prof-margin">
+                                        {{ liked_user.user.username }}
                                     </a>
-                                    <span class="like-date-time">{{ user.date_time|timesince }}</span>
+                                    <span class="like-date-time">{{ liked_user.date_time|timesince }} ago</span>
                                     <br/>
                                 </div>
                             {% endfor %}
