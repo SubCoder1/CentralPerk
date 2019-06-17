@@ -121,13 +121,15 @@
     opacity: 0.5;
 }
 
+#empty-like { left: 52%; }
+
 .m-0 { font-size: 17px; }
 
 .ml-2 { font-size: 15px; width: 100%; }
 
 .comment-reply-margin { 
     margin-left: 53px;
-    border-left: 2px solid burlywood;
+    border-left: 2px solid blueviolet;
 }
 
 .comment-date-time {
@@ -143,7 +145,10 @@
     line-height: 1;
 }
 
-.comment-input { width: 90%; }
+.comment-input { 
+    float: left;
+    width: 80%;
+ }
 
 .comment-send-btn {
     float: right;
@@ -172,6 +177,29 @@
     float: right;
     line-height: 3.3;
     font-size: 15px;
+}
+
+.like-section-footer {
+    background:rgba(0,0,0,0);
+}
+
+.post-view-like-btn {
+    border-radius: 50% !important;
+    height: 39px;
+    width: 40px;
+    position: relative;
+    left: 50%;
+    opacity: 1;
+}
+
+.post-view-like-btn:hover {
+    background-color: black;
+    border-color: black;
+}
+
+.ico-center-align {
+    font-size: 16px;
+    line-height: 1.5;
 }
 /* ---------------------------------------------- */
 
