@@ -34,7 +34,7 @@ def manage_profile_post_likes(request, username, post_id, view_post=None):
         return render(request, 'post_500.html', {})
      
     user = request.user
-    if user in post.post_like_obj.user.all():
+    if post.post_like_obj.filter(user=user).exists():
         # Dislike post
         PostLikes.objects.get(user=request.user).delete()
         post.likes_count = F('likes_count') - 1
@@ -98,36 +98,51 @@ def post_view(request, post_id):
         form = CommentForm(request.POST or None)
         if form.is_valid():
             post_obj = PostModel.objects.get_post(post_id=post_id)
-            comment_id = str(request.POST.get('reply'))
+            reply = str(request.POST.get('reply'))
+            if "_" in reply:
+                index = reply.index("_")
+                comment_id, reply_id = reply[:index], reply[index+1:len(reply)-1]
+            else:
+                comment_id = reply
+                reply_id = None
+
             if comment_id == '':
+                # request.user commented on a post with post_id=post_id
                 post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
                 post_obj=post_obj, comment=form.cleaned_data.get('comment')))
+                send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=reply_id, post_id=post_id)
             else:
+                # request.user replied to someone's comment on post with post_id=post_id
                 try:
                     parent_comment = PostComments.objects.get(comment_id=comment_id)
+                    reply = form.cleaned_data.get('comment')
                     parent_comment.replies.add(PostComments.objects.create(user=request.user,
-                    post_obj=post_obj, comment=form.cleaned_data.get('comment'), parent=False))
+                    post_obj=post_obj, comment=reply, parent=False))
+                    send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id)
                 except ObjectDoesNotExist:
                     pass
 
         return redirect(reverse('view_post', kwargs={'post_id':post_id}))
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
-        post_likes_list = post_obj.post_like_obj.all().values_list('user__username', 'user__profile_pic', 'date_time', named=True)
-        post_comments = post_obj.post_comment_obj.get_comments(post_id=post_id)
+        post_likes_list = post_obj.post_like_obj.select_related('user')
+        post_comments, comment_count = post_obj.post_comment_obj.get_comments(post_obj)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
     editable = False
-    if post_obj.user.username == request.user.username:
+    if post_obj.user == request.user:
         editable = True
     
-    context = { 'post_data':post_obj, 'post_id': post_id, 'like_list':post_likes_list, 'editable':editable, 'comments':post_comments }
+    context = { 'post_data':post_obj, 'post_id': post_id, 
+    'liked_user_list':post_likes_list, 'editable':editable, 
+    'comments':post_comments, 'comment_count':comment_count }
+
     return render(request, 'view_post.html', context=context)
 
 def del_user_post(request, post_id):
     try:
-        request.user.posts.get(post_id=post_id).delete()
+        request.user.posts.get_post(post_id=post_id).delete()
     except ObjectDoesNotExist:
         pass
     return redirect(reverse('view_profile', kwargs={ 'username':request.user.username }))
