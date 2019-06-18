@@ -121,12 +121,12 @@
     opacity: 0.5;
 }
 
-.m-0 { font-size: 17px; }
+.m-0 { font-size: 17px; font-family: 'Poppins', sans-serif; }
 
-.ml-2 { font-size: 15px; width: 100%; }
+.ml-2, .ml-3 { font-size: 15px; width: 100%; }
 
 .comment-reply-margin { 
-    margin-left: 53px;
+    margin-left: 48px;
     border-left: 2px solid blueviolet;
 }
 
