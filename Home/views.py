@@ -6,7 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from Home.models import PostModel, PostLikes, PostComments, UserNotification
 from Home.forms import PostForm, CommentForm
 from Profile.models import Friends, User
-from Home.tasks import share_posts, send_notifications
+from Home.tasks import share_posts, send_notifications, del_notifications
 from datetime import datetime
 import pytz, uuid
 # Create your views here.
@@ -19,7 +19,7 @@ class home_view(TemplateView):
         posts = request.user.connections.all().values_list(
             'status_caption', 'pic', 
             'location', 'user__username', 'user__profile_pic', 
-            'date_time', 'likes_count', 'post_id', named=True)
+            'date_time', 'likes_count', 'comment_count', 'post_id', named=True)
         notifications = request.user.notifications.all().values_list(
             'poked_by', 'date_time', 'reaction', 'poked_by__profile_pic',named=True)
 
@@ -56,9 +56,10 @@ def manage_home_post_likes(request, post_id):
         return render(request, 'post_500.html', {})
 
     user = request.user
-    if PostLikes.objects.filter(user=user).exists():
+    if post.post_like_obj.filter(user=user).exists():
         # Dislike post
-        PostLikes.objects.get(user=request.user).delete()
+        post.post_like_obj.filter(user=user).delete()
+        del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
         post.likes_count = F('likes_count') - 1
         post.save()
     else:
