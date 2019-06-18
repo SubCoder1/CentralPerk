@@ -318,14 +318,20 @@ form > .button:hover {
 .likes-counter {
     font-size: 18px;
     margin-left: 9px;
+    vertical-align: top;
 }
 
 .fa-comment-alt {
     color: mediumpurple;
-    font-size: 17px;
-    margin-left: 5px;
+    font-size: 18px;
     position: relative;
-    top: 1px;
+    vertical-align: text-top;
+}
+
+.comment-counter {
+    vertical-align: top;
+    font-size: 18px;
+    margin-left: -6px;
 }
 
 .post-date-time {
