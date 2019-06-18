@@ -33,6 +33,9 @@ class home_view(TemplateView):
             post_obj = PostModel.objects.get_post(post_id=post_id)
             post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
             post_obj=post_obj, comment=form.cleaned_data.get('comment')))
+            post_obj.comment_count = F('comment_count') + 1
+            post_obj.save()
+            send_notifications.delay(username=request.user.username, reaction='Commented', post_id=post_id)
         else:
             form = PostForm(request.POST, request.FILES or None)
             if form.is_valid():
