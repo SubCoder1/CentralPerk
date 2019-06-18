@@ -124,6 +124,7 @@ def post_view(request, post_id):
                     send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id)
                 except ObjectDoesNotExist:
                     pass
+            post_obj.comment_count = F('comment_count') + 1
 
         return redirect(reverse('view_post', kwargs={'post_id':post_id}))
     try:
