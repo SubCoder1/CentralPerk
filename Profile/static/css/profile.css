@@ -26,6 +26,11 @@
 }
 /* ----------------------------------------- */
 
+/* --------- comment btn on posts ---------- */
+.fa-comment-alt { top: 2px; margin-left: 5px; }
+
+.comment-counter { margin-left: 0px; }
+
 /* ------------- Profile Pic --------------- */
 .profile-pic-rounded {
     border-radius: 50%!important;
