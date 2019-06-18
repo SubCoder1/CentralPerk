@@ -46,8 +46,9 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
 
     elif reaction == 'Sent Follow Request' or reaction == 'Replied':
         send_to = User.get_user_obj(username=send_to_username)
-        if send_to.username == send_to_username and reaction == 'Replied':
-            return "User replied his/her own comment :|"
+        if send_to_username == username and reaction == 'Replied':
+            #return f"({username}, {send_to_username})"
+            return "User replied to his/her own comment :|"
         if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction):
             if reaction == 'Sent Follow Request':
                 return "follow_notif sent successfully :)"
