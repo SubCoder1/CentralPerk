@@ -73,6 +73,7 @@
 }
 
 .fa-meh-blank {
+    font-size: 20px;
     color: springgreen;
 }
 
@@ -108,7 +109,8 @@
 }
 
 .fa-comment-alt {
-    color: mediumpurple;
+    top: 0px;
+    bottom: 1px;
 }
 
 #empty-comment, #empty-like {
