@@ -121,8 +121,6 @@
     opacity: 0.5;
 }
 
-#empty-like { left: 52%; }
-
 .m-0 { font-size: 17px; }
 
 .ml-2 { font-size: 15px; width: 100%; }
@@ -188,7 +186,7 @@
     height: 39px;
     width: 40px;
     position: relative;
-    left: 50%;
+    left: 46.5%;
     opacity: 1;
 }
 
