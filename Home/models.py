@@ -71,7 +71,6 @@ class PostCommentsManager(models.Manager):
             #post = PostModel.objects.get_post(post_id=post_id)
             qs = []
             layout = namedtuple("comment", ["profile_pic", "username", "comment", "comment_id", "date_time", "reply"])
-            comment_count = 0
             parent_comment_qs = post.post_comment_obj.parent().select_related('user')
             comments = parent_comment_qs.prefetch_related(Prefetch('replies',queryset=PostComments.objects.select_related('user')))
 
@@ -82,7 +81,6 @@ class PostCommentsManager(models.Manager):
                 c_id = parent_comment.comment_id
                 date_time = parent_comment.date_time
                 replies = []
-                comment_count += 1
 
                 for reply in parent_comment.replies.all():
                     reply_prof_pic = reply.user.profile_pic
@@ -92,12 +90,11 @@ class PostCommentsManager(models.Manager):
                     reply_dt = reply.date_time
                     replies.append(layout(profile_pic=reply_prof_pic, username=reply_username, comment=reply_comment, 
                     comment_id=reply_id, date_time=reply_dt, reply=None))
-                    comment_count += 1
                 
                 qs.append(layout(profile_pic=prof_pic, username=username, comment=comment, comment_id=c_id, 
                 date_time=date_time, reply=replies))
             
-            return (qs, comment_count)
+            return qs
 
     def create(self, user, post_obj, comment, parent=True, reply=None):
         comment_id = str(uuid.uuid4())[:8]
