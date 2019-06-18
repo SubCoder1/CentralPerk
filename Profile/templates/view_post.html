@@ -88,9 +88,9 @@
                                 {% for reply in comment.reply %}
                                     <div class="d-flex">
                                         <div class="mr-1 comment-reply-margin">
-                                            <img src="/media/{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="left: 5px;">
+                                            <img src="/media/{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="left: 10px;">
                                         </div>
-                                        <div class="ml-2">
+                                        <div class="ml-3">
                                             <div class="m-0">
                                                 <a href="{% url 'view_profile' reply.username %}" class="comment-username">
                                                     {{ reply.username }}
