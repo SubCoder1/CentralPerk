@@ -45,7 +45,9 @@ class home_view(TemplateView):
                 post.save()
                 post.send_to.add(request.user)
                 share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
-        
+            else:
+                return redirect(reverse('home_view'))
+
         return redirect(reverse('home_view'))
 
 def clear_all_notification(request):
