@@ -323,6 +323,9 @@ form > .button:hover {
 .fa-comment-alt {
     color: mediumpurple;
     font-size: 17px;
+    margin-left: 5px;
+    position: relative;
+    top: 1px;
 }
 
 .post-date-time {
