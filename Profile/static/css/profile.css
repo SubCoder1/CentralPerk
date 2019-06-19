@@ -2,7 +2,6 @@
 .prof-img-post-card-body {
   padding: 0rem;
 }
-
 .prof-card-body-img {
   border-radius: 1rem 1rem 0rem 0rem;
   width: 100%;
@@ -11,23 +10,17 @@
 .upper-row {
   padding-bottom: 5px;
 }
-
-.fa-fire-alt {
-  position: relative;
-  top: 3px;
-}
 /* ----------------------------------------- */
 
 /* ----------- Like btn on posts ----------- */
 .like-btn {
   float:left;
   position: relative;
-  top: 3px;
 }
 /* ----------------------------------------- */
 
 /* --------- comment btn on posts ---------- */
-.fa-comment-alt { top: 2px; margin-left: 5px; }
+.fa-comment-alt { margin-left: 5px; }
 
 .comment-counter { margin-left: 0px; }
 
@@ -35,7 +28,7 @@
 .profile-pic-rounded {
     border-radius: 50%!important;
     overflow: hidden;
-    height: 150px;
+    height: 132px;
 }
 /* ----------------------------------------- */
 
