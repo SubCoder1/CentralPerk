@@ -111,6 +111,7 @@
 .fa-comment-alt {
     top: 0px;
     bottom: 1px;
+    vertical-align: unset;
 }
 
 #empty-comment, #empty-like {
