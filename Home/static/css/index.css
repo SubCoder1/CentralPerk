@@ -30,8 +30,12 @@ a:hover {
 
 .display-2 {
     font-family: 'Poppins', sans-serif;
-    font-size: 30px;
+    font-size: 28px;
 }
+
+h3 { font-size: 22px; }
+h4 { font-size: 20px; }
+h6 { font-size: 15px; }
 
 /* ------------------ Notify ------------------ */
 .board {
@@ -89,7 +93,7 @@ a:hover {
 
 .notify-date-time {
     text-align: right; 
-    font-size: 15px;
+    font-size: 12px;
 }
 
 .empty-notif {
@@ -279,6 +283,8 @@ form > .button:hover {
     border-radius: 1.00rem;
 }
 
+.index-post-card { width: 614px; }
+
 .post-card-body-img {
     width: 100%;
 }
@@ -311,7 +317,7 @@ form > .button:hover {
 
 .fa-fire-alt {
     font-size: 18px;
-    vertical-align: top;
+    vertical-align: text-top;
     color: orangered;
 }
 
@@ -325,17 +331,17 @@ form > .button:hover {
     color: mediumpurple;
     font-size: 18px;
     position: relative;
-    vertical-align: text-top;
+    vertical-align: sub;
 }
 
 .comment-counter {
     vertical-align: top;
     font-size: 18px;
-    margin-left: -6px;
+    margin-left: -1px;
 }
 
 .post-date-time {
-    font-size: 15px;
+    font-size: 13px;
     float: right;
     position: relative;
     top: 2px;
@@ -382,6 +388,8 @@ form > .button:hover {
     border-radius: 50% !important;
     height: 39px;
     width: 40px;
+    background: #1d2124;
+    border-color: #1d2124;
 }
 
 .comment-send-btn:hover {
