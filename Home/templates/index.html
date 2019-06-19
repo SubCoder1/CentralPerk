@@ -68,27 +68,40 @@
                   <div class="notifications">
                     <div class="card notification">
                       <div class="card-body notify-body">
+                        <div class="d-flex">
                         {% if notification.reaction == 'Liked' %}
-                          <h4 style="font-size: 18px">
-                            <a href="{% url 'view_profile' notification.poked_by %}">
-                              <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
-                              {{ notification.poked_by }}
-                            </a> Liked your status.
-                          </h4>
-                        {% elif notification.reaction == 'Sent Follow Request' %}
-                          <h4 style="font-size: 18px">
+                          <div class="mr-1">
+                            <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                          </div>
+                          <div class="ml-2">
+                            <div class="m-0">
                               <a href="{% url 'view_profile' notification.poked_by %}">
-                                <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                                {{ notification.poked_by }}
+                              </a> Liked your status.
+                            </div>
+                          </div>
+                        {% elif notification.reaction == 'Sent Follow Request' %}
+                          <div class="mr-1">
+                            <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                          </div>
+                          <div class="ml-2">
+                            <div class="m-0">
+                              <a href="{% url 'view_profile' notification.poked_by %}">
                                 {{ notification.poked_by }}
                               </a> started to follow you.
-                          </h4>
+                            </div>
+                          </div>
                         {% elif notification.reaction == 'Commented' %}
-                          <h4 style="font-size: 18px">
+                          <div class="mr-1">
+                            <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                          </div>
+                          <div class="ml-2">
+                            <div class="m-0">
                               <a href="{% url 'view_profile' notification.poked_by %}">
-                                <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
                                 {{ notification.poked_by }}
                               </a> commented on your post.
-                          </h4>
+                            </div>
+                          </div>
                         {% elif notification.reaction == 'Replied' %}
                           <h4 style="font-size: 18px">
                               <a href="{% url 'view_profile' notification.poked_by %}">
@@ -97,6 +110,7 @@
                               </a> replied to your comment.
                           </h4>
                         {% endif %}
+                        </div>
                       </div>
                       <div class="card-footer">
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
@@ -171,11 +185,11 @@
               </form>
             </div>
             <br/><br/>
-            <h3 class="display-2" style="font-size: 2rem">Posts<h3>
+            <h3 class="display-2">Posts</h3>
             <div class="border index_border"></div>
-            <br>
+            <br/>
             {% for post in posts %}
-              <div class="card post-card">
+              <div class="card post-card index-post-card">
                 <div class="card-header">
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex justify-content-between align-items-center">
@@ -221,8 +235,7 @@
                       {{ post.status_caption|json_script:"post-data" }}
                     </div>
                     {% endif %}
-                    <br/>
-                    <form method="POST">
+                    <form method="POST" style="margin-top: 8px">
                       {% csrf_token %}
                       <input type="hidden" name="post_id" value="{{ post.post_id }}">
                       <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment"></textarea>
