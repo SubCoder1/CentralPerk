@@ -17,7 +17,7 @@
     {% endblock %}
   </head>
   <body>
-    <nav class="navbar navbar-expand-sm bg-1 sticky-top">
+      <nav class="navbar navbar-expand-sm bg-1 sticky-top">
         <!-- Brand -->
         <a class="navbar-brand" href="{% url 'home_view' %}">Centr<i class="fas fa-mug-hot" style="color:black"></i>lPerk</a>
       
@@ -46,149 +46,13 @@
             </li> 
           </ul>
         </div>
-    </nav>
-
-    <br><br>
+      </nav>
     <div class="container-fluid">
+      <br/><br/><br/>
       {% block body %}
-      <div class="row">
-        <div class="col-lg-4">
-          <br/><br/><br/>
-          <div class="board">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="display-2 notif-headline">Notifications</h4>
-                <a href="{% url 'clear_notifications' %}" class="clear-notify"><i class="material-icons">clear_all</i></a>
-                <br/>
-                <div class="border notify-border"></div>
-              </div>
-              <div class="card-body notify-card-body">
-                {% if notifications %}
-                {% for notification in notifications %}
-                  <div class="notifications">
-                    <div class="card notification">
-                      <div class="card-body notify-body">
-                        <div class="d-flex">
-                        {% if notification.reaction == 'Liked' %}
-                          <div class="mr-1">
-                            <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
-                          </div>
-                          <div class="ml-2">
-                            <div class="m-0">
-                              <a href="{% url 'view_profile' notification.poked_by %}">
-                                {{ notification.poked_by }}
-                              </a> Liked your status.
-                            </div>
-                          </div>
-                        {% elif notification.reaction == 'Sent Follow Request' %}
-                          <div class="mr-1">
-                            <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
-                          </div>
-                          <div class="ml-2">
-                            <div class="m-0">
-                              <a href="{% url 'view_profile' notification.poked_by %}">
-                                {{ notification.poked_by }}
-                              </a> started to follow you.
-                            </div>
-                          </div>
-                        {% elif notification.reaction == 'Commented' %}
-                          <div class="mr-1">
-                            <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
-                          </div>
-                          <div class="ml-2">
-                            <div class="m-0">
-                              <a href="{% url 'view_profile' notification.poked_by %}">
-                                {{ notification.poked_by }}
-                              </a> commented on your post.
-                            </div>
-                          </div>
-                        {% elif notification.reaction == 'Replied' %}
-                          <h4 style="font-size: 18px">
-                              <a href="{% url 'view_profile' notification.poked_by %}">
-                                <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
-                                {{ notification.poked_by }}
-                              </a> replied to your comment.
-                          </h4>
-                        {% endif %}
-                        </div>
-                      </div>
-                      <div class="card-footer">
-                        <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
-                      </div>
-                    </div>
-                  </div>
-                {% endfor %}
-                {% else %}
-                  <div class="empty-notif">
-                    <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                    <h5 style="position: relative; left: 2px;">No Notifications</h5>
-                  </div>
-                {% endif %}
-                <br/>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-4">
-          <br/>
-            <div class="card">
-              <div class="card-header">
-                <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
-                  <li class="nav-item px-1">
-                    <a class="nav-link link active" id="status-tab" data-toggle="tab" href="#status" role="tab" aria-controls="status" aria-selected="true">
-                        <i class="material-icons">notes</i>
-                    </a>
-                  </li>
-                  <li class="nav-item px-1">
-                    <a class="nav-link link" id="image-tab" data-toggle="tab" href="#image" role="tab" aria-controls="image" aria-selected="true">
-                      <i class="material-icons">insert_photo</i>
-                    </a>
-                  </li>
-                  <li class="nav-item px-1">
-                    <a class="nav-link link" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="true">
-                      <i class="material-icons">place</i>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="card-body">
-                  <div class="tab-content" id="cardtabContent">
-                    <div class="tab-pane fade show active" id="status" role="tabpanel" aria-labelledby="status-tab">
-                      <div class="form-group">
-                        <label class="sr-only" for="message">post</label>
-                        <textarea class="form-control form-alignment status" id="status_caption" name="status_caption" placeholder="What's your status?"></textarea>
-                      </div>
-                    </div> 
-                    <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-                        <div class="form-group">
-                          <input type="file" id="real-file" name="pic" hidden/>
-                          <input type="button" class="form-control post-img" id="img-btn-custom" value="No files selected" readonly/>
-                        </div>
-                    </div>
-                    <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
-                      <div class="form-group">
-                        <input type="text" class="form-control location" id="location" name="location" placeholder="Where are you now?">
-                      </div>
-                    </div> 
-                  </div>
-                </div>
-                <br>
-                <div class="card-footer status-card-footer">
-                  <div class="btn-toolbar justify-content-between">
-                    <div class="btn-group">
-                      <button class="post-btn btn btn-dark" type="submit">Post</button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-            </div>
-            <br/><br/>
-            <h3 class="display-2">Posts</h3>
-            <div class="border index_border"></div>
-            <br/>
-            {% for post in posts %}
+      <div class="d-flex flex-items-container justify-content-center">
+        <div class="post-container">
+          {% for post in posts %}
               <div class="card post-card index-post-card">
                 <div class="card-header">
                   <div class="d-flex justify-content-between align-items-center">
@@ -247,7 +111,159 @@
               <br>
             {% endfor %}
         </div>
-        <div class="col-lg-4"></div>
+        <div class="sidebar-container">
+          <div class="options-block" id="options">
+            <button class="btn btn-dark options-link" data-toggle="modal" data-target="#notification">
+              <i class="fas fa-bell"></i>
+            </button>
+            <div class="modal fade" id="notification" tabindex="-1" role="dialog" aria-labelledby="notification-title" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title headline">Notifications</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </a>
+                  </div>
+                  <!-- Notification body -->
+                  <div class="modal-body">
+                    {% if notifications %}
+                    {% for notification in notifications %}
+                      <div class="card notification">
+                        <div class="card-body notify-body">
+                          <div class="d-flex">
+                            <div class="mr-1">
+                              <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                            </div>
+                            {% if notification.reaction == 'Liked' %}
+                            <div class="ml-2">
+                              <div class="m-0">
+                                <a href="{% url 'view_profile' notification.poked_by %}">
+                                {{ notification.poked_by }}
+                                </a> Liked your status.
+                              </div>
+                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
+                            </div>
+                            {% elif notification.reaction == 'Sent Follow Request' %}
+                            <div class="ml-2">
+                              <div class="m-0">
+                                <a href="{% url 'view_profile' notification.poked_by %}">
+                                {{ notification.poked_by }}
+                                </a> started to follow you.
+                              </div>
+                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
+                            </div>
+                            {% elif notification.reaction == 'Commented' %}
+                            <div class="ml-2">
+                              <div class="m-0">
+                                <a href="{% url 'view_profile' notification.poked_by %}">
+                                {{ notification.poked_by }}
+                                </a> commented on your post.
+                              </div>
+                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
+                            </div>
+                            {% elif notification.reaction == 'Replied' %}
+                            <div class="ml-2">
+                              <div class="m-0">
+                                <a href="{% url 'view_profile' notification.poked_by %}">
+                                {{ notification.poked_by }}
+                                </a> replied to your comment.
+                              </div>
+                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
+                            </div>
+                            {% else %}
+                            <div class="empty-notif">
+                              <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                              <h5 style="position: relative; left: 2px;">No Notifications</h5>
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
+                    <br/>
+                    {% endfor %}
+                    {% else %}
+                    <div class="empty-notif">
+                      <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                      <h5 style="position: relative; left: 2px;">No Notifications</h5>
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="modal-footer">
+                    <a href="{% url 'clear_notifications' %}" class="clear-notify"><i class="far fa-trash-alt"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-dark options-link upload-btn" data-toggle="modal" data-target="#upload">
+              <i class="fas fa-plus"></i>
+            </button>
+            <div class="modal fade" id="upload" tabindex="-1" role="dialog" aria-labelledby="upload-title" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title headline">Upload</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </a>
+                  </div>
+                  <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-body upload-modal-body">
+                      <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
+                        <li class="nav-item px-1">
+                          <a class="nav-link link active" id="status-tab" data-toggle="tab" href="#status" role="tab" aria-controls="status" aria-selected="true">
+                            <i class="material-icons status-tab-ico">notes</i>
+                          </a>
+                        </li>
+                        <li class="nav-item px-1">
+                          <a class="nav-link link" id="image-tab" data-toggle="tab" href="#image" role="tab" aria-controls="image" aria-selected="true">
+                            <i class="material-icons image-tab-ico">insert_photo</i>
+                          </a>
+                        </li>
+                        <li class="nav-item px-1">
+                          <a class="nav-link link" id="location-tab" data-toggle="tab" href="#location" role="tab" aria-controls="location" aria-selected="true">
+                            <i class="material-icons location-tab-ico">place</i>
+                          </a>
+                        </li>
+                      </ul>
+                      <div class="tab-content" id="cardtabContent">
+                        <div class="tab-pane fade show active" id="status" role="tabpanel" aria-labelledby="status-tab">
+                          <div class="form-group">
+                            <label class="sr-only" for="message">post</label>
+                              <textarea class="form-control form-alignment status" id="status_caption" name="status_caption" placeholder="What's your status?"></textarea>
+                          </div>
+                        </div> 
+                        <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
+                          <div class="form-group">
+                            <input type="file" id="real-file" name="pic" hidden/>
+                            <input type="button" class="form-control post-img" id="img-btn-custom" value="No files selected" readonly/>
+                          </div>
+                        </div>
+                        <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
+                          <div class="form-group">
+                            <input type="text" class="form-control location" id="location" name="location" placeholder="Where are you now?">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  <div class="modal-footer">
+                    <div class="btn-group">
+                      <button class="post-btn btn btn-dark" type="submit">Post</button>
+                    </div>
+                  </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+            <br/><br/>
+          <div class="stories-block">
+            <h5 class="story-headline">Stories</h5>
+            <div class="border story-border"></div>
+            <br/>
+          </div>
+        </div>
       </div>
       {% endblock %}
     </div>
