@@ -23,6 +23,14 @@
     padding: 20px;
 }
 
+.status-view {
+    border-radius: 1rem;
+    position: absolute;
+    width: 100%;
+    justify-content: center;
+    flex: 1;
+}
+
 .wrap-img-view {
     flex: 1;
     background: black;
@@ -40,7 +48,6 @@
 
 /* ----------- post-data on the right ----------- */
 .wrap-data-view {
-    position: relative;
     flex: 0.5;
     background: #2e2a4b;
     border-radius: 0rem 1rem 1rem 0rem;    
@@ -77,6 +84,12 @@
     position: relative;
 }
 
+.only-detail {
+    height: 430px;
+    display: flex;
+    justify-content: center;
+}
+
 .post-user {
     text-align: center;
     padding: 5px;
@@ -97,7 +110,7 @@
 
 /* ---------- post-data comment section --------- */
 .comment-view-card-body {
-    padding: 5px 20px 10px 10px;
+    padding: 5px 35px 10px 25px;
     overflow-x: auto;
     position: relative;
 }
@@ -156,7 +169,7 @@
 }
 
 .like-view-card-body {
-    padding: 5px 20px 10px 10px;
+    padding: 5px 35px 10px 25px;
     overflow-x: auto;
     position: relative;
 }
@@ -168,20 +181,20 @@
 .like-date-time {
     text-align: right;
     float: right;
-    line-height: 3.3;
-    font-size: 15px;
+    line-height: 4;
+    font-size: 13px;
 }
 
 .like-section-footer {
     background:rgba(0,0,0,0);
+    display: flex;
+    justify-content: center;
 }
 
 .post-view-like-btn {
     border-radius: 50% !important;
     height: 39px;
     width: 40px;
-    position: relative;
-    left: 46.5%;
     opacity: 1;
     border-color: transparent;
 }
