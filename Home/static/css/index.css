@@ -138,7 +138,7 @@ form > .button:hover {
 }
 /* ----------------------------------------------- */
 
-/* -------- That white border under Posts -------- */
+/* -------------- That white border -------------- */
 .border {
     height: 2px;
     background: white;
@@ -341,39 +341,31 @@ form > .button:hover {
 /* ----------------------------------------------- */
 
 /* --------------- options-block ----------------- */
-.fa-bell {
-    color: darkturquoise;
-}
-
 .options-link {
     height: 39px;
     width: 40px;
-    background: black;
     border: none;
     border-radius: 50% !important;
-}
-
-.options-link:hover {
-    background: black;
-}
-
-.upload-btn {
-    background: rebeccapurple;
-}
-
-.upload-btn:hover {
-    background: #521e85;
 }
 
 .options-link:hover .fa-bell {
     animation: ring 1s ease;
 }
 
-.fa-plus { transition: transform 0.3s; }
+.notif-btn { background: #4eb08f; }
+.notif-btn:hover { background: #368f71; }
 
-.options-link:hover .fa-plus {
-    transform: rotate(45deg);
-}
+.upload-btn { background: mediumorchid; }
+.upload-btn:hover { background: #a241ba; }
+
+.fa-plus { transition: transform 0.3s; }
+.options-link:hover .fa-plus { transform: rotate(45deg); }
+
+.online-users-btn { background: #ee5f2b; }
+.online-users-btn:hover { background: #d95524; }
+
+.fa-user-alt { transition: transform 0.3s; }
+.options-link:hover .fa-user-alt { transform: rotate(30deg) scale(1.5); }
 
 @-webkit-keyframes ring {
     0% {
