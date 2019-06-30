@@ -1,21 +1,23 @@
 // JS code to set height of comment-view-card-body(comment box in view_post) & like-view-card-body
-const card_height = parseInt(document.getElementById('id_view-post-card').clientHeight);
-const card_header_height = parseInt(document.getElementById('id_view-post-card-header').clientHeight);
-const card_footer_height = 53;
-const like_card_footer_height = 63;
+const post_card = document.getElementById('id_view-post-card');
+if (post_card) {
+    const card_height = parseInt(document.getElementById('id_view-post-card').clientHeight);
+    const card_header_height = parseInt(document.getElementById('id_view-post-card-header').clientHeight);
+    const card_footer_height = 53;
+    const like_card_footer_height = 63;
 
 
-var comment_body_height = card_height - (card_header_height + card_footer_height) - 4;
-var like_body_height = card_height - (card_header_height + like_card_footer_height);
-var comment_height = "height:" + comment_body_height.toString() + "px";
-var like_height = "height:" + like_body_height.toString() + "px";
-//console.log(attribute);
+    var comment_body_height = card_height - (card_header_height + card_footer_height) - 4;
+    var like_body_height = card_height - (card_header_height + like_card_footer_height);
+    var comment_height = "height:" + comment_body_height.toString() + "px";
+    var like_height = "height:" + like_body_height.toString() + "px";
+    //console.log(attribute);
 
-var comment_body_height = document.getElementById('id_view-post-comment-body');
-var like_body_height = document.getElementById('id_view-post-like-body');
-comment_body_height.setAttribute('style', comment_height);
-like_body_height.setAttribute('style', like_height);
-
+    var comment_body_height = document.getElementById('id_view-post-comment-body');
+    var like_body_height = document.getElementById('id_view-post-like-body');
+    comment_body_height.setAttribute('style', comment_height);
+    like_body_height.setAttribute('style', like_height);
+};
 
 // JS code for handling comment replies
 var length = 0;
