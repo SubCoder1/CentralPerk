@@ -84,8 +84,8 @@ class Friends(models.Model):
         online_friends, followers, following = None, None, None
         if not created:
             online_friends = friend_obj.following.filter(active=True).values_list('username', 'profile_pic', named=True)
-            followers = friend_obj.following.values_list('username', 'profile_pic', named=True)
-            following = friend_obj.followers.values_list('username', 'profile_pic', named=True)
+            followers = friend_obj.followers.values_list('username', 'profile_pic', named=True)
+            following = friend_obj.following.values_list('username', 'profile_pic', 'last_login', 'active', named=True)
         return (online_friends, followers, following)
 
     class Meta:
