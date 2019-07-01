@@ -78,5 +78,15 @@ class Friends(models.Model):
         del created
         friend.followers.remove(current_user)
 
+    @classmethod
+    def get_friends_list(cls, current_user):
+        friend_obj, created = cls.objects.get_or_create(current_user=current_user)
+        online_friends, followers, following = None, None, None
+        if not created:
+            online_friends = friend_obj.following.filter(active=True).values_list('username', 'profile_pic', named=True)
+            followers = friend_obj.following.values_list('username', 'profile_pic', named=True)
+            following = friend_obj.followers.values_list('username', 'profile_pic', named=True)
+        return (online_friends, followers, following)
+
     class Meta:
         verbose_name = 'Relation'
