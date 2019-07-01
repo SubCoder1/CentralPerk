@@ -110,7 +110,7 @@
                   </div>
                 </div>
               </div>
-              <br>
+              <br/>
             {% endfor %}
         </div>
         <div class="sidebar-container">
@@ -299,6 +299,11 @@
                             <i class="material-icons online-green-ico">lens</i>
                             <br/>
                           {% endfor %}
+                        {% else %}
+                          <div class="empty-notif">
+                            <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                            <h5 style="position: relative; left: 2px;">No one's online</h5>
+                          </div>
                         {% endif %}
                       </div>
                       <div class="tab-pane fade" id="followers" role="tabpanel" aria-labelledby="followers-tab">
@@ -308,9 +313,13 @@
                               <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded"/>
                               {{ user.username }}
                             </a>
-                            
                             <br/>
                           {% endfor %}
+                        {% else %}
+                          <div class="empty-notif">
+                            <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                            <h5 style="position: relative; left: 2px;">No followers</h5>
+                          </div>
                         {% endif %}
                       </div>
                       <div class="tab-pane fade" id="following" role="tabpanel" aria-labelledby="following-tab">
@@ -320,9 +329,18 @@
                               <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded"/>
                               {{ user.username }}
                             </a>
-                            
+                            {% if user.active == 'True' %}
+                              <i class="material-icons online-green-ico">lens</i>
+                            {% else %}
+                              <h6 class="last_login_date_time">{{ user.last_login|timesince }} ago</h6>
+                            {% endif %}
                             <br/>
                           {% endfor %}
+                        {% else %}
+                          <div class="empty-notif">
+                            <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+                            <h5 style="position: relative; left: 2px;">No following</h5>
+                          </div>
                         {% endif %}
                       </div>
                     </div>
