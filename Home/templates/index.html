@@ -74,6 +74,7 @@
                 {% if post.status_caption and not post.pic %}
                   <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container"> 
                     {{ post.status_caption|json_script:"post-data" }}
+                    <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
                   </div>
                 {% elif post.status_caption and post.pic %}
                   <div class="card-body index-img-post-card-body">
@@ -97,6 +98,7 @@
                     {% if post.status_caption and post.pic %}
                     <div class="text-align-left display-3 index-post-card-body" id="status_caption-container">
                       {{ post.status_caption|json_script:"post-data" }}
+                      <a href="{% url 'view_post' post.post_id %}" hidden="true">Read More..</a>
                     </div>
                     {% endif %}
                     <form method="POST" style="margin-top: 8px">
@@ -259,8 +261,77 @@
             <button class="btn btn-dark options-link online-users-btn" data-toggle="modal" data-target="#online-users">
               <i class="fas fa-user-alt"></i>
             </button>
+            <div class="modal fade" id="online-users" tabindex="-1" role="dialog" aria-labelledby="online-users-title" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title headline">Friends</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </a>
+                  </div>
+                  <div class="modal-body" style="padding: 0rem 1rem 1rem 1rem;">
+                    <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
+                      <li class="nav-item">
+                        <a class="nav-link link active" id="online-tab" data-toggle="tab" href="#online" role="tab" aria-controls="online-usr">
+                          <h4>Online</h4>
+                        </a>
+                      </li>
+                      <li class="nav-item px-1">
+                        <a class="nav-link link" id="followers-tab" data-toggle="tab" href="#followers" role="tab" aria-controls="followers">
+                          <h4>Followers</h4>
+                        </a>
+                      </li>
+                      <li class="nav-item px-1">
+                        <a class="nav-link link" id="following-tab" data-toggle="tab" href="#following" role="tab" aria-controls="following">
+                          <h4>Following</h4>
+                        </a>
+                      </li>
+                    </ul>
+                    <div class="tab-content" id="cardtabContent">
+                      <div class="tab-pane fade show active" id="online" role="tabpanel" aria-labelledby="online-tab">
+                        {% if online_users %}
+                          {% for user in online_users %}
+                            <a href="{% url 'view_profile' user.username %}">
+                              <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded"/>
+                              {{ user.username }}
+                            </a>
+                            <i class="material-icons online-green-ico">lens</i>
+                            <br/>
+                          {% endfor %}
+                        {% endif %}
+                      </div>
+                      <div class="tab-pane fade" id="followers" role="tabpanel" aria-labelledby="followers-tab">
+                        {% if followers %}
+                          {% for user in followers %}
+                            <a href="{% url 'view_profile' user.username %}">
+                              <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded"/>
+                              {{ user.username }}
+                            </a>
+                            
+                            <br/>
+                          {% endfor %}
+                        {% endif %}
+                      </div>
+                      <div class="tab-pane fade" id="following" role="tabpanel" aria-labelledby="following-tab">
+                        {% if following %}
+                          {% for user in following %}
+                            <a href="{% url 'view_profile' user.username %}">
+                              <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded"/>
+                              {{ user.username }}
+                            </a>
+                            
+                            <br/>
+                          {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-            <br/><br/>
+          <br/><br/>
           <div class="stories-block">
             <h5 class="story-headline">Stories</h5>
             <div class="border story-border"></div>
