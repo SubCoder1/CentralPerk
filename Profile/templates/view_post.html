@@ -67,8 +67,8 @@
                             <br/>
                             {{ post_data.date_time|timesince }} ago
                             <br/><br/>
-                            <div class="post-status-caption">
-                            {{ post_data.status_caption }}
+                            <div class="post-status-caption" id="status_caption_container">
+                            {{ post_data.status_caption|json_script:"post-status_caption" }}
                             </div>
                         </div>
                     </div>
