@@ -578,6 +578,13 @@ form > .button:hover {
     float: right;
     line-height: 5;
 }
+
+.last_login_date_time {
+    text-align: right;
+    float: right;
+    line-height: 3.4;
+    font-size: 13px;
+}
 /* ----------------------------------------------- */
 
 /* --------------- stories-block ----------------- */
