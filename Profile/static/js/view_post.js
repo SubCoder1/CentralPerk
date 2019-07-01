@@ -42,3 +42,15 @@ comment_textbox.addEventListener('input', function() {
         document.querySelector(".reply-to").value = "";
     }
 });
+
+// JS code to split status_caption with newlines (if any)
+var post_status_container = document.getElementById("status_caption_container");
+var status_caption = document.getElementById("post-status_caption");
+var post = JSON.parse(status_caption.textContent);
+var newline_count = (post.match(/\r\n/g) || '').length + 1;
+if (newline_count) {
+    var lines = post.split("\r\n");
+      for (var j=0; j < lines.length; j++) {
+        post_status_container.innerHTML += lines[j] + '<br/>';
+      }
+}
