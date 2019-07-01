@@ -74,6 +74,7 @@
                 {% if post.status_caption and not post.pic %}
                   <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container">
                     {{ post.status_caption|json_script:"post-data" }}
+                    <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
                   </div>
                 {% elif post.status_caption and post.pic %}
                   <div class="card-body prof-img-post-card-body">
@@ -96,6 +97,7 @@
                         {% if post.status_caption and post.pic %}
                         <div class="text-align-left display-3 index-post-card-body" id="status_caption-container">
                             {{ post.status_caption|json_script:"post-data" }}
+                            <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
                         </div>
                         {% endif %}
                     </div>
