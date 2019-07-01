@@ -78,7 +78,7 @@ h6 { font-size: 15px; }
 .nav-link { color: white; }
 
 .nav-link:hover {
-    color: black;
+    color: darkgrey;
 }
 /* ----------------------------------------------- */
 
@@ -270,7 +270,7 @@ form > .button:hover {
 }
 
 .read-more:hover {
-    color: black;
+    color: #959494;
 }
 /* ------------ post card comment box ------------ */
 .comment-input {
@@ -568,6 +568,15 @@ form > .button:hover {
 .location {
     position: absolute;
     width: 93%;
+}
+/* ----------------------------------------------- */
+
+/* ------------------- Friends ------------------- */
+.online-green-ico {
+    color: #adff2f;
+    font-size: 8px;
+    float: right;
+    line-height: 5;
 }
 /* ----------------------------------------------- */
 
