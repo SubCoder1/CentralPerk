@@ -1,14 +1,15 @@
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import login, logout, authenticate
-from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, reverse
 from Profile.models import User
 from Profile.forms import Registerform
 from AUth.tasks import update_user_activity_on_login, update_user_activity_on_logout, erase_duplicate_sessions
+import json
 
 @csrf_protect
 def user_login(request):
-    context = {}
+    context = None
     logout(request)
     if request.POST:
         username = request.POST.get('username')
@@ -23,9 +24,10 @@ def user_login(request):
             elif user.session_key != request.session.session_key:
                 # Celery handling the task to delete sessions of same user logged in from multiple devices
                 erase_duplicate_sessions.delay(username, request.session.session_key, request.session.cache_key)
-            return redirect(reverse('home_view'))
+            return HttpResponse(json.dumps("valid user"), content_type="application/json")
         else:
-            context = { 'error':"Username or Password is incorrect!" }
+            context = "Username or Password is incorrect!"
+            return HttpResponse(json.dumps(context), content_type="application/json")
     return render(request, 'login.html', context=context)
 
 def user_logout(request):
