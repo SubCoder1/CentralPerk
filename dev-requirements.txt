@@ -6,3 +6,4 @@ django_extensions
 django_redis
 redis
 celery
+argon2-cffi
