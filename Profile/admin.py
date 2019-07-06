@@ -1,6 +1,7 @@
 from django.contrib import admin
 from Profile.models import User, Friends
-from Profile.forms import UserAdminChangeForm, Registerform
+from Profile.forms import UserAdminChangeForm
+from AUth.forms import Registerform
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 # Define your model Admins here.
