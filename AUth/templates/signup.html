@@ -1,122 +1,59 @@
+{% extends 'login.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Register Page</title>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--===============================================================================================-->
-	<link rel="icon" type="image/png" href="{% static 'signup/images/icons/favicon.ico' %}"/>
-<!--===============================================================================================-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/hamburgers/1.1.3/hamburgers.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animsition/4.0.2/css/animsition.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/css/select2.min.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.3/daterangepicker.css">
-<!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'signup/css/main.css' %}">
-<!--===============================================================================================-->
-</head>
-<body>
 
-	<div class="container-contact100">
-		<div class="wrap-contact100">
-			<form method="POST"  class="contact100-form validate-form">
-				{% csrf_token %}
-				<span class="contact100-form-title">
-					Say Hello!
-				</span>
-				<div class="wrap-input100 validate-input">
-					<span class="label-input100">Username <span style="color:red">{{ username }}</span></span>
-					<input class="input100" type="text" name="username" placeholder="Enter a Username">
-					<span class="focus-input100"></span>
-				</div>
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'signup/css/main.css' %}">
+{% endblock %}
 
-				<div class="wrap-input100 validate-input">
-					<span class="label-input100">Email <span style="color:red">{{ email }}</span></span>
-					<input class="input100" type="text" name="email" placeholder="Enter your email addess">
-					<span class="focus-input100"></span>
-				</div>
+{% block title %}
+<title>Register Page</title>
+{% endblock %}
 
-				<div class="wrap-input100 input100-select">
-					<span class="label-input100">Gender</span>
-					<div>
-						<select class="selection-2" name="gender">
-							<option>Male</option>
-							<option>Female</option>
-							<option>Other</option>
-						</select>
-					</div>
-					<span class="focus-input100"></span>
-				</div>
-
-				<div class="wrap-input100 validate-input" data-validate = "Bio is required">
-					<span class="label-input100">Bio</span>
-					<textarea class="input100" name="bio" placeholder="Your bio  here..."></textarea>
-					<span class="focus-input100"></span>
-				</div>
-
-				<div class="wrap-input100 validate-input" data-validate = "Password length must be 8 or longer">
-					<span class="label-input100">Your Password</span>
-					<input class="input100" type="password" name="password" placeholder="Enter your account password">
-					<span class="focus-input100"></span>
-				</div>
-
-				<div class="container-contact100-form-btn">
-					<div class="wrap-contact100-form-btn">
-						<div class="contact100-form-bgbtn"></div>
-						<button class="contact100-form-btn" type="submit">
-							<span>
-								Register
-								<i class="fa fa-long-arrow-right m-l-7" aria-hidden="true"></i>
-							</span>
-						</button>
-					</div>
-				</div>
-			</form>
+{% block body %}
+	<h1 class="headline">Say Hello!</h1>
+	<form method="POST" autocomplete="off">
+		{% csrf_token %}
+		<input class="input100 register-input" type="text" id="register-username" name="username" placeholder="Username" maxlength="20"/>
+		<div class="text-center p-t-12 signup-error">
+			<span class="txt1" id="form-error-username" style="color:orange;"></span>
 		</div>
-	</div>
+		<br/>
+		<input class="input100 register-input" type="text" id="register-fullname" name="full_name" placeholder="Full Name" maxlength="50"/>
+		<div class="text-center p-t-12 signup-error">
+			<span class="txt1" id="form-error-fullname" style="color:orange;"></span>
+		</div>
+		<br/>
+		<input class="input100 register-input" type="email" id="register-email" name="email" placeholder="Email" maxlength="254"/>
+		<div class="text-center p-t-12 signup-error">
+			<span class="txt1" id="form-error-email" style="color:orange;"></span>
+		</div>
+		<br/>
+		<div class="input100 register-input gender-select-container" id="register-gender">
+			<select class="gender-selection-dropdown" name="gender" id="choice">
+				<option selected disabled>Gender</option>
+				<option>Male</option>
+				<option>Female</option>
+				<option>Other</option>
+			</select>
+		</div>
+		<div class="text-center p-t-12 signup-error">
+			<span class="txt1" id="form-error-gender" style="color:orange;"></span>
+		</div>
+		<br/>
+		<input class="input100 register-input pass-input-margin" type="password" id="register-pass" name="password" placeholder="Password"/>
+		<div class="text-center p-t-12 signup-error">
+			<span class="txt1" id="form-error-password" style="color:orange;"></span>
+		</div>
+		<br/>
+		<div class="container-register-form-btn"> 
+			<button class="login100-form-btn" id="signup-btn" type="submit">sign up
+			<img class="login-loading-gif" id="loading-gif" src="{% static 'login/img/loading.gif' %}">
+			</button>
+		</div>
+	</form>
 
-	<div id="dropDownSelect1"></div>
+{% endblock %}
 
-<!--===============================================================================================-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<!--===============================================================================================-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/animsition/4.0.2/js/animsition.min.js"></script>
-<!--===============================================================================================-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/esm/popper.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<!--===============================================================================================-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.5/js/select2.min.js"></script>
-	<script>
-		$(".selection-2").select2({
-			minimumResultsForSearch: 20,
-			dropdownParent: $('#dropDownSelect1')
-		});
-	</script>
-<!--===============================================================================================-->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.3/daterangepicker.js"></script>
-<!--===============================================================================================-->
-	<script src="{% static 'signup/vendor/countdowntime/countdowntime.js' %}"></script>
-<!--===============================================================================================-->
+{% block script %}
 	<script src="{% static 'signup/js/main.js' %}"></script>
-
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-23581568-13');
-</script>
-
-</body>
-</html>
+{% endblock %}
