@@ -1,21 +1,12 @@
+/*----------------- font imports-----------------*/
 @font-face {
   font-family: Poppins-Regular;
   src: url('../fonts/poppins/Poppins-Regular.ttf'); 
 }
 
 @font-face {
-  font-family: Poppins-Bold;
-  src: url('../fonts/poppins/Poppins-Bold.ttf'); 
-}
-
-@font-face {
   font-family: Poppins-Medium;
   src: url('../fonts/poppins/Poppins-Medium.ttf'); 
-}
-
-@font-face {
-  font-family: Montserrat-Bold;
-  src: url('../fonts/montserrat/Montserrat-Bold.ttf'); 
 }
 
 * {
@@ -27,6 +18,11 @@
 body, html {
 	height: 100%;
 	font-family: Poppins-Regular, sans-serif;
+}
+
+::placeholder {
+  color: white;
+  opacity: 1;
 }
 
 h1, h2, h3, h4, h5, h6 { color: white; }
@@ -72,7 +68,8 @@ input:focus:-moz-placeholder { color:transparent; }
 input:focus::-moz-placeholder { color:transparent; }
 input:focus:-ms-input-placeholder { color:transparent; }
 
-.container-login100 {
+/*------------------ container ------------------*/
+.container-auth100 {
   width: 100%;  
   min-height: 100vh;
   display: -webkit-box;
@@ -89,10 +86,9 @@ input:focus:-ms-input-placeholder { color:transparent; }
   background: -webkit-linear-gradient(-135deg, #c850c0, #4158d0);
   background: -o-linear-gradient(-135deg, #c850c0, #4158d0);
   background: -moz-linear-gradient(-135deg, #c850c0, #4158d0);
-  background: linear-gradient(-135deg, blueviolet, #4158d0);
 }
 
-.wrap-login {
+.wrap-auth {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -101,8 +97,10 @@ input:focus:-ms-input-placeholder { color:transparent; }
   text-align: center;
 }
 
+/*------------------ headline ------------------*/
 .headline { position: relative; bottom: 10px; }
 
+/*-------------- wrap-login-form ---------------*/
 .wrap-loginform {
   display: -webkit-box;
   display: -webkit-flex;
@@ -112,17 +110,18 @@ input:focus:-ms-input-placeholder { color:transparent; }
   flex-direction: column;
 }
 
+/*---------------- input-fields ----------------*/
 .input100 {
   font-family: Poppins-Medium;
   font-size: 15px;
   line-height: 1.5;
   color: white;
   display: block;
-  width: 300px;
-  background: black;
+  width: 320px;
+  background: transparent;
+  border-bottom: 2.5px solid white;
   height: 50px;
-  border-radius: 25px;
-  padding: 0 30px 0 26px;
+  padding: 10px;
 }
 
 .password-margin {
@@ -170,7 +169,7 @@ input:focus:-ms-input-placeholder { color:transparent; }
 }
 
 .login100-form-btn:hover {
-  background: mediumaquamarine;
+  background: #1d1d1d;
 }
 
 .login-loading-gif {
