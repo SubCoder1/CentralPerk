@@ -25,7 +25,7 @@ $('document').ready(function() {
 
     var togglebutton = function() {
         $('#login-btn').attr('title', '');
-    }
+    };
 
     login_btn.addEventListener('click', function(event) {
         // show the loading-screen-gif
@@ -50,6 +50,6 @@ $('document').ready(function() {
                     error.innerHTML = "Username or Password is incorrect";
                 }
             }
-        })
-    })
+        });
+    });
 });
