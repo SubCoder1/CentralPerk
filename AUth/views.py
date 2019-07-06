@@ -3,9 +3,13 @@ from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
 from Profile.models import User
-from Profile.forms import Registerform
-from AUth.tasks import update_user_activity_on_login, update_user_activity_on_logout, erase_duplicate_sessions
-import json
+from AUth.forms import Registerform
+from AUth.tasks import (
+    update_user_activity_on_login, update_user_activity_on_logout, 
+    erase_duplicate_sessions, check_username_validity,
+    check_email_validity, check_pass_strength
+    )
+import json, requests
 
 @csrf_protect
 def user_login(request):
@@ -38,19 +42,41 @@ def user_logout(request):
 @csrf_protect
 def register_user(request):
     context = {}
-    form = Registerform(request.POST or None)
-    if form.is_valid():
-        form.save()
-        username = form.cleaned_data.get('username')
-        password = form.cleaned_data.get('password')
-        user = authenticate(username=username, password=password)
-        if user is not None:
-            if user.is_active:
-                login(request, user)
-                return redirect(reverse('home_view'))
-    else:
-        if form.has_error('username'):
-            context['username'] = 'already exists!'
-        if form.has_error('email'):
-            context['email'] = 'already exists!'
+    if request.POST:
+        activity = request.POST.get('activity')
+        result = None
+        if activity == 'check username validity':
+            username = request.POST.get('username')
+            result = check_username_validity.delay(username).get()
+        elif activity == 'check email validity':
+            email = request.POST.get('email')
+            result = check_email_validity.delay(email).get()
+        elif activity == 'check pass strength':
+            username = request.POST.get('username')
+            email = request.POST.get('email')
+            password = request.POST.get('password')
+            result = check_pass_strength.delay(password, username, email).get()
+        else:
+            result = {}
+            form = Registerform(request.POST or None)
+            if form.is_valid():
+                form.save()
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                if user is not None and user.is_active:
+                    login(request, user)
+                    result = 'valid form'
+            else:
+                if form.has_error('username'):
+                    result['username'] = form.errors['username']
+                if form.has_error('full_name'):
+                    result['full_name'] = form.errors['full_name']
+                if form.has_error('gender'):
+                    result['gender'] = form.errors['gender']
+                if form.has_error('email'):
+                    result['email'] = form.errors['email']
+                if form.has_error('password'):
+                    result['password'] = form.errors['password']
+        return HttpResponse(json.dumps(result), content_type='application/json')
     return render(request, 'signup.html', context)
