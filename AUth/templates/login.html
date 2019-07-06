@@ -6,18 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="{% static 'login/css/main.css' %}">
-	<title>Login Page</title>
+	{% block style %}
+	{% endblock %}
+	{% block title %}
+		<title>Login Page</title>
+	{% endblock %}
   </head>
   <body>
-    <div class="container-login100">
-		<div class="wrap-login">
+    <div class="container-auth100">
+		<div class="wrap-auth">
+		{% block body %}
 			<h1 class="headline">CentralPerk</h1>
 			<form class="wrap-loginform" method="POST">
 				{% csrf_token %}
 				<input class="input100" type="text" id="login-username" name="username" placeholder="Username">
-				<span class="focus-input100"></span>
+				<br/>
 				<input class="input100 password-margin" id="login-pass" type="password" name="password" placeholder="Password">
-				<span class="focus-input100"></span>
 				<div class="text-center p-t-12 login-error">
 					<span class="txt1" id="form-error" style="color:orange;"></span>
 				</div>
@@ -37,6 +41,7 @@
 					</a>
 				</div>
 			</form>
+		{% endblock %}
 		</div>
 	</div>
     <!-- Optional JavaScript -->
@@ -44,6 +49,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-	<script src="{% static 'login/js/main.js' %}"></script>
+	{% block script %}
+		<script src="{% static 'login/js/main.js' %}"></script>
+	{% endblock %}
   </body>
 </html>
