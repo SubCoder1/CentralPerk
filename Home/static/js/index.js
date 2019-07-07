@@ -1,15 +1,3 @@
-// JS code for nav-bar search scroll-effect
-var prevScrollpos = window.pageYOffset;
-window.onscroll = function() {
-var currentScrollPos = window.pageYOffset;
-  if (prevScrollpos > currentScrollPos) {
-    document.getElementById("search").style.top = "0";
-  } else {
-    document.getElementById("search").style.top = "-100px";
-  }
-  prevScrollpos = currentScrollPos;
-}
-
 // JS code for uploaded file-name to appear on custom-btn
 const realfilebtn = document.getElementById("real-file");
 const custombtn = document.getElementById("img-btn-custom");
