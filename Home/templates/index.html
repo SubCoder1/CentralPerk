@@ -17,6 +17,7 @@
     {% endblock %}
   </head>
   <body>
+      <div class="landing-page-load"></div>
       <nav class="navbar navbar-expand-sm bg-1 sticky-top">
         <!-- Brand -->
         <a class="navbar-brand" href="{% url 'home_view' %}">Centr<i class="fas fa-mug-hot" style="color:black"></i>lPerk</a>
@@ -27,16 +28,6 @@
       
         <!-- Links -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar" data-target="collapsibleNavbar">
-          <ul class="navbar-nav ml-auto">
-                <!-- Dropdown --> 
-                <li class="nav-item">
-                    <form method="POST" id="search">
-                      {% csrf_token %}
-                        <input type="text" class="textbox" placeholder="Search for friends...">
-                        <input title="Search" value="&#x1F50E" type="submit" class="button">
-                    </form>
-                </li>
-          </ul>
           <ul class="navbar-nav ml-auto">    
             <li class="nav-item">
               <a class="nav-link" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>
@@ -111,7 +102,7 @@
                 </div>
               </div>
               <br/>
-            {% endfor %}
+          {% endfor %}
         </div>
         <div class="sidebar-container">
           <div class="options-block" id="options">
@@ -345,6 +336,21 @@
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-dark options-link search-btn" data-toggle="modal" data-target="#search-users">
+              <i class="fas fa-search"></i>
+            </button>
+            <div class="modal fade" id="search-users" tabindex="-1" role="dialog" aria-labelledby="search-title" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title headline">
+                      <input class="search-bar" type="text" id="login-username" name="search" placeholder="Search for friends..." autocomplete="off">
+                    </h5>
+                  </div>
+                  <div class="modal-body"></div>
                 </div>
               </div>
             </div>
