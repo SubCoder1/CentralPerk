@@ -9,7 +9,7 @@ from AUth.tasks import (
     erase_duplicate_sessions, check_username_validity,
     check_email_validity, check_pass_strength
     )
-import json, requests
+import json
 
 @csrf_protect
 def user_login(request):
