@@ -47,6 +47,22 @@ class User(AbstractBaseUser):
     def get_user_obj(cls, username):
         return cls.objects.get(username=username)
 
+POST_NOTIF_CHOICES = (('Disable', 'Disable'), ('From People I Follow', 'From People I Follow'), ('From Everyone', 'From Everyone'))
+class Account_Notif_Settings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    disable_all = models.BooleanField(default=False)
+    p_likes = models.CharField(verbose_name='Post Likes', max_length=21, choices=POST_NOTIF_CHOICES, default=POST_NOTIF_CHOICES[2][1])
+    p_comments = models.CharField(verbose_name='Post Comments', max_length=21, choices=POST_NOTIF_CHOICES, default=POST_NOTIF_CHOICES[2][1])
+    p_comment_likes = models.CharField(verbose_name='Post Comment Likes', max_length=21, choices=POST_NOTIF_CHOICES, default=POST_NOTIF_CHOICES[0][1])
+    f_requests = models.BooleanField(default=False)
+    objects = models.Manager()
+
+    class Meta:
+        verbose_name = "User Setting"
+
+    def __str__(self):
+        return str(self.user)
+
 class Friends(models.Model):
     followers = models.ManyToManyField(User)
     current_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='current_user')
@@ -64,7 +80,6 @@ class Friends(models.Model):
         friend, created = cls.objects.get_or_create(current_user=follow_user)
         del created
         friend.followers.add(current_user)
-
 
     @classmethod
     def unfollow(cls, current_user, unfollow_user):
