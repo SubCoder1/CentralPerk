@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
-from Profile.models import User
+from Profile.models import User, Friends, Account_Notif_Settings
 from AUth.forms import Registerform
 from AUth.tasks import (
     update_user_activity_on_login, update_user_activity_on_logout, 
@@ -66,6 +66,8 @@ def register_user(request):
                 user = authenticate(username=username, password=password)
                 if user is not None and user.is_active:
                     login(request, user)
+                    Account_Notif_Settings.objects.create(user=user)
+                    Friends.objects.create(current_user=user)
                     result = 'valid form'
             else:
                 if form.has_error('username'):
