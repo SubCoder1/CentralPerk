@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from celery import shared_task
-from Profile.models import Friends, User
+from Profile.models import Friends, User, Account_Notif_Settings
 from Home.models import PostModel, UserNotification
 
 @shared_task
@@ -28,6 +28,29 @@ def share_posts(username, post_id):
 
 @shared_task
 def send_notifications(username, reaction, send_to_username=None, post_id=None):
+    # Check user account settings conditions before sending notifications
+    send_to = User.get_user_obj(username=send_to_username)
+    acc_settings = Account_Notif_Settings.objects.get(user=send_to)
+    if acc_settings.disable_all:
+        return 'User disabled all incoming notifications'
+        
+    if reaction == 'Liked' or reaction == 'Commented':
+        if acc_settings.p_likes == 'Disable' and reaction == 'Liked' or reaction == 'Commented' and acc_settings.p_comments == 'Disable':
+            return f'User disabled all incoming Post {reaction} Notifications'
+        elif acc_settings.p_likes == 'From People I Follow' or acc_settings.p_comments == 'From People I Follow':
+            relation_obj = Friends.objects.get(current_user=send_to)
+            if not relation_obj.following.filter(username=username).exists():
+                return f'User has set Post {reaction} notifications to following only'
+
+    if reaction == 'Sent Follow Request':
+        if acc_settings.f_requests:
+            return 'User has disabled all incoming Follow Requests'
+
+    if reaction == 'Commented' and acc_settings.p_comments == 'Disable':
+        return 'User disabled all incoming Post Comments Notifications'
+    
+    # There's no restrictions on notifications set by send_to_user
+    # Proceed with setting-up & sending notif to send_to_user
     if reaction == 'Liked' or reaction == 'Commented':
         try:
             post = PostModel.objects.get_post(post_id=post_id)
@@ -45,7 +68,6 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
                 return "comment_notif sent successfully :)"
 
     elif reaction == 'Sent Follow Request' or reaction == 'Replied':
-        send_to = User.get_user_obj(username=send_to_username)
         if send_to_username == username and reaction == 'Replied':
             #return f"({username}, {send_to_username})"
             return "User replied to his/her own comment :|"
