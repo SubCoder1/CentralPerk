@@ -19,7 +19,125 @@
     </div>
     <div class="edit-prof-link">
     {% if editable %}
-        <a class="btn btn-dark" href="{% url 'edit_profile' profile.username %}"><span>Edit Profile</span></a>
+        <button class="btn btn-dark options-link settings" id="user-acc-settings-btn" data-toggle="modal" data-target="#settings">
+            <i class="fas fa-cog"></i>
+        </button>
+        <div class="modal fade" id="settings" tabindex="-1" role="dialog" aria-labelledby="settings-title" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title headline">Account Settings</h5>
+                        <a href="#" id="acc_settings_close" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true" style="color: white;">&times;</span>
+                        </a>
+                    </div>
+                    <div class="modal-body nav-pills-modal-body">
+                        <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
+                            <li class="nav-item px-1">
+                                <a class="nav-link link active" id="notif-tab" data-toggle="tab" href="#notif" role="tab" aria-controls="notif" aria-selected="true">
+                                    <i class="fas fa-bell"></i>
+                                </a>
+                            </li>
+                            <li class="nav-item px-1">
+                                <a class="nav-link link" id="privacy-tab" data-toggle="tab" href="#privacy" role="tab" aria-controls="privacy" aria-selected="true">
+                                    <i class="fas fa-lock"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="cardtabContent">
+                            <div class="tab-pane fade show active" id="notif" role="tabpanel" aria-labelledby="notif-tab">
+                                <img id="loading-gif" src="{% static 'login/img/loading.gif' %}"/>
+                                <form id="user_acc_settings_form" method="post">
+                                    {% csrf_token %}
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="disable-all-switch">
+                                        <label class="custom-control-label" for="disable-all-switch">Disable all</label>
+                                    </div>
+                                    <br/>
+                                    <div class="p-settings" id="post-settings">
+                                        <h5>Posts</h5>
+                                        <div class="settings-notif-border"></div>
+                                        <br/>
+                                        <div class="p-likes-settings">
+                                            <h6 class="settings-sub-headline">Likes</h6>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="disable-p-like-radio" name="p-likes" value="Disable">
+                                                <label class="custom-control-label" for="disable-p-like-radio">Disable</label>
+                                                <br/>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="p-like-from-following-radio" name="p-likes" value="From People I Follow">
+                                                <label class="custom-control-label" for="p-like-from-following-radio">From People I Follow</label>
+                                                <br/>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="p-like-from-every-radio" name="p-likes" value="From Everyone">
+                                                <label class="custom-control-label" for="p-like-from-every-radio">From Everyone</label>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div class="p-comments-settings">
+                                            <h6 class="settings-sub-headline">Comments</h6>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="disable-p-c-radio" name="p-comments" value="Disable">
+                                                <label class="custom-control-label" for="disable-p-c-radio">Disable</label>
+                                                <br/>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="p-c-from-following-radio" name="p-comments" value="From People I Follow">
+                                                <label class="custom-control-label" for="p-c-from-following-radio">From People I Follow</label>
+                                                <br/>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="p-c-from-every-radio" name="p-comments" value="From Everyone">
+                                                <label class="custom-control-label" for="p-c-from-every-radio">From Everyone</label>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div class="p-c-like-settings">
+                                            <h6 class="settings-sub-headline">Comment Likes</h6>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="disable-p-c-l-radio" name="p-c-likes" value="Disable">
+                                                <label class="custom-control-label" for="disable-p-c-l-radio">Disable</label>
+                                                <br/>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="p-c-l-following-radio" name="p-c-likes" value="From People I Follow">
+                                                <label class="custom-control-label" for="p-c-l-following-radio">From People I Follow</label>
+                                                <br/>
+                                            </div>
+                                            <div class="custom-control custom-radio">
+                                                <input type="radio" class="custom-control-input" id="p-c-l-every-radio" name="p-c-likes" value="From Everyone">
+                                                <label class="custom-control-label" for="p-c-l-every-radio">From Everyone</label>
+                                            </div>
+                                        </div>
+                                        <br/>
+                                        <div class="follow-following-settings">
+                                            <h5>Following & Followers</h5>
+                                            <div class="settings-notif-border"></div>
+                                            <br/>
+                                            <div class="f-settings">
+                                                <h6 class="settings-sub-headline">New Followers</h6>
+                                                <div class="custom-control custom-switch">
+                                                    <input type="checkbox" class="custom-control-input" id="disable-f-switch">
+                                                    <label class="custom-control-label" for="disable-f-switch">Disable</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="tab-pane fade" id="privacy" role="tabpanel" aria-labelledby="privacy-tab">
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <a class="btn btn-dark options-link edit" href="{% url 'edit_profile' profile.username %}">
+            <i class="fas fa-pencil-alt"></i>
+        </a>
     {% endif %}
     {% if not editable %}
         {% if isFollowing %}
