@@ -37,7 +37,7 @@ class home_view(TemplateView):
             post_obj=post_obj, comment=form.cleaned_data.get('comment')))
             post_obj.comment_count = F('comment_count') + 1
             post_obj.save()
-            send_notifications.delay(username=request.user.username, reaction='Commented', post_id=post_id)
+            send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=request.user.username, post_id=post_id)
         else:
             form = PostForm(request.POST, request.FILES or None)
             if form.is_valid():
@@ -76,6 +76,6 @@ def manage_home_post_likes(request, post_id):
         post.save()
 
         # Notify the user whose post is being liked
-        send_notifications.delay(username=request.user.username, reaction="Liked", post_id=post_id)
+        send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
 
     return redirect(reverse('home_view'))
