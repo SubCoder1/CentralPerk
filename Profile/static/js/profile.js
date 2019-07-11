@@ -24,7 +24,7 @@ function get_user_activity() {
         type : "POST", // http method
         data : { 
             csrfmiddlewaretoken: csrftoken,
-            activity: "get_activity",
+            activity: "get_user_activity",
         }, // data sent with the post request
 
         // handle a successful response
@@ -61,7 +61,97 @@ function get_user_activity() {
     });
 };
 
+function get_user_account_settings() {
+    $.ajax({
+        url : username,
+        type : "POST",
+        data : { 
+            csrfmiddlewaretoken: csrftoken,
+            activity: "get_user_acc_settings",
+        }, // data sent with the post request
+
+        complete : function(response) {
+            $('#loading-gif').attr('hidden', 'true');
+            if (response.responseJSON['disable_all'] == true) {
+                $('#disable-all-switch').prop("checked", true);
+                $('#post-settings').css("pointer-events", "none");
+                $('#post-settings').css("opacity", "0.5");
+            } else {
+                $('#disable-all-switch').prop("checked", false);
+                $('#post-settings').css("pointer-events", "all");
+                $('#post-settings').css("opacity", "1");
+            }
+                var p_likes = response.responseJSON['p_likes'];
+                var p_comments = response.responseJSON['p_comments'];
+                var p_comment_likes = response.responseJSON['p_comment_likes'];
+                var f_req = response.responseJSON['f_requests'];
+                if (p_likes == 'Disable') {
+                    $('#disable-p-like-radio').prop("checked", true);
+                } else if (p_likes == 'From People I Follow') {
+                    $('#p-like-from-following-radio').prop("checked", true);
+                } else {
+                    $('#p-like-from-every-radio').prop("checked", true);
+                }
+
+                if (p_comments == 'Disable') {
+                    $('#disable-p-c-radio').prop("checked", true);
+                } else if (p_comments == 'From People I Follow') {
+                    $('#p-c-from-following-radio').prop("checked", true);
+                } else {
+                    $('#p-c-from-every-radio').prop("checked", true);
+                }
+
+                if (p_comment_likes == 'Disable') {
+                    $('#disable-p-c-l-radio').prop("checked", true);
+                } else if (p_comment_likes == 'From People I Follow') {
+                    $('#p-c-l-following-radio').prop("checked", true);
+                } else {
+                    $('#p-c-l-from-every-radio').prop("checked", true);
+                }
+
+                if (f_req == true) { $('#disable-f-switch').prop("checked", true); }
+                else { $('#disable-f-switch').prop("checked", false); }
+        }
+    });
+};
+
+function set_user_acc_settings() {
+    $.ajax({
+        url : username,
+        type : "POST",
+        data : {
+            csrfmiddlewaretoken: csrftoken,
+            activity: "set_user_acc_settings",
+            disable_all : $('#disable-all-switch').prop("checked"),
+            p_likes : $("input[name='p-likes']:checked", '#user_acc_settings_form').val(),
+            p_comments : $("input[name='p-comments']:checked", '#user_acc_settings_form').val(),
+            p_comment_likes : $("input[name='p-c-likes']:checked", '#user_acc_settings_form').val(),
+            f_requests : $('#disable-f-switch').prop("checked"),
+        },
+    });
+};
+
 $(document).ready(function(){
-    console.log("firing request to get user activity");
+    $('#loading-gif').attr('hidden', 'true');
     setTimeout(get_user_activity, 1000);
+    // Get the current user account settings when settings-btn is clicked
+    $('#user-acc-settings-btn').click(function() {
+        $('#loading-gif').removeAttr('hidden');
+        event.preventDefault();
+        get_user_account_settings();
+    });
+
+    $('#acc_settings_close').click(function(event) {
+        $("#user_acc_settings_form").change(function(event) {
+            event.preventDefault();
+            if ($('#disable-all-switch').prop("checked") == true) {
+                $('#post-settings').css("pointer-events", "none");
+                $('#post-settings').css("opacity", "0.5");
+            } else {
+                $('#post-settings').css("pointer-events", "all");
+                $('#post-settings').css("opacity", "1");
+            }
+            set_user_acc_settings();
+        });
+    })
 });
