@@ -133,6 +133,7 @@ h6 { font-size: 15px; }
     position: absolute;
     line-height: 1.0;
 }
+
 .form-control:focus {
     background-color: #1d1d1d;
     color: white;
@@ -311,7 +312,7 @@ h6 { font-size: 15px; }
     border-radius: 50% !important;
 }
 
-.notif-btn { background: #4eb08f; }
+.notif-btn { background: #31b689; }
 .notif-btn:hover { background: #368f71; }
 .options-link:hover .fa-bell { animation: ring 1s ease; }
 
@@ -488,7 +489,7 @@ h6 { font-size: 15px; }
 /* ----------------------------------------------- */
 
 /* ----------------- status card ----------------- */
-.upload-modal-body { padding: 0.5rem; }
+.nav-pills-modal-body { padding: 0.5rem; }
 
 .form-group {
     margin-left: 10px;
