@@ -1,15 +1,112 @@
-/* ------------- Profile post  ------------- */
-.prof-img-post-card-body {
-  padding: 0rem;
+/* ----------- Profile settings  ----------- */
+.settings { background: darkturquoise; }
+.settings:hover { background: #15b4a4; }
+.fa-cog { transition: transform 0.3s; }
+.options-link:hover .fa-cog { transform: rotate(90deg); }
+
+
+.edit { background: tomato; }
+.edit:hover { background: #f46f24; }
+.options-link:hover .fa-pencil-alt { animation: pencil 1s forwards; }
+
+@-webkit-keyframes pencil {
+  0%    { -webkit-transform:rotate(0deg);   }
+	40%   { -webkit-transform:rotate(30deg);  }
+	50%   { -webkit-transform:rotateZ(15deg); }
+	60%   { -webkit-transform:rotateZ(30deg); }
+	70%   { -webkit-transform:rotateZ(15deg); }
+	80%   { -webkit-transform:rotateZ(30deg); }
+	90%   { -webkit-transform:rotateZ(15deg); }
+	100%  { -webkit-transform:rotateZ(30deg); }
 }
+
+@keyframes pencil {
+  0%    { transform:rotate(0deg);   }
+	40%   { transform:rotate(30deg);  }
+	50%   { transform:rotateZ(15deg); }
+	60%   { transform:rotateZ(30deg); }
+	70%   { transform:rotateZ(15deg); }
+	80%   { transform:rotateZ(30deg); }
+	90%   { transform:rotateZ(15deg); }
+	100%  { transform:rotateZ(30deg); }
+}
+/* ----------------------------------------- */
+
+/* ----------- Account settings ------------ */
+
+#loading-gif {
+  max-width: 100%;
+  height: 335px;
+}
+
+.fa-bell { color: mediumorchid; }
+
+.modal-body::-webkit-scrollbar { width: 0 !important; }
+
+#notif { 
+  padding: 0rem 0.6rem 0rem 0.4rem;
+  overflow-x: auto;
+  resize: none;
+ }
+
+.custom-switch { padding-left: 2.1rem; }
+
+.custom-control-label {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none; 
+  user-select: none;
+  cursor: pointer;
+}
+
+.custom-switch .custom-control-label::before { 
+  cursor: pointer;
+  background: black;
+  border: none;
+}
+
+.custom-control-input:focus~.custom-control-label::before {
+  box-shadow: none;
+}
+
+.custom-switch .custom-control-label::after { 
+  cursor: pointer; 
+  background-color: mediumorchid;
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+  border-color: transparent;
+  background-color: darkorchid;
+  box-shadow: none;
+}
+
+.custom-radio .custom-control-label::before {
+  background: black;
+  border: none;
+}
+
+.settings-sub-headline { font-size: 16px; color: darkorchid; }
+
+.settings-notif-border {
+  height: 3px;
+  background: darkorchid;
+  border: none;
+}
+
+.fa-lock { color: darkorange; }
+
+/* ----------------------------------------- */
+
+/* ------------- Profile post  ------------- */
+.prof-img-post-card-body { padding: 0rem; }
+
 .prof-card-body-img {
   border-radius: 1rem 1rem 0rem 0rem;
   width: 100%;
 }
 
-.upper-row {
-  padding-bottom: 5px;
-}
+.upper-row { padding-bottom: 5px; }
 /* ----------------------------------------- */
 
 /* ----------- Like btn on posts ----------- */
@@ -46,12 +143,9 @@ a:hover span {
 
 /* ------------ Details counter ------------ */
 @media only screen and (max-width: 768px) {
-  h4 {
-    font-size: 18px;
-  }
-  h3 {
-    font-size: 18px;
-  }
+  h4 { font-size: 18px; }
+  
+  h3 { font-size: 18px; }
   .post-counter {
     margin-right: 21px;
     float: left;
