@@ -6,9 +6,9 @@ from django.http import HttpResponse
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.forms import NonAdminChangeForm
-from django.core.exceptions import ObjectDoesNotExist
-from Profile.models import User, Friends
+from Profile.models import User, Friends, Account_Notif_Settings
 from Profile.last_activity import activity
+from Profile.tasks import update_user_acc_settings
 from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications, del_notifications
 from Home.forms import CommentForm
@@ -48,7 +48,7 @@ def manage_profile_post_likes(request, post_id, username=None, view_post=None):
         post.save()
 
         # Notify the user whose post is being liked
-        send_notifications.delay(username=request.user.username, reaction="Liked", post_id=post_id)
+        send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
 
     if view_post:
         return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
@@ -77,16 +77,29 @@ def view_profile(request, username=None):
     
     active = '#'
     # Ajax request/response to check user activity, shown iff requset.user follows 'username'
-    if request.POST and not editable:
+    if request.POST:
         ajax_request = request.POST.get("activity")
-        if isFollowing and ajax_request is not None:
-            if user.is_active():
-                active = 'online'
-            else:
-                active = activity(user.last_login)
-            return HttpResponse(json.dumps(active), content_type='application/json')
-    elif request.POST and editable:
-        return HttpResponse(json.dumps(active), content_type='application/json')
+        if not editable:
+            if ajax_request == 'get_user_activity':
+                if isFollowing and ajax_request == 'get_user_activity':
+                    if user.is_active():
+                        active = 'online'
+                    else:
+                        active = activity(user.last_login)
+                    return HttpResponse(json.dumps(active), content_type='application/json')
+        else:
+            if ajax_request == 'get_user_acc_settings':
+                user_acc_settings = Account_Notif_Settings.objects.get(user=request.user)
+                context = { 'disable_all':user_acc_settings.disable_all, 'p_likes':user_acc_settings.p_likes, 
+                'p_comments':user_acc_settings.p_comments, 'f_requests':user_acc_settings.f_requests,
+                'p_comment_likes': user_acc_settings.p_comment_likes, }
+                return HttpResponse(json.dumps(context), content_type='application/json')
+            elif ajax_request == 'set_user_acc_settings':
+                data = {'disable_all': request.POST.get('disable_all'), 'p_likes': request.POST.get('p_likes'),
+                'p_comments': request.POST.get('p_comments'), 'p_comment_likes': request.POST.get('p_comment_likes'),
+                'f_requests': request.POST.get('f_requests')
+                }
+                update_user_acc_settings.delay(username=username, data=data)
     
     context = { 'profile':user, 'posts':user_posts, 'editable':editable, 
                 'isFollowing':isFollowing, 'isFollower': isFollower,
