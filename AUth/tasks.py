@@ -38,7 +38,10 @@ def erase_duplicate_sessions(username, session_key, cache_key):
     return "complete :)"
 
 @shared_task
-def check_username_validity(username):
+def check_username_validity(username, logged_in_user=None):
+    # Only for edit_profile username validity corner case
+    if username == logged_in_user:
+        return 'same username'
     # check validity of username
     if len(str(username)) < 5:
         # username less than 5 characters
@@ -59,12 +62,24 @@ def check_email_validity(email):
     try:
         validate_email(email)
         if len(str(email)) > 254:
-            return 'Email should be < 256 characters'
+            return 'Email should be < 255 characters'
         elif User.objects.filter(email=email).exists():
             return 'This Email is being used by another user'
         return 'valid email'
     except ValidationError:
         return 'invalid email'
+
+@shared_task
+def check_fullname_validity(full_name):
+    if not len(full_name):
+        return 'Full name cannot be empty'
+    full_name_cleaned = str(full_name).replace(" ", "")
+    if str(full_name).isspace():
+        return 'Full name should not consist of only spaces'
+    elif not re.match("^[a-zA-Z0-9_]*$", full_name_cleaned):
+        return 'Full name should consist only letters'
+    else:
+        return 'valid fullname'
 
 @shared_task
 def check_pass_strength(password, username=None, email=None):
