@@ -1,33 +1,223 @@
-/* ----------------- field labels, group ---------------- */
-.col-form-label {
-  padding-left: 3px;
+::placeholder {
+  opacity: 1;
+  color: white;
 }
-.edit-prof-form-group {
+
+textarea::-webkit-scrollbar { width: 0 !important; }
+
+button {
+	outline: none !important;
+	border: none;
+	background: transparent;
+}
+
+button:hover { cursor: pointer; }
+
+button:focus {
+  outline: none;
+  border: none;
+}
+
+option { background: darkslateblue; }
+
+.edit-prof-headline { font-family: Poppins; }
+
+#change-pass-form { min-height: 600px; }
+
+/*-------------- edit-profile-container --------------*/
+.wrap-edit-profile {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: 10px;
+}
+/*----------------------------------------------------*/
+
+/*--------------- success-notification ---------------*/
+.notify {
+  position: fixed;
+  z-index: 999;
+  top: 15px;
+  background: transparent;
+  text-align: center;
+  overflow: hidden;
+  display: none;
+  transition: height 1s;
+}
+
+.success-notif-active {
+  display: flex;
+  justify-content: center;
+  height: 55px;
+}
+
+.alert-success {
+  font-family: Poppins, sans-serif;
+  color: white;
+  background-color: #03a679;
+  border: 3px solid #03a679;
+  border-radius: 2rem;
   margin-bottom: 0rem;
 }
-/* ------------------------------------------------------ */
+/*----------------------------------------------------*/
 
-/* ---------------- border under headline --------------- */
-.edit_prof_border {
-  width: 200px;
+ /*---------------- edit-profile-pills ---------------*/
+.edit-prof-pills {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  left: 6px;
 }
-/* ------------------------------------------------------ */
+/*----------------------------------------------------*/
 
-/* ------------- edit profile text fields --------------- */
-.edit-prof-form-control {
-  padding: 0.5rem .75rem;
-  position: unset;
-  background: darkslateblue;
+ /*-------------------- form-input -------------------*/
+.input100 {
+  font-size: 17px;
+  line-height: 1.5;
   color: white;
+  display: block;
+  width: 370px;
+  background: transparent;
+  border-bottom: 2.5px solid mediumturquoise;
+  height: 50px;
+  padding: 10px;
 }
 
-.edit-prof-form-control:hover {
-  color: white;
-  background: darkslateblue;
+.edit-prof-error { height: 10px; }
+/*----------------------------------------------------*/
+
+/*---------------- change-profile-pic ----------------*/
+.edit-prof-pic-rounded { 
+  height: 120px;
+  cursor: pointer;
+  border-radius: 50% !important;
 }
 
-.edit-prof-form-control:focus {
-  background: darkslateblue;
-  color: white;
+.edit-prof-pic-rounded:hover {
+  opacity: 0.5;
+  -webkit-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
 }
-/* ------------------------------------------------------ */
+/*----------------------------------------------------*/
+
+/*----------------- birthdate-picker -----------------*/
+.datepicker-dropdown { 
+  background: #1d1d1d;
+  border-radius: 1rem;
+}
+
+.datepicker .next, .datepicker .prev, tr {
+  border-radius: 50% !important;
+}
+
+.datepicker table tr td.day:hover, .datepicker table tr td.focused {
+  background: tomato;
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.datepicker table tr td.active.active, .datepicker table tr td.active.highlighted.active, 
+  .datepicker table tr td.active.highlighted:active, .datepicker table tr td.active:active {
+  background-color: darkviolet;
+  border-color: darkviolet;
+  border-radius: 50%;
+}
+
+.datepicker table tr td.active.active:hover {
+  background-color: darkviolet;
+  border-color: darkviolet;
+  border-radius: 50%;
+}
+
+.datepicker .datepicker-switch:hover, .datepicker .next:hover, .datepicker .prev:hover, .datepicker tfoot tr th:hover {
+  background: darkslateblue;
+}
+.datepicker table tr td span.focused, .datepicker table tr td span:hover { background: tomato; }
+
+.input-group-addon {
+  float: right;
+  position: relative;
+  bottom: 35px;
+  right: 5px;
+  cursor: pointer;
+}
+
+.fa-calender-day { font-size: 17px; }
+
+.input-group-addon:hover .fa-calender-day {
+  color: palevioletred;
+}
+/*----------------------------------------------------*/
+
+/*---------------- form-input-gender -----------------*/
+.gender-select-container { padding: 10px 0px 10px 6px; }
+
+.gender-select-dropdown {
+  cursor: pointer;
+  background: transparent;
+  width: 100%;
+  color: white;
+  border: none;
+}
+/*----------------------------------------------------*/
+
+/*----------------- form-input-bio -------------------*/
+#edit-bio {
+  margin-top: 15px;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  height: 100px;
+  overflow-x: auto;
+  resize: none;
+}
+/*----------------------------------------------------*/
+
+/*----------------- form-submit-btn ------------------*/
+.container-edit-prof-form-btn, .container-change-pass-btn {
+  width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.edit-prof-form-btn, .change-pass-form-btn {
+  border: none;
+  font-family: Poppins;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #fff;
+  text-transform: uppercase;
+  height: 50px;
+  border-radius: 25px;
+  background: mediumslateblue;
+  padding: 0 25px;
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.edit-prof-form-btn:hover, .change-pass-form-btn:hover { background: #1d1d1d; }
+
+/*----------------- btn-loading-gif ------------------*/
+.edit-prof-loading-gif, .change-pass-loading-gif {
+  position: absolute;
+  max-height: 50px;
+  border-radius: 2rem;
+  cursor: pointer;
+  pointer-events: none;
+  width: 103.57px;
+  display: none;
+}
+
+.loading-gif-active { display: block; }
+/*----------------------------------------------------*/
