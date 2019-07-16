@@ -1,21 +1,29 @@
 from django.db import models
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from Profile.user_manager import UserManager
+import uuid
 # Create your models here.
 
-GENDER = ( ('Male', 'Male'), ('Female', 'Female'), ('other', 'other'), )
+GENDER = ( ('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other'), )
+
+def user_directory_path(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/<user_id>/<filename>
+    return f"profile_pics/{instance.user_id}/{filename}"
 
 class User(AbstractBaseUser):
+    user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     session_key = models.CharField(max_length=40, default='notyetaccquired')
-    username = models.CharField(max_length=20,unique=True, primary_key=True)
+    username = models.CharField(max_length=20, unique=True)
     full_name = models.CharField(max_length=50)
     birthdate = models.CharField(max_length=10)
-    bio = models.TextField(max_length=300)
+    bio = models.TextField(max_length=300, blank=True)
     gender = models.CharField(max_length=20, choices=GENDER)
-    email = models.EmailField(max_length=255,unique=True)
+    email = models.EmailField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    profile_pic = models.ImageField(upload_to='profile_pics', default='/profile_pics/default.png')
+    profile_pic = models.ImageField(upload_to=user_directory_path, default='/profile_pics/default.png')
     admin = models.BooleanField(default=False) # a superuser
     staff = models.BooleanField(default=False) # a admin user; non super-user
     active = models.BooleanField(default=True)
@@ -46,6 +54,10 @@ class User(AbstractBaseUser):
     @classmethod
     def get_user_obj(cls, username):
         return cls.objects.get(username=username)
+
+@receiver(post_delete, sender=User)
+def submission_delete(sender, instance, **kwargs):
+    instance.pic.delete(False)
 
 POST_NOTIF_CHOICES = (('Disable', 'Disable'), ('From People I Follow', 'From People I Follow'), ('From Everyone', 'From Everyone'))
 class Account_Notif_Settings(models.Model):
