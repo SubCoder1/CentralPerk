@@ -10,6 +10,13 @@
 {% endblock %}
 
 {% block body %}
+{% if editable %}
+    <div class="indicator">
+        <div class="alert alert-success" id="success-msg" role="alert">
+            Your account settings was successfully updated!
+        </div>
+    </div>
+{% endif %}
 <div class="row">
 <div class="col-lg-4"></div>
 <div class="col-lg-4" style="padding: 0">
@@ -46,7 +53,7 @@
                         </ul>
                         <div class="tab-content" id="cardtabContent">
                             <div class="tab-pane fade show active" id="notif" role="tabpanel" aria-labelledby="notif-tab">
-                                <img id="loading-gif" src="{% static 'login/img/loading.gif' %}"/>
+                                <img class="account-settings-loading-gif" src="{% static 'login/img/loading.gif' %}"/>
                                 <form id="user_acc_settings_form" method="post">
                                     {% csrf_token %}
                                     <div class="custom-control custom-switch">
@@ -149,7 +156,7 @@
         {% endif %}
     {% endif %}
     </div>
-    <br>
+    <br/>
     <h2 class="display-2">
         {{ profile.username }}
         {{ profile.usename|json_script:"profile_name" }}
