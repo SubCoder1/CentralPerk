@@ -14,11 +14,11 @@ class PostModelManager(models.Manager):
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/user_<username>/<filename>
-    username = instance.user.username
+    user_id = instance.user.user_id
     name = str(instance.unique_id)
     extension = filename[len(filename)-4:len(filename)]
     file_name = name + extension
-    return f"post_images/user_{username}/{file_name}"
+    return f"post_images/{user_id}/{file_name}"
 
 class PostModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, related_name='posts')
