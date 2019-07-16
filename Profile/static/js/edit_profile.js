@@ -46,18 +46,26 @@ $(document).ready(function() {
         console.log($real_upload_btn[0]);
     });
 
-    var $edit_username = $('#edit-username');
-    var $username_error = $('#form-error-username');
-    var $edit_fullname = $('#edit-fullname');
-    var $fullname_error = $('#form-error-fullname');
-    var $edit_email = $('#edit-email');
-    var $email_error = $('#form-error-email');
-    var $edit_gender = $('#edit-gender');
-    var $gender_error = $('#form-error-gender');
+    var $indicator = $('.indicator');
     // ajax code to deliver updated data on edit_profile_form submit to server
     $('#edit-prof-form').on('submit', function(event) {
         event.preventDefault();
-        $('#edit-prof-loading-gif').toggleClass("loading-gif-active");
+
+        var $edit_username = $('#edit-username');
+        var $username_error = $('#form-error-username');
+        var $edit_fullname = $('#edit-fullname');
+        var $fullname_error = $('#form-error-fullname');
+        var $edit_email = $('#edit-email');
+        var $email_error = $('#form-error-email');
+        var $edit_birthdate = $('#edit-birthdate');
+        var $birthdate_error = $('#form-error-birthdate');
+        var $edit_gender = $('#edit-gender');
+        var $gender_error = $('#form-error-gender');
+        var $edit_bio = $('#edit-birthdate');
+        var $bio_error = $('#form-error-bio');
+        var $edit_profile_loading_gif = $('#edit-prof-loading-gif');
+
+        $edit_profile_loading_gif.toggleClass("loading-gif-active");
         var form = $('#edit-prof-form')[0];
         var data = new FormData(form);
         data.append("activity", "validate_profile_data");
@@ -71,12 +79,12 @@ $(document).ready(function() {
             cache: false,
             data : data,
             complete : function(response) {
-                $('#edit-prof-loading-gif').removeClass("loading-gif-active");
+                $edit_profile_loading_gif.removeClass("loading-gif-active");
                 var status = response.responseJSON;
                 if (status == 'valid edit_prof_form') {
-                    $('.notify').toggleClass("success-notif-active");
+                    $indicator.toggleClass("success-notif-active");
                     setTimeout(function(){
-                        $(".notify").removeClass("success-notif-active");
+                        $indicator.removeClass("success-notif-active");
                     }, 2000);
                 } else {
                     if (status['username']) {
@@ -89,14 +97,14 @@ $(document).ready(function() {
                         $edit_email.css('border-bottom', '2.5px solid #fc581b');
                         $email_error.text(status['email']);
                     } if (status['birthdate']) {
-                        $('#edit-birthdate').css('border-bottom', '2.5px solid #fc581b');
-                        $('#form-error-birthdate').text(status['birthdate']);
+                        $edit_birthdate.css('border-bottom', '2.5px solid #fc581b');
+                        $birthdate_error.text(status['birthdate']);
                     } if (status['gender']) {
                         $edit_gender.css('border-bottom', '2.5px solid #fc581b');
                         $gender_error.text(status['gender']);
                     } if (status['bio']) {
-                        $('#edit-bio').css('border-bottom', '2.5px solid #fc581b');
-                        $('#form-error-bio').text(status['bio']);
+                        $edit_bio.css('border-bottom', '2.5px solid #fc581b');
+                        $bio_error.text(status['bio']);
                     }
                 }
             }
@@ -110,10 +118,11 @@ $(document).ready(function() {
         var $new_pass1_error = $('#form-error-new-pass1');
         var $new_password2 = $('#edit-new-password2');
         var $new_pass2_error = $('#form-error-new-pass2');
+        var $change_pass_loading_gif = $('#change-pass-loading-gif');
         // ajax code to deliver updated password on change_password_form submit
         $('#change-pass-form').on('submit', function(event) {
             event.preventDefault();
-            $('#change-pass-loading-gif').toggleClass("loading-gif-active");
+            $change_pass_loading_gif.toggleClass("loading-gif-active");
             var flag = true;
             if ($old_password.val() == '') {
                 flag = false;
@@ -142,6 +151,8 @@ $(document).ready(function() {
                 $new_pass2_error.text("");
             }
 
+            if (!flag) { $change_pass_loading_gif.removeClass("loading-gif-active"); }
+
             if (flag) {
                 $.ajax({
                     url : '',
@@ -154,12 +165,12 @@ $(document).ready(function() {
                         new_password2 : $new_password2.val(),
                     },
                     complete : function(response) {
-                        $('#change-pass-loading-gif').removeClass("loading-gif-active");
+                        $change_pass_loading_gif.removeClass("loading-gif-active");
                         var status = response.responseJSON;
                         if (status == 'valid change_pass_form') {
-                            $('.notify').toggleClass("success-notif-active");
+                            $indicator.toggleClass("success-notif-active");
                             setTimeout(function(){
-                                $(".notify").removeClass("success-notif-active");
+                                $indicator.removeClass("success-notif-active");
                             }, 2000);
                         } else {
                             if (status['old_password']) {
