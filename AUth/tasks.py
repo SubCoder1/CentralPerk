@@ -91,21 +91,21 @@ def check_pass_strength(password, username=None, email=None):
             user = User(username=username, email=email)
         validate_password(password, user=user)
         if not re.findall('[^A-Za-z0-9]', str(password)):
-            return 'strength : medium, use special characters'
+            return 'strength:medium, use special characters'
         elif str(password).isalpha():
-            return 'strength : medium, use numbers'
+            return 'strength:medium, use numbers'
         else:
             return 'strong password'
     except ValidationError as issues:
         if 'This password is too short. It must contain at least 8 characters.' in issues:
-            return 'strength : bad, Password should be > 8 characters'
+            return 'strength:bad, should be > 8 characters'
         elif 'This password is too common.' in issues:
-            return 'strength : bad, too common'
+            return 'strength:bad, too common'
         elif 'This password is entirely numeric.' in issues:
-            return 'strength : bad, too numeric'
+            return 'strength:bad, too numeric'
         elif 'The password is too similar to the username.' in issues:
-            return 'strength : medium, too similar to username'
+            return 'strength:medium, too similar to username'
         elif 'The password is too similar to the email.' in issues:
-            return 'strength : medium, too similar to email'
+            return 'strength:medium, too similar to email'
         else:
-            return 'strength : bad'
+            return 'strength:bad'
