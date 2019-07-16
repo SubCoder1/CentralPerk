@@ -31,3 +31,12 @@ option {
   justify-content: center;
   top: 15px;
 }
+
+/*------------ signup-btn-loading-gif -----------*/
+.signup-loading-gif {
+  position: absolute;
+  height: 50px;
+  width: 107px;
+  border-radius: 25px;
+  cursor: pointer;
+}
