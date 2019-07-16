@@ -93,7 +93,7 @@ h6 { font-size: 15px; }
 /*--------------- success-notification ---------------*/
 .indicator {
     position: fixed;
-    z-index: 999;
+    z-index: 2000;
     top: 15px;
     background: transparent;
     text-align: center;
