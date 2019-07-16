@@ -10,11 +10,11 @@ body {
 }
 
 a {
-    color: burlywood;
+    color: darksalmon;
 }
 
 a:hover {
-    color: #a7a2a2;
+    color: #e2ac99;
     text-decoration: none;
 }
 
@@ -112,8 +112,8 @@ h6 { font-size: 15px; }
   .alert-success {
     font-family: Poppins, sans-serif;
     color: white;
-    background-color: #03a679;
-    border: 3px solid #03a679;
+    background-color: mediumorchid;
+    border: 3px solid mediumorchid;
     border-radius: 2rem;
     margin-bottom: 0rem;
   }
