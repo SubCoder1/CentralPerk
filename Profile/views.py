@@ -89,12 +89,14 @@ def view_profile(request, username=None):
                     return HttpResponse(json.dumps(active), content_type='application/json')
         else:
             if ajax_request == 'get_user_acc_settings':
+                # send current user account settings
                 user_acc_settings = Account_Notif_Settings.objects.get(user=request.user)
                 context = { 'disable_all':user_acc_settings.disable_all, 'p_likes':user_acc_settings.p_likes, 
                 'p_comments':user_acc_settings.p_comments, 'f_requests':user_acc_settings.f_requests,
                 'p_comment_likes': user_acc_settings.p_comment_likes, }
                 return HttpResponse(json.dumps(context), content_type='application/json')
             elif ajax_request == 'set_user_acc_settings':
+                # set current user account settings from data sent by client
                 data = {'disable_all': request.POST.get('disable_all'), 'p_likes': request.POST.get('p_likes'),
                 'p_comments': request.POST.get('p_comments'), 'p_comment_likes': request.POST.get('p_comment_likes'),
                 'f_requests': request.POST.get('f_requests')
