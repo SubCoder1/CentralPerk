@@ -98,7 +98,11 @@ input:focus:-ms-input-placeholder { color:transparent; }
 }
 
 /*------------------ headline ------------------*/
-.headline { position: relative; bottom: 10px; }
+.headline {
+  font-family: 'Barriecito', cursive;
+  position: relative; 
+  bottom: 10px;
+}
 
 /*-------------- wrap-login-form ---------------*/
 .wrap-loginform {
