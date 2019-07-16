@@ -6,24 +6,26 @@
 {% endblock %}
 
 {% block head %}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css" rel="stylesheet">
     <link href="{% static 'css/edit_profile.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-<div class="row">
-<div class="col-lg-3"></div>
-<div class="col-lg-6">
+<div class="wrap-edit-profile">
+    <div class="notify">
+        <div class="alert alert-success" id="edit-form-success-msg" role="alert">
+            Your profile was successfully updated!
+        </div>
+    </div>
+    <h1 class="edit-prof-headline">Edit Profile</h1>
     <br/>
-    <h2 class="display-2">Edit Profile</h2>
-    <div class="border edit_prof_border"></div>
-    <br/>
-    <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
+    <ul class="nav nav-pills edit-prof-pills mb-3" id="cardtab" role="tablist">
         <li class="nav-item">
             <a class="nav-link link active" id="edit_prof-tab" data-toggle="tab" href="#edit_prof" role="tab" aria-controls="edit_prof" aria-selected="true">
                 <h4>Edit Info</h4>
             </a>
         </li>
-        <li class="nav-item px-1">
+        <li class="nav-item">
             <a class="nav-link link" id="change_pass-tab" data-toggle="tab" href="#change_pass" role="tab" aria-controls="change_pass" aria-selected="true">
                 <h4>Change Password</h4>
             </a>
@@ -31,65 +33,99 @@
     </ul>
     <div class="tab-content" id="cardtabContent">
         <div class="tab-pane fade show active" id="edit_prof" role="tabpanel" aria-labelledby="edit_profile-tab">
-            <form method="POST">
-                <br>
+            <form method="POST" id="edit-prof-form" enctype="multipart/form-data" autocomplete="off">
                 {% csrf_token %}
-                <div class="form-group edit-prof-form-group">
-                    <label for="example-text-input" class="col-2 col-form-label">Username</label>
-                    <input class="form-control edit-prof-form-control" type="text" value="{{ user.username }}" name="username">
+                <input type="file" id="real-file" name="profile_pic" hidden/>
+                <img src="/media/{{ user.profile_pic }}" id="custom-upload" class="edit-prof-pic-rounded"/>
+                <br/>
+                <input class="input100 edit-prof-input" type="text" id="edit-username" name="username" value="{{ user.username }}" placeholder="Username" maxlength="20"/>
+		        <div class="text-center p-t-12 edit-prof-error">
+			        <span class="txt1" id="form-error-username" style="color:orange;"></span>
+		        </div>
+		        <br/>
+                <input class="input100 edit-prof-input" type="text" id="edit-fullname" name="full_name" value="{{ user.full_name }}" placeholder="Full Name" maxlength="50"/>
+                <div class="text-center p-t-12 edit-prof-error">
+                    <span class="txt1" id="form-error-fullname" style="color:orange;"></span>
                 </div>
-                <br>
-                <div class="form-group edit-prof-form-group">
-                    <label for="example-email-input" class="col-2 col-form-label">Email</label>
-                    <input class="form-control edit-prof-form-control" type="email" value="{{ user.email }}" name="email">
-                        {{ edit_form.errors }}
+                <br/>
+                <input class="input100 edit-prof-input" type="email" id="edit-email" name="email" value="{{ user.email }}" placeholder="Email" maxlength="254"/>
+                <div class="text-center p-t-12 edit-prof-error">
+                    <span class="txt1" id="form-error-email" style="color:orange;"></span>
                 </div>
-                <br>
-                <div class="form-group edit-prof-form-group">
-                    <label for="example-date-input" class="col-2 col-form-label">Birthdate</label>
-                    <input class="form-control  edit-prof-form-control" type="date" value="{{ user.birthdate }}" name="birthdate">
+                <br/>
+                <div class="date" data-provide="datepicker">
+                    <input type="text" class="input100 edit-prof-input" id="edit-birthdate" name="birthdate" value="{{ user.birthdate }}" placeholder="Birthdate">
+                    <div class="input-group-addon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
                 </div>
-                <br>
-                <div class="form-group edit-prof-form-group">
-                    <label for="gender" class="col-2 col-form-label">Gender</label>
-                    <select class="form-control edit-prof-form-control" id="gender" name="gender">
-                        <option>Male</option>
-                        <option>Female</option>
-                        <option>Others</option>
+                <div class="text-center p-t-12 edit-prof-error">
+                    <span class="txt1" id="form-error-birthdate" style="color:orange;"></span>
+                </div>
+                <br/>
+                <div class="input100 edit-prof-input gender-select-container" id="edit-gender">
+                    <select class="gender-select-dropdown" name="gender" id="choice">
+                        <option selected disabled>Gender</option>
+                        {% if user.gender == 'Male' %}
+                            <option value="Male" selected>Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        {% elif user.gender == 'Female' %}
+                            <option value="Female" selected>Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Other">Other</option>
+                        {% else %}
+                            <option selected>Other</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        {% endif %}
                     </select>
                 </div>
-                <br>
-                <div class="form-group edit-prof-form-group">
-                    <label for="example-text-input" class="col-2 col-form-label">Bio</label>
-                    <input class="form-control edit-prof-form-control" type="text" value="{{ user.bio }}" name="bio">
+                <div class="text-center p-t-12 signup-error">
+			        <span class="txt1" id="form-error-gender" style="color:orange;"></span>
+		        </div>
+                {{ user.bio|json_script:"user-bio" }}
+                <textarea class="input100 edit-prof-input" type="text" id="edit-bio" name="bio" placeholder="Bio" maxlength="300"></textarea>
+                <div class="text-center p-t-12 edit-prof-error">
+                    <span class="txt1" id="form-error-bio" style="color:orange;"></span>
                 </div>
-                <br>
-                <button class="btn btn-dark" type="submit"]>Submit</button>
-                <br><br>
+                <br/>
+                <div class="container-edit-prof-form-btn"> 
+					<button class="edit-prof-form-btn" id="edit-prof-btn" type="submit">update</button>
+                    <img class="edit-prof-loading-gif" id="edit-prof-loading-gif" src="{% static 'login/img/loading.gif' %}">
+				</div>
+                <br/>
             </form>
-        </div>
+		</div>
         <div class="tab-pane fade" id="change_pass" role="tabpanel" aria-labelledby="change_pass-tab">
-            <form method="POST">
-            <br>
-            {% csrf_token %}
-            <div class="form-group edit-prof-form-group">
-                <label for="example-text-input" class="col-2 col-form-label">Old Password</label>
-                <input class="form-control edit-prof-form-control" type="password" name="old_password">
-            </div>
-            <div class="form-group edit-prof-form-group">
-                <label for="example-text-input" class="col-2 col-form-label">New Password</label>
-                <input class="form-control edit-prof-form-control" type="password" name="new_password1">
-            </div>
-            <div class="form-group edit-prof-form-group">
-                <label for="example-text-input" class="col-2 col-form-label">And Again!</label>
-                <input class="form-control edit-prof-form-control" type="password" name="new_password2">
-            </div>
-            <br>
-            <button class="btn btn-dark" type="submit">Submit</button>
+            <form method="POST" id="change-pass-form">
+                {% csrf_token %}
+                <input class="input100 edit-prof-input" type="password" id="edit-old-password" name="old_password" placeholder="Old password"/>
+		        <div class="text-center p-t-12 edit-prof-error">
+			        <span class="txt1" id="form-error-old-pass" style="color:orange;"></span>
+		        </div>
+                <br/>
+                <input class="input100 edit-prof-input" type="password" id="edit-new-password1" name="new_password1" placeholder="New password"/>
+		        <div class="text-center p-t-12 edit-prof-error">
+			        <span class="txt1" id="form-error-new-pass1" style="color:orange;"></span>
+		        </div>
+                <br/>
+                <input class="input100 edit-prof-input" type="password" id="edit-new-password2" name="new_password2" placeholder="And Again!"/>
+		        <div class="text-center p-t-12 edit-prof-error">
+			        <span class="txt1" id="form-error-new-pass2" style="color:orange;"></span>
+		        </div>
+                <br/>
+                <div class="container-change-pass-btn"> 
+					<button class="change-pass-form-btn" id="change-pass-btn" type="submit">update</button>
+                    <img class="change-pass-loading-gif" id="change-pass-loading-gif" src="{% static 'login/img/loading.gif' %}">
+				</div>
             </form>
         </div>
     </div>
 </div>
-<div class="col-lg-3"></div>
-</div>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<script src="{% static 'js/edit_profile.js' %}"></script>
 {% endblock %}
