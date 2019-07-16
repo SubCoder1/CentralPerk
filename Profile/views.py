@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, reverse
 from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponse
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
-from Profile.forms import NonAdminChangeForm
+from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
+from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Notif_Settings
 from Profile.last_activity import activity
 from Profile.tasks import update_user_acc_settings
@@ -169,20 +169,44 @@ class edit_profile(TemplateView):
 
     def get(self, request, username):
         edit_form = NonAdminChangeForm(instance=request.user)
-        change_pass_form = PasswordChangeForm(user=request.user)
+        change_pass_form = CustomPasswordChangeForm(user=request.user)
         context = { 'edit_form':edit_form,'change_pass_form':change_pass_form }
         return render(request, self.template_name, context)
-    
-    def post(self, request, username):
-        edit_form = NonAdminChangeForm(request.POST or None, instance=request.user)
-        change_pass_form = PasswordChangeForm(data=request.POST or None, user=request.user) # For changing password only
-        if edit_form.is_valid():
-            edit_form.save()
-            return redirect(reverse('view_profile', kwargs={ 'username':username }))
-        elif change_pass_form.is_valid():
-            change_pass_form.save()
-            update_session_auth_hash(request, change_pass_form.user)  # This method keeps the user logged-in even after changing the password
-            return redirect(reverse('view_profile', kwargs={ 'username':username }))
 
-        context = { 'edit_form':edit_form, 'change_pass_form':change_pass_form }
-        return render(request, self.template_name, context)
+    def post(self, request, username):
+        result = {}
+        activity = request.POST.get('activity')
+        # ------------ profile-edit request handling ------------
+        if activity == 'validate_profile_data':
+            edit_form = NonAdminChangeForm(request.POST or None, request.FILES or None, instance=request.user)
+            if edit_form.is_valid():
+                edit_form.save()
+                result = 'valid edit_prof_form'
+            else:
+                if edit_form.has_error('username'):
+                    result['username'] = edit_form.errors['username']
+                if edit_form.has_error('full_name'):
+                    result['full_name'] = edit_form.errors['full_name']
+                if edit_form.has_error('email'):
+                    result['email'] = edit_form.errors['email']
+                if edit_form.has_error('birthdate'):
+                    result['birthdate'] = edit_form.errors['birthdate']
+                if edit_form.has_error('gender'):
+                    result['gender'] = edit_form.errors['gender']
+                if edit_form.has_error('bio'):
+                    result['bio'] = edit_form.errors['bio']
+        # ------------ change password request handling ------------
+        elif activity == 'validate_new_password':
+            change_pass_form = CustomPasswordChangeForm(data=request.POST or None, user=request.user) # For changing password only
+            if change_pass_form.is_valid():
+                change_pass_form.save()
+                update_session_auth_hash(request, change_pass_form.user) # This method keeps the user logged-in even after changing the password
+                result = 'valid change_pass_form'
+            else:
+                if change_pass_form.has_error('old_password'):
+                    result['old_password'] = change_pass_form.errors['old_password']
+                if change_pass_form.has_error('new_password1'):
+                    result['new_password1'] = change_pass_form.errors['new_password1']
+                if change_pass_form.has_error('new_password2'):
+                    result['new_password2'] = change_pass_form.errors['new_password2']
+        return HttpResponse(json.dumps(result), content_type='application/json')
