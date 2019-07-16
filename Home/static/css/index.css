@@ -23,6 +23,11 @@ input {
 	border: none;
 }
 
+::selection {
+    background: #1d1d1d;
+    color: white;
+}
+
 .sticky-top {
     position: fixed;
     width: 100%;
