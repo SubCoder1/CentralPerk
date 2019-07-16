@@ -35,34 +35,6 @@ option { background: darkslateblue; }
 }
 /*----------------------------------------------------*/
 
-/*--------------- success-notification ---------------*/
-.notify {
-  position: fixed;
-  z-index: 999;
-  top: 15px;
-  background: transparent;
-  text-align: center;
-  overflow: hidden;
-  display: none;
-  transition: height 1s;
-}
-
-.success-notif-active {
-  display: flex;
-  justify-content: center;
-  height: 55px;
-}
-
-.alert-success {
-  font-family: Poppins, sans-serif;
-  color: white;
-  background-color: #03a679;
-  border: 3px solid #03a679;
-  border-radius: 2rem;
-  margin-bottom: 0rem;
-}
-/*----------------------------------------------------*/
-
  /*---------------- edit-profile-pills ---------------*/
 .edit-prof-pills {
   display: flex;
