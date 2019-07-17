@@ -1,5 +1,5 @@
 * {
-    font-family: 'Inconsolata', monospace;
+    font-family: Poppins, sans-serif;
     color: white;
     outline: none;
 }
@@ -9,8 +9,9 @@ body {
     background: linear-gradient(to right, blueviolet, #4158d0);
 }
 
-a {
-    color: darksalmon;
+a { 
+    font-size: 17px;
+    color: darksalmon; 
 }
 
 a:hover {
@@ -64,7 +65,7 @@ input {
 
 h3 { font-size: 22px; }
 h4 { font-size: 20px; }
-h6 { font-size: 15px; }
+h6 { font-size: 13px; }
 
 .container-fluid {
     display: flex;
@@ -87,10 +88,11 @@ h6 { font-size: 15px; }
 .flex-items-container {
     flex-wrap: wrap-reverse;
     flex-direction: row;
+    margin-top: 10px;
 }
 /* ----------------------------------------------- */
 
-/*--------------- success-notification ---------------*/
+/*------------- success-notification --------------*/
 .indicator {
     position: fixed;
     z-index: 2000;
@@ -117,9 +119,82 @@ h6 { font-size: 15px; }
     border-radius: 2rem;
     margin-bottom: 0rem;
   }
-  /*----------------------------------------------------*/
+/*------------------------------------------------*/
 
-/* ------------------ nav links ------------------ */
+/* ----------------- nav links ------------------ */
+.navbar {
+    padding: 10px 68px 0px 60px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    z-index: 2;
+    transition: 0.2s;
+}
+
+#brand-ico { 
+    height: 32px; 
+    transition: 0.2s;
+}
+
+.navbar-brand {
+    font-family: 'Barriecito', cursive;
+    font-size: 29px;
+    transition: 0.2s;
+}
+
+#brand-name {
+    font-family: 'Barriecito', cursive;
+    color: darksalmon; 
+}
+
+#brand-name:hover {
+    color: #e2ac99;
+}
+
+.navbar-profile-pic {
+    height: 45px;
+    margin-right: 3px;
+    transition: 0.2s;
+}
+
+.fa-chevron-right {
+    font-size: 12px;
+    margin-left: 1px;
+    transition: transform 0.3s;
+}
+
+.nav-link:hover .fa-chevron-right {
+    transform: rotate(90deg);
+}
+
+.dropdown-menu { 
+    top: 92%;
+    background: mediumslateblue;
+    left: -10px;
+    text-align: center;
+    border-radius: 1rem;
+}
+
+.dropdown-item { color: white; }
+
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #1d1d1d;
+    text-decoration: none;
+    background-color: transparent;
+}
+
+.dropdown:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown:hover .fa-chevron-right {
+    transform: rotate(90deg);
+}
+  
+.dropdown>.dropdown-toggle:active {
+    pointer-events: none;
+}
+
 .nav-pills .nav-link.active, .nav-pills .show>.nav-link {
     color: white;
     background-color: transparent;
@@ -133,10 +208,7 @@ h6 { font-size: 15px; }
 }
 
 .nav-link { color: white; }
-
-.nav-link:hover {
-    color: darkgrey;
-}
+.nav-link:hover { color: #e2ac99; }
 /* ----------------------------------------------- */
 
 /* -------------- That white border -------------- */
@@ -218,21 +290,22 @@ h6 { font-size: 15px; }
 }
 
 .index-post-card-body {
-    background-color: transparent; 
+    background-color: transparent;
     color: white;
     overflow: overlay;
+    min-height: 25px;
 }
 
 .fa-fire-alt {
     font-size: 18px;
-    vertical-align: text-top;
+    vertical-align: middle;
     color: orangered;
 }
 
 .likes-counter {
     font-size: 18px;
-    margin-left: 9px;
-    margin-right: 4px;
+    margin-left: 5px;
+    margin-right: 8px;
     vertical-align: top;
 }
 
@@ -240,20 +313,20 @@ h6 { font-size: 15px; }
     color: mediumpurple;
     font-size: 18px;
     position: relative;
-    vertical-align: sub;
+    vertical-align: text-bottom;
 }
 
 .comment-counter {
-    vertical-align: top;
+    vertical-align: middle;
     font-size: 18px;
-    margin-left: -1px;
+    margin-left: 1px;
 }
 
 .post-date-time {
-    font-size: 13px;
+    font-size: 12px;
     float: right;
     position: relative;
-    top: 2px;
+    top: 4px;
 }
 
 .card-footer {
@@ -554,7 +627,6 @@ h6 { font-size: 15px; }
     resize: none;
     outline: none;
     font-size: 17px;
-    font-family: 'Inconsolata', monospace;
     font-weight: 300;
     overflow: hidden;
     height: 70%;
