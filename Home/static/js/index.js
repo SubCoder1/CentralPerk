@@ -1,3 +1,23 @@
+window.onscroll = function() {scrollFunction()};
+var navbar = document.getElementById("navbar");
+var logo = document.getElementById("logo");
+var $brand_name = $('#brand-name');
+var $brand_ico = $('#brand-ico');
+
+function scrollFunction() {
+  if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+    navbar.style.padding = "2px 68px 0px 60px";
+    logo.style.fontSize = "25px";
+    $brand_name.hide();
+    $brand_ico.css('height', '42px');
+  } else {
+    navbar.style.padding = "10px 68px 0px 60px";
+    logo.style.fontSize = "29px";
+    $brand_name.show();
+    $brand_ico.css('height', '32px');
+  }
+}
+
 // JS code for uploaded file-name to appear on custom-btn
 const realfilebtn = document.getElementById("real-file");
 const custombtn = document.getElementById("img-btn-custom");
