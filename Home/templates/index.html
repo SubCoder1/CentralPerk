@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'login/img/favicon.png' %}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Barriecito&amp;display=swap" rel="stylesheet">
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
     {% block head %}
     {% endblock %}
@@ -17,23 +18,30 @@
     {% endblock %}
   </head>
   <body>
-      <nav class="navbar navbar-expand-sm bg-1 sticky-top">
+      <nav class="navbar navbar-expand-sm bg-1 sticky-top" id="navbar">
         <!-- Brand -->
-        <a class="navbar-brand" href="{% url 'home_view' %}">Centr<i class="fas fa-mug-hot" style="color:black"></i>lPerk</a>
+        <a class="navbar-brand" id="logo" href="{% url 'home_view' %}">
+          <img src="{% static 'login/img/favicon.png' %}" id="brand-ico" class="cp"/>
+          <span id="brand-name"> | CentralPerk</span>
+        </a>
       
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
           <span class="navbar-toggler-icon"></span>
         </button>
       
-        <!-- Links -->
+        <!-- dropdown -->
         <div class="collapse navbar-collapse" id="collapsibleNavbar" data-target="collapsibleNavbar">
           <ul class="navbar-nav ml-auto">    
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link" href="#" id="navdrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="/media/{{ user.profile_pic }}" class="rounded-circle navbar-profile-pic"/> {{user.username }}
+                <i class="fas fa-chevron-right"></i>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navdrop">
+                <a class="dropdown-item" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>
+                <a class="dropdown-item" href="{% url 'user_logout' %}">Log Out</a>
+              </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'user_logout' %}">Log Out</a>
-            </li> 
           </ul>
         </div>
       </nav>
@@ -94,7 +102,7 @@
                     <form method="POST" style="margin-top: 8px">
                       {% csrf_token %}
                       <input type="hidden" name="post_id" value="{{ post.post_id }}">
-                      <textarea type="text" class="form-control comment-input" id="comment" name="comment" style="height: 0px;" placeholder="Post a comment"></textarea>
+                      <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment"></textarea>
                       <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
                     </form>
                   </div>
@@ -199,7 +207,7 @@
                       <span aria-hidden="true">&times;</span>
                     </a>
                   </div>
-                  <form method="POST" enctype="multipart/form-data">
+                  <form method="POST" enctype="multipart/form-data" autocomplete="off">
                     {% csrf_token %}
                     <div class="modal-body nav-pills-modal-body">
                       <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
