@@ -48,6 +48,22 @@
     <div class="container-fluid">
       <br/><br/><br/>
       {% block body %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="indicator notif-active">
+          {% if message.tags == 'success' %}
+            <div class="alert alert-success" id="success-msg" role="alert">
+              {{ message }}
+          {% else %}
+            <div class="alert alert-error" id="error-msg" role="alert">
+              {{ message }}
+          {% endif %}
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
       <div class="d-flex flex-items-container justify-content-center">
         <div class="post-container">
           {% for post in posts %}
@@ -55,7 +71,7 @@
                 <div class="card-header">
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex justify-content-between align-items-center">
-                      <div class="mr-2">
+                      <div class="mr-0">
                         <img src="/media/{{ post.user__profile_pic }}" class="rounded-circle post-profile-img">
                       </div>
                       <div class="ml-2">
@@ -102,7 +118,7 @@
                     <form method="POST" style="margin-top: 8px">
                       {% csrf_token %}
                       <input type="hidden" name="post_id" value="{{ post.post_id }}">
-                      <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment"></textarea>
+                      <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment" style="height: 42px;"></textarea>
                       <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
                     </form>
                   </div>
@@ -231,13 +247,17 @@
                         <div class="tab-pane fade show active" id="status" role="tabpanel" aria-labelledby="status-tab">
                           <div class="form-group">
                             <label class="sr-only" for="message">post</label>
-                              <textarea class="form-control form-alignment status" id="status_caption" name="status_caption" placeholder="What's your status?"></textarea>
+                              <textarea class="form-control form-alignment status" id="status_caption" name="status_caption" placeholder="What's your status?" style="height: 300px;"></textarea>
                           </div>
                         </div> 
                         <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-                          <div class="form-group">
-                            <input type="file" id="real-file" name="pic" hidden/>
-                            <input type="button" class="form-control post-img" id="img-btn-custom" value="No files selected" readonly/>
+                          <input type="file" id="real-file" name="pic" hidden/>
+                          <div class="preview-img-container" id="img-preview-custom">
+                            <a href="#" id="img-btn-custom">
+                              <i class="fas fa-camera-retro"></i> 
+                              Add Pictures
+                            </a>
+                            <img src="#" id="preview-img"/>
                           </div>
                         </div>
                         <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
