@@ -1,3 +1,4 @@
+// JS code for navbar on-scrolldown animation
 window.onscroll = function() {scrollFunction()};
 var navbar = document.getElementById("navbar");
 var logo = document.getElementById("logo");
@@ -6,35 +7,17 @@ var $brand_ico = $('#brand-ico');
 
 function scrollFunction() {
   if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-    navbar.style.padding = "2px 68px 0px 60px";
-    logo.style.fontSize = "25px";
+    navbar.style.padding = "8px 68px 0px 68px";
+    logo.style.fontSize = "20px";
     $brand_name.hide();
-    $brand_ico.css('height', '42px');
+    $brand_ico.css('height', '38px');
   } else {
-    navbar.style.padding = "10px 68px 0px 60px";
-    logo.style.fontSize = "29px";
+    navbar.style.padding = "10px 68px 0px 68px";
+    logo.style.fontSize = "25px";
     $brand_name.show();
     $brand_ico.css('height', '32px');
   }
 }
-
-// JS code for uploaded file-name to appear on custom-btn
-const realfilebtn = document.getElementById("real-file");
-const custombtn = document.getElementById("img-btn-custom");
-
-if (realfilebtn && custombtn) {
-  custombtn.addEventListener("click", function() {
-    realfilebtn.click();
-  });
-  
-  realfilebtn.addEventListener("change", function() {
-    if (realfilebtn.value) {
-      custombtn.value = realfilebtn.value;
-    } else {
-      custombtn.value = "No files selected";
-    }
-  });
-};
 
 // JS code for post-card data overflow management
 var elms = document.querySelectorAll("[id='post-data']");
@@ -76,4 +59,47 @@ for(var i=0; i < elms.length; i++) {
     }
   }).call(this, i);
 }
-  
+
+$(document).ready(function() {
+  // JQuery code to clear alert messages on post-success or error
+  var $indicator = $('.indicator');
+  if ($indicator) {
+    $indicator.toggleClass("success-notif-active");
+    setTimeout(function(){
+      $indicator.removeClass("success-notif-active");
+    }, 2000);
+  }
+
+  // JQuery code to preview uploaded image and clear it (if clicked on img)
+  var $real_upload_btn = $('#real-file');
+  var $custom_upload = $('#img-btn-custom');
+  var $preview_img = $('#preview-img');
+  var $reset_img_ico = $('#reset-img-ico');
+
+  function previewPIC(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          $preview_img.attr('src', e.target.result);
+          $preview_img.css('display', 'block');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  $custom_upload.click(function() {
+    $real_upload_btn.click();
+  });
+
+  $real_upload_btn.change(function() {
+    $custom_upload.css('display', 'none');
+    previewPIC(this);
+  });
+
+  $preview_img.on('click', function() {
+    $preview_img.css('display', 'none');
+    $custom_upload.css('display', 'flex');
+    $preview_img.attr('src', '#');
+    $real_upload_btn.val(null);
+  });
+})
