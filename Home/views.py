@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.db.models import F
 from django.urls import reverse
+from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from Home.models import PostModel, PostLikes, PostComments, UserNotification
 from Home.forms import PostForm, CommentForm
@@ -38,6 +39,7 @@ class home_view(TemplateView):
             post_obj.comment_count = F('comment_count') + 1
             post_obj.save()
             send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=request.user.username, post_id=post_id)
+            messages.success(request, 'Post Successful!')
         else:
             form = PostForm(request.POST, request.FILES or None)
             if form.is_valid():
@@ -47,7 +49,9 @@ class home_view(TemplateView):
                 post.save()
                 post.send_to.add(request.user)
                 share_posts.delay(request.user.username, post.post_id)  # Celery handling the task to share the post to user's followers
+                messages.success(request, 'Post Successful!')
             else:
+                messages.error(request, 'Post Unsuccessful!')
                 return redirect(reverse('home_view'))
 
         return redirect(reverse('home_view'))
