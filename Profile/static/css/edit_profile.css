@@ -82,6 +82,10 @@ option { background: darkslateblue; }
   border-radius: 1rem;
 }
 
+.datepicker table tr td, .datepicker table tr th {
+  color: white;
+}
+
 .datepicker .next, .datepicker .prev, tr {
   border-radius: 50% !important;
 }
