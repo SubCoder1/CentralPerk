@@ -17,11 +17,34 @@ function getCookie(name) {
 
 var csrftoken = getCookie('csrftoken');
 var username = JSON.parse(document.getElementById('profile_name').textContent);
+var bio_more = document.getElementById('more');
+var bio_switch = document.getElementById('more-bio-content');
 var $disable_all_switch = $('#disable-all-switch');
 var $disable_f_switch = $('#disable-f-switch');
 var $post_settings = $('#post-settings');
 
+function rearrange_profile_bio() {
+    var prof_bio = JSON.parse(document.getElementById('profile_bio').textContent);
+    var less = document.getElementById('less');
+    var newline_count = (prof_bio.match(/\r\n/g) || '').length + 1;
+    if (newline_count) {
+        var lines = prof_bio.split("\r\n");
+        var content = lines.slice(0,lines.length);
+        if (lines.length <= 6) {
+            for (var i=0; i < content.length; i++) { less.innerHTML += content[i] + '<br/>'; }
+        } else {
+            for(var i=0; i < 6; i++) { less.innerHTML += content[i] + '<br/>'; }
+            for (var i=6; i < content.length; i++) { bio_more.innerHTML += content[i] + '<br/>'; }
+            bio_switch.style.display = 'block';
+        }
+    }
+};
+
 function get_user_activity() {
+    var username = JSON.parse(document.getElementById('profile_name').textContent);
+    var render = document.getElementById('id_activity');
+    var user_online = document.getElementById('user-online');
+    var last_activity = document.getElementById('last-activity');
     $.ajax({
         url : username,// the endpoint
         type : "POST", // http method
@@ -33,34 +56,25 @@ function get_user_activity() {
         // handle a successful response
         complete : function(response) {
             // Using complete in AJAX to check whether the previous request successfully executed or not. 
-            // console.log(response.responseJSON);  // log the returned json to the console
-            render = document.getElementById('id_activity');
             if (!response.responseJSON) {
                 // Case 1 -- corner case when the activity of the user to be accquired is not being followed.
                 // In that case, do nothing and stop the ajax requests being sent to the server every second.
-            }
-            else if (response.responseJSON == "online") {
-                // Case 2 -- The user activity to be checked is being followed and is online ATM.
-                render.innerHTML = "<h3><i class='material-icons' style='color:#adff2f; font-size:8px'>lens</i></h3>";
-                render.innerHTML += "<h4 style='opacity: 0.5'>Activity</h4>";
-                setTimeout(get_user_activity, 2000);
             } else if (response.responseJSON == "#") {
                 // Case 3 -- The user is in his/her own profile page.
                 // In that case, No need to check continuously and show logged-in user activity.
             } else {
-                // Case 4 -- The user activity to be checked is being followed but isn't online ATM.
-                render.innerHTML = "<h3>" + response.responseJSON + "</h3>";
-                render.innerHTML += "<h4 style='opacity: 0.5'>Activity</h4>";
-                setTimeout(get_user_activity, 2000);
-            };
+                render.style.display = "block";
+                if (response.responseJSON == "online") {
+                    // Case 2 -- The user activity to be checked is being followed and is online ATM.
+                    user_online.style.display = "block";
+                    setTimeout(get_user_activity, 2000);
+                } else {
+                    // Case 4 -- The user activity to be checked is being followed but isn't online ATM.
+                    last_activity.style.display = "block";
+                    setTimeout(get_user_activity, 2000);
+                };
+            } 
         },
-
-        // handle a non-successful response
-        error : function(xhr,errmsg,err) {
-            $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
-            console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
-        }
     });
 };
 
@@ -157,20 +171,35 @@ function set_user_acc_settings() {
 };
 
 $(document).ready(function(){
+    // Manage oveflowing(if) profile bio
+    rearrange_profile_bio();
+
+    // profile-bio read-more read-less toggle
+    bio_switch.addEventListener('click', function() {
+        if (bio_more.style.display == 'block') {
+            bio_more.style.display = 'none';
+            bio_switch.innerText = 'Read more...';
+        } else {
+            bio_more.style.display = 'block';
+            bio_switch.innerText = 'Read less...';
+        }
+    });
+
+    // Get user activity
     setTimeout(get_user_activity, 1000);
 
+    // Get the current user account settings when settings-btn is clicked
     var $user_acc_settings_btn = $('#user-acc-settings-btn');
     var $acc_settings_loading_gif = $('.account-settings-loading-gif');
-    // Get the current user account settings when settings-btn is clicked
     $user_acc_settings_btn.click(function() {
         $acc_settings_loading_gif.toggleClass("loading-gif-active");
         get_user_account_settings();
     });
 
+    // Set the current user account settings when user_account_settings_form is changed
     var $user_acc_settings_form = $("#user_acc_settings_form");
     var $disable_all_switch = $('#disable-all-switch');
     var $post_settings = $('#post-settings');
-    // Set the current user account settings when user_account_settings_form is changed
     $user_acc_settings_form.change(function() {
         if ($disable_all_switch.prop("checked") == true) {
             $post_settings.css({"pointer-events":"none", "opacity":"0.5"});
@@ -180,9 +209,9 @@ $(document).ready(function(){
 
         set_user_acc_settings();
         var $indicator = $('.indicator');
-        $indicator.toggleClass("success-notif-active");
+        $indicator.toggleClass("notif-active");
         setTimeout(function(){
-            $indicator.removeClass("success-notif-active");
+            $indicator.removeClass("notif-active");
         }, 2000);
     });
 });
