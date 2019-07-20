@@ -130,7 +130,7 @@
 .profile-pic-rounded {
     border-radius: 50%!important;
     overflow: hidden;
-    height: 132px;
+    height: 120px;
 }
 /* ----------------------------------------- */
 
@@ -146,11 +146,32 @@ a:hover span {
 }
 /* ----------------------------------------- */
 
+/* ----------- info alignment ------------ */
+.about-profile {
+  width: 100%;
+}
+
+.profile-bio { text-align: justify; }
+
+.details-counter {
+  text-align: center;
+  position: relative;
+  top: 7px;
+  height: fit-content;
+  width: fit-content;
+}
+
+#user-online, #last-activity {
+  display: none;
+}
+
+#more-bio-content { display: none; }
+#less { margin: 0; }
+#more { display: none; }
+/* ----------------------------------------- */
+
 /* ------------ Details counter ------------ */
 @media only screen and (max-width: 768px) {
-  h4 { font-size: 18px; }
-  
-  h3 { font-size: 18px; }
   .post-counter {
     margin-right: 21px;
     float: left;
@@ -162,8 +183,12 @@ a:hover span {
   }
   
   .following-counter {
-    margin-right: 21px;
     float: left;
+  }
+
+  .activity-counter {
+    margin-left: 21px;
+    display: none;
   }
 }
 
@@ -179,8 +204,12 @@ a:hover span {
   }
   
   .following-counter {
-    margin-right: 32px;
     float: left;
+  }
+
+  .activity-counter {
+    margin-left: 32px;
+    display: none;
   }
 }
 /* ----------------------------------------- */
