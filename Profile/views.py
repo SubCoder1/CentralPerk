@@ -146,8 +146,8 @@ def post_view(request, post_id):
         post_obj = PostModel.objects.get_post(post_id=post_id)
         post_likes_list = post_obj.post_like_obj.select_related('user')
         post_comments = post_obj.post_comment_obj.get_comments(post_obj)
-    except ObjectDoesNotExist:
-        return render(request, 'profile_500.html', {})
+    except:
+        return render(request, 'post_500.html', {})
 
     editable = False
     if post_obj.user == request.user:
