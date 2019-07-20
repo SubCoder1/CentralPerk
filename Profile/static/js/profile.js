@@ -19,6 +19,7 @@ var csrftoken = getCookie('csrftoken');
 var username = JSON.parse(document.getElementById('profile_name').textContent);
 var bio_more = document.getElementById('more');
 var bio_switch = document.getElementById('more-bio-content');
+var $user_acc_settings_form = $("#user_acc_settings_form");
 var $disable_all_switch = $('#disable-all-switch');
 var $disable_f_switch = $('#disable-f-switch');
 var $post_settings = $('#post-settings');
@@ -103,6 +104,8 @@ function get_user_account_settings() {
 
         complete : function(response) {
             $account_settings_loading_gif.removeClass("loading-gif-active");
+            $user_acc_settings_form.css('display', 'block');
+            
             if (response.responseJSON['disable_all'] == true) {
                 $disable_all_switch.prop("checked", true);
                 $post_settings.css("pointer-events", "none");
@@ -150,7 +153,6 @@ function set_user_acc_settings() {
     var $p_likes = $("input[name='p-likes']:checked", '#user_acc_settings_form');
     var $p_comments = $("input[name='p-comments']:checked", '#user_acc_settings_form');
     var $p_comment_likes = $("input[name='p-c-likes']:checked", '#user_acc_settings_form');
-    var $indicator = $('.indicator');
     $.ajax({
         url : username,
         type : "POST",
@@ -193,11 +195,11 @@ $(document).ready(function(){
     var $acc_settings_loading_gif = $('.account-settings-loading-gif');
     $user_acc_settings_btn.click(function() {
         $acc_settings_loading_gif.toggleClass("loading-gif-active");
+        $user_acc_settings_form.css('display', 'none');
         get_user_account_settings();
     });
 
     // Set the current user account settings when user_account_settings_form is changed
-    var $user_acc_settings_form = $("#user_acc_settings_form");
     var $disable_all_switch = $('#disable-all-switch');
     var $post_settings = $('#post-settings');
     $user_acc_settings_form.change(function() {
