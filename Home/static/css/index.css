@@ -1,7 +1,6 @@
 * {
     box-sizing: border-box;
     margin: 0;
-    padding: 0;
     outline: none;
 }
 
@@ -47,14 +46,11 @@ input {
 .card-body::-webkit-scrollbar { width: 0 !important; }
 
 .display-2 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 28px;
+    font-size: 25px;
 }
 
 .btn-dark {
     background: mediumslateblue;
-    width: 85px;
-    height: 40px;
     border-radius: 2.25rem;
     color: white;
     border: none;
@@ -72,8 +68,8 @@ input {
     box-shadow: none;
 }
 
-h3 { font-size: 22px; }
-h4 { font-size: 20px; }
+h3 { font-size: 19px; }
+h4 { font-size: 17px; }
 h6 { font-size: 13px; }
 
 .container-fluid {
@@ -375,6 +371,7 @@ h6 { font-size: 13px; }
 .comment-input {
     position: relative;
     bottom: 4px;
+    margin-right: 5px;
     padding: 0.9rem 0.1rem;
     background-color: #2e2a4b;
     color: white;
@@ -708,6 +705,11 @@ h6 { font-size: 13px; }
     top: 13.5%;
     width: 93%;
     font-size: 15px;
+}
+
+.post-btn {
+    width: 85px;
+    height: 40px;
 }
 /* ----------------------------------------------- */
 
