@@ -170,6 +170,7 @@
                     {{ profile.bio|json_script:"profile_bio" }}
                 </div>
             </div>
+            <br/>
             <div class="details-counter">
                 <div class="post-counter">
                     <h3>{{ posts|length }}</h4>
@@ -195,60 +196,50 @@
                 {% endif %}
             </div>
         </div>
-        <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link link active" id="post-tab" data-toggle="tab" href="#post" role="tab" aria-controls="post" aria-selected="true">
-                    <h4>Posts</h4>
-                </a>
-            </li>
-            <li class="nav-item px-1">
-                <a class="nav-link link" id="blank-tab" data-toggle="tab" href="#blank" role="tab" aria-controls="blank" aria-selected="true">
-                    <h4>Blank</h4>
-                </a>
-            </li>
-        </ul>
-        <div class="tab-content" id="cardtabContent">
-            <div class="tab-pane fade show active" id="post" role="tabpanel" aria-labelledby="post-tab">
-                {% for post in posts %}
-                <div class="card post-card">
-                    {% if post.status_caption and not post.pic %}
-                    <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container">
-                        {{ post.status_caption|json_script:"post-data" }}
-                        <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
-                    </div>
-                    {% elif post.status_caption and post.pic %}
-                    <div class="card-body prof-img-post-card-body">
-                        <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
-                    </div>
-                    {% else %}
-                    <div class="card-body profile-img-post-card-body">
-                        <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
-                    </div>
-                    {% endif %}
-                    <div class="card-footer">
-                        <div class="upper-row">
-                            <a href="{% url 'like_from_profile_post' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
-                            <span class="likes-counter">{{ post.likes_count }}</span>
-                            <a href="{% url 'view_post' post.post_id %}"><i class="fas fa-comment-alt"></i></a>
-                            <span class="comment-counter">{{ post.comment_count }}</span>
-                            <span class="post-date-time">{{ post.date_time|timesince }} ago</span>
-                        </div>
-                        <div class="lower-row">
-                            {% if post.status_caption and post.pic %}
-                            <div class="text-align-left display-3 index-post-card-body" id="status_caption-container">
-                                {{ post.status_caption|json_script:"post-data" }}
-                                <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
+    </div>
+</div>
+<div class="profile-post-container">
+    <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link link active" id="post-tab" data-toggle="tab" href="#post" role="tab" aria-controls="post" aria-selected="true">
+                <h4>Posts</h4>
+            </a>
+        </li>
+        <li class="nav-item px-1">
+            <a class="nav-link link" id="blank-tab" data-toggle="tab" href="#blank" role="tab" aria-controls="blank" aria-selected="true">
+                <h4>Blank</h4>
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content" id="cardtabContent">
+        <div class="tab-pane fade show active" id="post" role="tabpanel" aria-labelledby="post-tab">
+            {% for post in posts %}
+            <div class="card prof-post-card">
+                {% if post.status_caption and not post.pic %}
+                <div class="card-body display-3 prof-post-card-body" id="status_caption-container">
+                    {{ post.status_caption|json_script:"post-data" }}
+                    <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
                 </div>
-                <br>
+                {% elif post.status_caption and post.pic %}
+                <div class="card-body prof-img-post-card-body">
+                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
+                </div>
+                {% else %}
+                <div class="card-body prof-img-post-card-body">
+                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
+                </div>
+                {% endif %}
+                <div class="prof-post-actions">
+                    <a href="{% url 'like_from_profile_post' post.post_id %}"><i class="fas fa-fire-alt prof-like-ico"></i></a>
+                    <span class="prof-likes-counter">{{ post.likes_count }}</span>
+                    <a href="{% url 'view_post' post.post_id %}"><i class="fas fa-comment-alt prof-comment-ico"></i></a>
+                    <span class="prof-comments-counter">{{ post.comment_count }}</span>
+                </div>
+            </div>
             {% endfor %}
-            </div>
-            <div class="tab-pane fade" id="blank" role="tabpanel" aria-labelledby="blank-tab">
-                <h5 style="text-align: center">Still Working on it</h5>
-            </div>
+        </div>
+        <div class="tab-pane fade" id="blank" role="tabpanel" aria-labelledby="blank-tab">
+           <h5 style="text-align: center">Still Working on it</h5>
         </div>
     </div>
 </div>
