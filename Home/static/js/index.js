@@ -61,20 +61,10 @@ for(var i=0; i < elms.length; i++) {
 }
 
 $(document).ready(function() {
-  // JQuery code to clear alert messages on post-success or error
-  var $indicator = $('.indicator');
-  if ($indicator) {
-    $indicator.toggleClass("success-notif-active");
-    setTimeout(function(){
-      $indicator.removeClass("success-notif-active");
-    }, 2000);
-  }
-
   // JQuery code to preview uploaded image and clear it (if clicked on img)
   var $real_upload_btn = $('#real-file');
   var $custom_upload = $('#img-btn-custom');
   var $preview_img = $('#preview-img');
-  var $reset_img_ico = $('#reset-img-ico');
 
   function previewPIC(input) {
     if (input.files && input.files[0]) {
