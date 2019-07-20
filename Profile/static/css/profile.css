@@ -33,6 +33,10 @@
 /* ----------------------------------------- */
 
 /* ----------- Account settings ------------ */
+#user_acc_settings_form {
+  display: none;
+  flex-grow: 1;
+}
 
 .account-settings-loading-gif {
   max-width: 100%;
@@ -104,27 +108,94 @@
 /* ----------------------------------------- */
 
 /* ------------- Profile post  ------------- */
+.profile-post-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: center;
+  width: 939px;
+}
+/* tab pane in profile.html containing user posts */
+#post {
+  flex-flow: column wrap;
+  height: 29em;
+  align-content: start;
+}
+
+.tab-content>.active {
+  display: flex;
+}
+
+.prof-post-card {
+  display: flex;
+  justify-content: center;
+  width: 32%;
+  flex: 0 0 auto;
+  margin: 5px;
+  border-radius: 0;
+  transition: transform 0.1s;
+  cursor: pointer;
+}
+
+.prof-post-card-body {
+  background-color: #2e2a4b;
+  color: white;
+  overflow: overlay;
+  min-height: 25px;
+  font-size: 14px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.prof-card-body-img { 
+  width: 100%; 
+  transition: transform 0.2s;
+}
+
 .prof-img-post-card-body { padding: 0rem; }
 
-.prof-card-body-img {
-  border-radius: 1rem 1rem 0rem 0rem;
-  width: 100%;
-}
+.prof-post-actions { display: none; }
 
-.upper-row { padding-bottom: 5px; }
-/* ----------------------------------------- */
-
-/* ----------- Like btn on posts ----------- */
-.like-btn {
-  float:left;
+.prof-like-ico {
+  font-size: 19px;
   position: relative;
+  top: 2px;
+}
+
+.prof-comment-ico {
+  font-size: 19px;
+  position: relative;
+  top: 7px;
+  margin-left: 2px;
+}
+
+.prof-likes-counter {
+  font-size: 19px;
+  margin-left: 5px;
+  margin-right: 8px;
+}
+
+.prof-comments-counter {
+  font-size: 19px;
+  margin-left: 4px;
+}
+
+.prof-post-card:hover .prof-post-card-body {
+  filter: brightness(0.2);
+  transform: scale(1.05);
+}
+
+.prof-post-card:hover .prof-card-body-img {
+  filter: brightness(0.2);
+  transform: scale(1.05);
+}
+
+.prof-post-card:hover .prof-post-actions {
+  display: flex;
+  align-self: center;
+  position: absolute;
 }
 /* ----------------------------------------- */
-
-/* --------- comment btn on posts ---------- */
-.fa-comment-alt { margin-left: 5px; }
-
-.comment-counter { margin-left: 0px; }
 
 /* ------------- Profile Pic --------------- */
 .profile-pic-rounded {
@@ -148,6 +219,8 @@ a:hover span {
 
 /* ----------- info alignment ------------ */
 .about-profile {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
 }
 
