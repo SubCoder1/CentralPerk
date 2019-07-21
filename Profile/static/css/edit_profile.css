@@ -20,8 +20,6 @@ button:focus {
 
 option { background: darkslateblue; }
 
-.edit-prof-headline { font-family: Poppins; }
-
 #change-pass-form { min-height: 600px; }
 
 /*-------------- edit-profile-container --------------*/
@@ -45,8 +43,15 @@ option { background: darkslateblue; }
 /*----------------------------------------------------*/
 
  /*-------------------- form-input -------------------*/
+#edit-prof-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .input100 {
-  font-size: 17px;
+  font-size: 14px;
   line-height: 1.5;
   color: white;
   display: block;
@@ -57,22 +62,42 @@ option { background: darkslateblue; }
   padding: 10px;
 }
 
-.edit-prof-error { height: 10px; }
+.edit-prof-error { 
+  height: 10px; 
+  font-size: 13px;
+}
 /*----------------------------------------------------*/
 
 /*---------------- change-profile-pic ----------------*/
+.custom-img-upload-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .edit-prof-pic-rounded { 
   height: 120px;
   cursor: pointer;
   border-radius: 50% !important;
-}
-
-.edit-prof-pic-rounded:hover {
-  opacity: 0.5;
   -webkit-transition: all 0.3s;
   -o-transition: all 0.3s;
   -moz-transition: all 0.3s;
   transition: all 0.3s;
+}
+
+.custom-upload-hover-ico { display: none; }
+
+.fa-camera-retro { color: mediumturquoise; }
+
+.custom-img-upload-container:hover .edit-prof-pic-rounded {
+  filter: brightness(0.2);
+}
+
+.custom-img-upload-container:hover .custom-upload-hover-ico {
+  display: flex;
+  align-self: center;
+  position: absolute;
+  cursor: pointer;
 }
 /*----------------------------------------------------*/
 
