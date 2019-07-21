@@ -21,8 +21,7 @@ $(document).ready(function() {
     $.fn.datepicker.defaults.format = "dd-mm-yyyy";
     $('.datepicker').datepicker({ format: 'dd-mm-yyyy' });
     // Fill textbox of bio with existing user-input data (if any)
-    var $user_bio = $('#user-bio').text();
-    $('#edit-bio').val($user_bio.slice(1, $user_bio.length-1));
+
 
     // Preview selected profile pic (if selected) before uploading
     var $real_upload_btn = $('#real-file');
@@ -43,7 +42,6 @@ $(document).ready(function() {
 
     $real_upload_btn.change(function() {
         previewPIC(this);
-        console.log($real_upload_btn[0]);
     });
 
     var $indicator = $('.indicator');
@@ -61,7 +59,7 @@ $(document).ready(function() {
         var $birthdate_error = $('#form-error-birthdate');
         var $edit_gender = $('#edit-gender');
         var $gender_error = $('#form-error-gender');
-        var $edit_bio = $('#edit-birthdate');
+        var $edit_bio = $('#edit-bio');
         var $bio_error = $('#form-error-bio');
         var $edit_profile_loading_gif = $('#edit-prof-loading-gif');
 
@@ -82,9 +80,9 @@ $(document).ready(function() {
                 $edit_profile_loading_gif.removeClass("loading-gif-active");
                 var status = response.responseJSON;
                 if (status == 'valid edit_prof_form') {
-                    $indicator.toggleClass("success-notif-active");
+                    $indicator.toggleClass("notif-active");
                     setTimeout(function(){
-                        $indicator.removeClass("success-notif-active");
+                        $indicator.removeClass("notif-active");
                     }, 2000);
                 } else {
                     if (status['username']) {
