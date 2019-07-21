@@ -52,7 +52,7 @@ def manage_profile_post_likes(request, post_id, username=None, view_post=None):
 
     if view_post:
         return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
-
+        
     return redirect(reverse('view_profile', kwargs={ 'username':post.user.username }))
 
 def view_profile(request, username=None):
@@ -74,38 +74,26 @@ def view_profile(request, username=None):
         
         follow_count = current_user.following.count()
         follower_count = current_user.followers.count()
-    
-    active = '#'
-    # Ajax request/response to check user activity, shown iff requset.user follows 'username'
+
     if request.POST:
         ajax_request = request.POST.get("activity")
-        if not editable:
-            if ajax_request == 'get_user_activity':
-                if isFollowing and ajax_request == 'get_user_activity':
-                    if user.is_active():
-                        active = 'online'
-                    else:
-                        active = activity(user.last_login)
-                    return HttpResponse(json.dumps(active), content_type='application/json')
-        else:
-            if ajax_request == 'get_user_acc_settings':
-                # send current user account settings
-                user_acc_settings = Account_Notif_Settings.objects.get(user=request.user)
-                context = { 'disable_all':user_acc_settings.disable_all, 'p_likes':user_acc_settings.p_likes, 
-                'p_comments':user_acc_settings.p_comments, 'f_requests':user_acc_settings.f_requests,
-                'p_comment_likes': user_acc_settings.p_comment_likes, }
-                return HttpResponse(json.dumps(context), content_type='application/json')
-            elif ajax_request == 'set_user_acc_settings':
-                # set current user account settings from data sent by client
-                data = {'disable_all': request.POST.get('disable_all'), 'p_likes': request.POST.get('p_likes'),
-                'p_comments': request.POST.get('p_comments'), 'p_comment_likes': request.POST.get('p_comment_likes'),
-                'f_requests': request.POST.get('f_requests')
-                }
-                update_user_acc_settings.delay(username=username, data=data)
+        if ajax_request == 'get_user_acc_settings':
+            # send current user account settings
+            user_acc_settings = Account_Notif_Settings.objects.get(user=request.user)
+            context = { 'disable_all':user_acc_settings.disable_all, 'p_likes':user_acc_settings.p_likes, 
+            'p_comments':user_acc_settings.p_comments, 'f_requests':user_acc_settings.f_requests,
+            'p_comment_likes': user_acc_settings.p_comment_likes, }
+            return HttpResponse(json.dumps(context), content_type='application/json')
+        elif ajax_request == 'set_user_acc_settings':
+            # set current user account settings from data sent by client
+            data = {'disable_all': request.POST.get('disable_all'), 'p_likes': request.POST.get('p_likes'),
+            'p_comments': request.POST.get('p_comments'), 'p_comment_likes': request.POST.get('p_comment_likes'),
+            'f_requests': request.POST.get('f_requests') }
+            update_user_acc_settings.delay(username=username, data=data)
     
     context = { 'profile':user, 'posts':user_posts, 'editable':editable, 
                 'isFollowing':isFollowing, 'isFollower': isFollower,
-                'follow_count':follow_count, 'follower_count':follower_count, 'activity':active,
+                'follow_count':follow_count, 'follower_count':follower_count,
              }
 
     return render(request, 'profile.html', context=context)
