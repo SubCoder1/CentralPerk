@@ -41,44 +41,6 @@ function rearrange_profile_bio() {
     }
 };
 
-function get_user_activity() {
-    var username = JSON.parse(document.getElementById('profile_name').textContent);
-    var render = document.getElementById('id_activity');
-    var user_online = document.getElementById('user-online');
-    var last_activity = document.getElementById('last-activity');
-    $.ajax({
-        url : username,// the endpoint
-        type : "POST", // http method
-        data : { 
-            csrfmiddlewaretoken: csrftoken,
-            activity: "get_user_activity",
-        }, // data sent with the post request
-
-        // handle a successful response
-        complete : function(response) {
-            // Using complete in AJAX to check whether the previous request successfully executed or not. 
-            if (!response.responseJSON) {
-                // Case 1 -- corner case when the activity of the user to be accquired is not being followed.
-                // In that case, do nothing and stop the ajax requests being sent to the server every second.
-            } else if (response.responseJSON == "#") {
-                // Case 3 -- The user is in his/her own profile page.
-                // In that case, No need to check continuously and show logged-in user activity.
-            } else {
-                render.style.display = "block";
-                if (response.responseJSON == "online") {
-                    // Case 2 -- The user activity to be checked is being followed and is online ATM.
-                    user_online.style.display = "block";
-                    setTimeout(get_user_activity, 2000);
-                } else {
-                    // Case 4 -- The user activity to be checked is being followed but isn't online ATM.
-                    last_activity.style.display = "block";
-                    setTimeout(get_user_activity, 2000);
-                };
-            } 
-        },
-    });
-};
-
 function get_user_account_settings() {
     var $account_settings_loading_gif = $('.account-settings-loading-gif');
 
@@ -186,9 +148,6 @@ $(document).ready(function(){
             bio_switch.innerText = 'Read less...';
         }
     });
-
-    // Get user activity
-    setTimeout(get_user_activity, 1000);
 
     // Get the current user account settings when settings-btn is clicked
     var $user_acc_settings_btn = $('#user-acc-settings-btn');
