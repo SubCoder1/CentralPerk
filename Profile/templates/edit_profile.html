@@ -35,8 +35,13 @@
         <div class="tab-pane fade show active" id="edit_prof" role="tabpanel" aria-labelledby="edit_profile-tab">
             <form method="POST" id="edit-prof-form" enctype="multipart/form-data" autocomplete="off">
                 {% csrf_token %}
-                <input type="file" id="real-file" name="profile_pic" hidden/>
-                <img src="/media/{{ user.profile_pic }}" id="custom-upload" class="edit-prof-pic-rounded"/>
+                <div class="custom-img-upload-container">
+                    <input type="file" id="real-file" name="profile_pic" hidden/>
+                    <img src="/media/{{ user.profile_pic }}" id="custom-upload" class="edit-prof-pic-rounded"/>
+                    <div class="custom-upload-hover-ico">
+                        <i class="fas fa-camera-retro"></i>
+                    </div>
+                </div>
                 <br/>
                 <input class="input100 edit-prof-input" type="text" id="edit-username" name="username" value="{{ user.username }}" placeholder="Username" maxlength="20"/>
 		        <div class="text-center p-t-12 edit-prof-error">
@@ -62,7 +67,6 @@
                 <div class="text-center p-t-12 edit-prof-error">
                     <span class="txt1" id="form-error-birthdate" style="color:orange;"></span>
                 </div>
-                <br/>
                 <div class="input100 edit-prof-input gender-select-container" id="edit-gender">
                     <select class="gender-select-dropdown" name="gender" id="choice">
                         <option selected disabled>Gender</option>
@@ -84,8 +88,7 @@
                 <div class="text-center p-t-12 signup-error">
 			        <span class="txt1" id="form-error-gender" style="color:orange;"></span>
 		        </div>
-                {{ user.bio|json_script:"user-bio" }}
-                <textarea class="input100 edit-prof-input" type="text" id="edit-bio" name="bio" placeholder="Bio" maxlength="300"></textarea>
+                <textarea class="input100 edit-prof-input" type="text" id="edit-bio" name="bio" placeholder="Bio" maxlength="300">{{ user.bio }}</textarea>
                 <div class="text-center p-t-12 edit-prof-error">
                     <span class="txt1" id="form-error-bio" style="color:orange;"></span>
                 </div>
