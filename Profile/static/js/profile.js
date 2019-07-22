@@ -149,6 +149,28 @@ $(document).ready(function(){
         }
     });
 
+    // handle follow unfollow request response using ajax
+    var $follow_unfollow_user = $('.follow_unfollow_user');
+    var $follower_count = $('#follower_count');
+    var $following_count = $('#following_count');
+    $follow_unfollow_user.on('click', function(event) {
+        event.preventDefault();
+        $.ajax({
+            url : window.location.href + "/" + $follow_unfollow_user.attr('id'),
+            type : "POST",
+            data : {
+                csrfmiddlewaretoken : csrftoken,
+                option : $(this).attr('id'),
+            },
+            complete : function(response) {
+                $follow_unfollow_user.text(response.responseJSON["option"]);
+                $follow_unfollow_user.attr('id', response.responseJSON["option"].toLowerCase());
+                $follower_count.text(response.responseJSON["follower_count"]);
+                $following_count.text(response.responseJSON["following_count"]);
+            }
+        });
+    });
+
     // Get the current user account settings when settings-btn is clicked
     var $user_acc_settings_btn = $('#user-acc-settings-btn');
     var $acc_settings_loading_gif = $('.account-settings-loading-gif');
