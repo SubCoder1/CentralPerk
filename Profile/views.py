@@ -25,6 +25,7 @@ def manage_relation(request, username, option=None):
         result["option"] = 'Unfollow'
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
+        # Delete any follow requests sent to follow_unfollow_usrname
         del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
         result["option"] = 'Follow'
     
