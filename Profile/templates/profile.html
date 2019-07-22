@@ -148,11 +148,11 @@
         {% endif %}
         {% if not editable %}
             {% if isFollowing %}
-                <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'unfollow' %}"><span>Unfollow</span></a>
+                <a class="btn btn-dark follow_unfollow_user" href="#" id="unfollow">Unfollow</a>
             {% elif isFollower %}
-                <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'follow' %}"><span>Follow Back</span></a>
+                <a class="btn btn-dark follow_unfollow_user" href="#" id="follow_back">Follow Back</a>
             {% else %}
-                <a class="btn btn-dark" href="{% url 'manage_relation' profile.username 'follow' %}"><span>Follow</span></a>
+                <a class="btn btn-dark follow_unfollow_user" href="#" id="follow">Follow</a>
             {% endif %}
         {% endif %}
         </div>
@@ -177,11 +177,11 @@
                     <h4 style="opacity: 0.5">Posts</h4>
                 </div>
                 <div class="follow-counter">
-                    <h3>{{ follower_count }}</h4>
+                    <h3 id="follower_count">{{ follower_count }}</h4>
                     <h4 style="opacity: 0.5">Followers</h4>
                 </div>
                 <div class="following-counter">
-                    <h3>{{ follow_count }}</h3>
+                    <h3 id="following_count">{{ follow_count }}</h3>
                     <h4 style="opacity: 0.5">Following</h4>
                 </div>
                 <br/><br/><br/><br/>
