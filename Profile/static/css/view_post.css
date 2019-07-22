@@ -32,7 +32,7 @@
 }
 
 .wrap-img-view {
-    flex: 1;
+    max-width: 768px;
     background: black;
     overflow: hidden;
     border-radius: 1.5rem 0rem 0rem 1.5rem;
@@ -48,14 +48,14 @@
 
 /* ----------- post-data on the right ----------- */
 .wrap-data-view {
-    flex: 0.5;
+    min-width: 415px;
     background: #2e2a4b;
     border-radius: 0rem 1rem 1rem 0rem;    
 }
 
-#cardtab {
-    float: left;
-}
+.data-view-enlarged { flex: 0.5; }
+
+#cardtab { float: left; }
 
 .del-post-btn {
     float: right;
@@ -76,6 +76,12 @@
 /* ---------- post-data detail section ---------- */
 .fa-meh-blank {
     color: springgreen;
+    font-size: 16px;
+}
+
+.postview-pill-align {
+    position: relative;
+    top: 0.5px;
 }
 
 .detail-view-card-body {
@@ -93,35 +99,35 @@
 .post-user {
     text-align: center;
     padding: 5px;
+    width: 100%;
 }
 
 .post-username {
-    font-size: 22px;
+    position: relative;
+    right: 2px;
+    font-size: 16px;
+}
+
+.post-details {
+    font-size: 13px;
     position: relative;
     right: 1px;
 }
 
 .post-user-profile-pic {
-    height: 100px;
+    height: 70px;
     position: relative;
     bottom: 5px;
 }
 
-.post-status-caption {
-    position: relative;
-    right: 5px;
-}
+.post-status-caption { font-size: 15px; }
 /* ---------------------------------------------- */
 
 /* ---------- post-data comment section --------- */
 .comment-view-card-body {
-    padding: 5px 35px 10px 25px;
+    padding: 0px 20px 0px 25px;
     overflow-x: auto;
     position: relative;
-}
-
-.fa-comment-alt {
-    vertical-align: unset;
 }
 
 #empty-comment, #empty-like {
@@ -134,9 +140,9 @@
     opacity: 0.5;
 }
 
-.m-0 { font-size: 17px; font-family: 'Poppins', sans-serif; }
-
-.ml-2, .ml-3 { font-size: 15px; width: 100%; }
+.m-0 { font-size: 17px; }
+.mr-1 { margin-top: 5px; }
+.ml-2, .ml-3 { font-size: 13px; width: 100%; }
 
 .comment-reply-margin { 
     margin-left: 48px;
@@ -144,9 +150,9 @@
 }
 
 .comment-date-time {
-    font-size: 12px;
+    font-size: 11px;
     float: right;
-    line-height: 2.5;
+    line-height: 2;
 }
 
 .comment-user {
@@ -167,6 +173,8 @@
 /* ---------------------------------------------- */
 
 /* ----------- post-data like section ----------- */
+.like-pill-ico { bottom: 1.5px; }
+
 .liked-user {
     margin-left: 5px;
     margin-bottom: 5px;
@@ -174,7 +182,7 @@
 }
 
 .like-view-card-body {
-    padding: 5px 35px 10px 25px;
+    padding: 5px 20px 0px 20px;
     overflow-x: auto;
     position: relative;
 }
@@ -184,10 +192,9 @@
 }
 
 .like-date-time {
-    text-align: right;
     float: right;
-    line-height: 4;
-    font-size: 13px;
+    line-height: 3.8;
+    font-size: 11px;
 }
 
 .like-section-footer {
@@ -197,6 +204,7 @@
 }
 
 .post-view-like-btn {
+    background: transparent;
     border-radius: 50% !important;
     height: 39px;
     width: 40px;
@@ -207,10 +215,6 @@
 .post-view-like-btn:hover {
     background-color: black;
     border-color: black;
-}
-
-.ico-center-align {
-    font-size: 17px;
 }
 /* ---------------------------------------------- */
 
