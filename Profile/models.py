@@ -19,7 +19,7 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=20, unique=True)
     full_name = models.CharField(max_length=50)
     birthdate = models.CharField(max_length=10)
-    bio = models.TextField(max_length=160, blank=True)
+    bio = models.TextField(max_length=160,  default="I am breathtaking!", blank=True)
     gender = models.CharField(max_length=20, choices=GENDER)
     email = models.EmailField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
