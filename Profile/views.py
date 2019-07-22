@@ -7,7 +7,6 @@ from django.core.exceptions import ObjectDoesNotExist
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Notif_Settings
-from Profile.last_activity import activity
 from Profile.tasks import update_user_acc_settings
 from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications, del_notifications
@@ -18,15 +17,20 @@ import json
 def manage_relation(request, username, option=None):
     current_user = request.user
     follow_unfollow_user = User.get_user_obj(username=username)
-
-    if option == 'follow':
+    result = {}
+    if option in ('follow', 'follow_back'):
         Friends.follow(current_user, follow_unfollow_user)
         # Notify the user to whom this follow request is being sent
         send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
+        result["option"] = 'Unfollow'
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
         del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
-    return redirect(reverse('view_profile', kwargs={ 'username':username }))
+        result["option"] = 'Follow'
+    
+    friend = Friends.objects.get(current_user=follow_unfollow_user)
+    result["follower_count"], result["following_count"] = friend.followers.count(), friend.following.count()
+    return HttpResponse(json.dumps(result), content_type="application/json")
 
 def manage_profile_post_likes(request, post_id, username=None, view_post=None):
     try:
