@@ -163,8 +163,8 @@
                             {% elif notification.reaction == 'Sent Follow Request' %}
                             <div class="ml-2">
                               <div class="m-0">
-                                <a href="{% url 'view_profile' notification.poked_by %}">
-                                {{ notification.poked_by }}
+                                <a href="{% url 'view_profile' notification.poked_by__username %}">
+                                {{ notification.poked_by__username }}
                                 </a> started to follow you.
                               </div>
                               <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
