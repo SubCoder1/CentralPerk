@@ -19,7 +19,7 @@
         <div class="card wrap-data-view" id="id_view-post-card">
     {% else %}
     <div class="post-view status-view">
-        <div class="card wrap-data-view" style="border-radius: 1rem">
+        <div class="card wrap-data-view data-view-enlarged" style="border-radius: 1rem">
     {% endif %}
             <div class="card-header" id='id_view-post-card-header'>
                 <ul class="nav nav-pills" id="cardtab" role="tablist">
@@ -32,17 +32,17 @@
                     </li>
                     <li class="nav-item px-1">
                         <a class="nav-link link" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="true">
-                            <h4>
+                            <h4 class="postview-pill-align">
                                 <i class="fas fa-comment-alt"></i>
-                                <span style="position: relative;">{{ comment_count }}</span>
+                                <span>{{ comment_count }}</span>
                             </h4>
                         </a>
                     </li>
                     <li class="nav-item px-1">
                         <a class="nav-link link" id="like-tab" data-toggle="tab" href="#like" role="tab" aria-controls="like" aria-selected="true">
-                            <h4>
-                                <i class="fas fa-fire-alt"></i>
-                                <span style="font-size: 20px">{{ post_data.likes_count }}</span>
+                            <h4 class="postview-pill-align">
+                                <i class="fas fa-fire-alt like-pill-ico"></i>
+                                <span style="font-size: 17px">{{ post_data.likes_count }}</span>
                             </h4>
                         </a>
                     </li>
@@ -58,14 +58,17 @@
                 {% else %}
                     <div class="card-body detail-view-card-body only-detail">
                 {% endif %}
-                        <div class="post-user">
+                        <div class="post-user" id="id_view-post-details-body">
                             <img src="/media/{{ post_data.user.profile_pic }}" class="rounded-circle post-user-profile-pic">
                             <br/>
-                            <div class="display-2 post-username">
-                                <a href="{% url 'view_profile' post_data.user.username %}">{{ post_data.user.username }}</a>
+                            <div class="display-2">
+                                <a class="post-username" href="{% url 'view_profile' post_data.user.username %}">{{ post_data.user.username }}</a>
                             </div>
-                            <br/>
-                            {{ post_data.date_time|timesince }} ago
+                            <div class="post-details">
+                                {{ post_data.location }}
+                                <br/>
+                                {{ post_data.date_time|timesince }} ago
+                            </div>
                             <br/><br/>
                             <div class="post-status-caption" id="status_caption_container">
                             {{ post_data.status_caption|json_script:"post-status_caption" }}
@@ -121,7 +124,7 @@
                         {% else %}
                         <div class="empty-comments" id="empty-comment">
                             <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                            <h5 style="position: relative; left: 2px;">No comments</h5>
+                            <h4 style="position: relative; left: 2px;">No comments</h4>
                         </div>
                         {% endif %}
                     </div>
@@ -129,7 +132,7 @@
                         <form method="POST">
                             {% csrf_token %}
                             <input type="hidden" class="reply-to" name="reply" value="">
-                            <textarea type="text" class="form-control comment-input" autocomplete="off" id="comment_box" name="comment" placeholder="Post a comment"></textarea>
+                            <textarea type="text" class="form-control comment-input" autocomplete="off" id="comment_box" name="comment" placeholder="Post a comment" style="height: 45px"></textarea>
                             <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
                         </form>
                     </div>
@@ -156,12 +159,12 @@
                         {% else %}
                         <div class="empty-likes" id="empty-like">
                             <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                            <h5 style="position: relative; left: 2px;">No Likes</h5>
+                            <h4 style="position: relative; left: 2px;">No Likes</h4>
                         </div>
                         {% endif %}
                     </div>
                     <div class="card-footer like-section-footer">
-                        <a href="{% url 'like_from_post_view' post_id True %}" class="btn btn-dark post-view-like-btn"><i class="fas fa-fire-alt ico-center-align"></i></a>
+                        <a href="{% url 'like_from_post_view' post_id True %}" class="btn btn-dark post-view-like-btn"><i class="fas fa-fire-alt"></i></a>
                     </div>
                 </div>
             </div>
