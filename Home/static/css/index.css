@@ -12,9 +12,11 @@ body {
 }
 
 a { 
-    font-size: 15px;
+    font-size: 13px;
     color: darksalmon; 
 }
+
+.body_link { font-size: 15px; }
 
 a:hover {
     color: #e2ac99;
@@ -629,9 +631,7 @@ h6 { font-size: 13px; }
     opacity: 0.5;
 }
 
-.empty-notif-ghost {
-    font-size: 90px;
-}
+.empty-notif-ghost { font-size: 50px; }
 /* ----------------------------------------------- */
 
 /* ----------------- status card ----------------- */
