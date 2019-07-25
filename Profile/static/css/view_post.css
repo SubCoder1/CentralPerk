@@ -48,7 +48,7 @@
 
 /* ----------- post-data on the right ----------- */
 .wrap-data-view {
-    min-width: 415px;
+    width: 415px;
     background: #2e2a4b;
     border-radius: 0rem 1rem 1rem 0rem;    
 }
@@ -140,9 +140,11 @@
     opacity: 0.5;
 }
 
+.comment-content { font-size: 12px; }
+
 .m-0 { font-size: 17px; }
 .mr-1 { margin-top: 5px; }
-.ml-2, .ml-3 { font-size: 13px; width: 100%; }
+.ml-2, .ml-3 { position: unset; }
 
 .comment-reply-margin { 
     margin-left: 48px;
@@ -173,7 +175,7 @@
 /* ---------------------------------------------- */
 
 /* ----------- post-data like section ----------- */
-.like-pill-ico { bottom: 1.5px; }
+.like-pill-ico { position: relative; bottom: 1.5px; }
 
 .liked-user {
     margin-left: 5px;
