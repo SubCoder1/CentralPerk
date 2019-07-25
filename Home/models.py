@@ -75,7 +75,7 @@ class PostCommentsManager(models.Manager):
             comments = parent_comment_qs.prefetch_related(Prefetch('replies',queryset=PostComments.objects.select_related('user')))
 
             for parent_comment in comments:
-                prof_pic = parent_comment.user.profile_pic
+                prof_pic = parent_comment.user.profile_pic.url
                 username = parent_comment.user.username
                 comment = parent_comment.comment
                 c_id = parent_comment.comment_id
@@ -83,7 +83,7 @@ class PostCommentsManager(models.Manager):
                 replies = []
 
                 for reply in parent_comment.replies.all():
-                    reply_prof_pic = reply.user.profile_pic
+                    reply_prof_pic = reply.user.profile_pic.url
                     reply_username = reply.user.username
                     reply_comment = reply.comment
                     reply_id = reply.comment_id
