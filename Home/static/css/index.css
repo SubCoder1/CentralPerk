@@ -581,9 +581,12 @@ h6 { font-size: 13px; }
 /* ---------------- Notifications ---------------- */
 .ml-2 {
     font-size: 13px;
+    width: 100%;
+}
+
+.ml-2-align {
     position: relative;
     top: 4px;
-    width: 100%;
 }
 
 .clear-notify {
