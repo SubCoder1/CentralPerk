@@ -152,9 +152,9 @@
 }
 
 .comment-date-time {
-    font-size: 11px;
+    font-size: 9px;
     float: right;
-    line-height: 2;
+    line-height: 2.5;
 }
 
 .comment-user {
