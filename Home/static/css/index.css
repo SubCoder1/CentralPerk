@@ -325,6 +325,9 @@ h6 { font-size: 13px; }
     font-size: 15px;
     vertical-align: middle;
     color: orangered;
+}
+
+.home-like-ico {
     position: relative;
     top: 2px;
 }
@@ -576,6 +579,12 @@ h6 { font-size: 13px; }
 /* ----------------------------------------------- */
 
 /* ---------------- Notifications ---------------- */
+.ml-2 {
+    font-size: 13px;
+    position: relative;
+    top: 4px;
+    width: 100%;
+}
 
 .clear-notify {
     font-size: 16px;
