@@ -102,7 +102,7 @@
 
                 <div class="card-footer">
                   <div class="upper-row">
-                    <a href="{% url 'post_like_home' post.post_id %}" style="float:left"><i class="fas fa-fire-alt"></i></a>
+                    <a href="{% url 'post_like_home' post.post_id %}" style="float:left"><i class="fas fa-fire-alt home-like-ico"></i></a>
                     <span class="likes-counter">{{ post.likes_count }}</span>
                     <a href="{% url 'view_post' post.post_id %}"><i class="fas fa-comment-alt"></i></a>
                     <span class="comment-counter">{{ post.comment_count }}</span>
