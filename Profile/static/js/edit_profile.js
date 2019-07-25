@@ -80,6 +80,20 @@ $(document).ready(function() {
                 $edit_profile_loading_gif.removeClass("loading-gif-active");
                 var status = response.responseJSON;
                 if (status == 'valid edit_prof_form') {
+                    $username_error.text("");
+                    $edit_username.css('border-bottom', '2.5px solid mediumturquoise');
+                    $fullname_error.text("");
+                    $edit_fullname.css('border-bottom', '2.5px solid mediumturquoise');
+                    $email_error.text("");
+                    $edit_email.css('border-bottom', '2.5px solid mediumturquoise');
+                    $gender_error.text("");
+                    $edit_gender.css('border-bottom', '2.5px solid mediumturquoise');
+                    $birthdate_error.text("");
+                    $edit_birthdate.css('border-bottom', '2.5px solid mediumturquoise');
+                    $bio_error.text("");
+                    $edit_bio.css('border-bottom', '2.5px solid mediumturquoise');
+
+                    // Success msg popup for 2 seconds
                     $indicator.toggleClass("notif-active");
                     setTimeout(function(){
                         $indicator.removeClass("notif-active");
@@ -166,6 +180,14 @@ $(document).ready(function() {
                         $change_pass_loading_gif.removeClass("loading-gif-active");
                         var status = response.responseJSON;
                         if (status == 'valid change_pass_form') {
+                            $old_password.css('border-bottom', '2.5px solid mediumturquoise');
+                            $old_pass_error.text("");
+                            $new_password1.css('border-bottom', '2.5px solid mediumturquoise');
+                            $new_pass1_error.text("");
+                            $new_password2.css('border-bottom', '2.5px solid mediumturquoise');
+                            $new_pass2_error.text("");
+                            
+                            
                             $indicator.toggleClass("success-notif-active");
                             setTimeout(function(){
                                 $indicator.removeClass("success-notif-active");
