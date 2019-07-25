@@ -83,10 +83,11 @@
                     <div class="card-body comment-view-card-body" style="height: 373px;">
                 {% endif %}
                         {% if comments %}
+                        {{ comments|json_script:"post_comments" }}
                             {% for comment in comments %}
                                 <div class="d-flex">
                                     <div class="mr-1">
-                                        <img src="/media/{{ comment.profile_pic }}" class="rounded-circle post-profile-img">
+                                        <img src="{{ comment.profile_pic }}" class="rounded-circle post-profile-img">
                                     </div>
                                     <div class="ml-2">
                                         <div class="m-0">
@@ -104,7 +105,7 @@
                                 {% for reply in comment.reply %}
                                     <div class="d-flex">
                                         <div class="mr-1 comment-reply-margin">
-                                            <img src="/media/{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="left: 10px;">
+                                            <img src="{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="left: 10px;">
                                         </div>
                                         <div class="ml-3">
                                             <div class="m-0">
