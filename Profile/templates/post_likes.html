@@ -1,0 +1,19 @@
+{% if liked_user_list %}
+    <div class="likes-tab" style="text-align: left">
+        {% for liked_user in liked_user_list %}
+            <div class="liked-user">
+                <a href="{% url 'view_profile' liked_user.user.username %}">
+                    <img src="/media/{{ liked_user.user.profile_pic }}" class="rounded-circle post-profile-img like-prof-margin">
+                    {{ liked_user.user.username }}
+                </a>
+                <span class="like-date-time">{{ liked_user.date_time|timesince }} ago</span>
+                <br/>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-likes" id="empty-like">
+        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+            <h4 style="position: relative; left: 2px;">No Likes</h4>
+        </div>
+{% endif %}
