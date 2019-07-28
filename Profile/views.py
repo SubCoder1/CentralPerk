@@ -4,6 +4,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponse
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
+from django.template.loader import render_to_string
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Notif_Settings
@@ -104,43 +105,52 @@ def view_profile(request, username=None):
     return render(request, 'profile.html', context=context)
 
 def post_view(request, post_id):
-    if request.POST:
-        form = CommentForm(request.POST or None)
-        if form.is_valid():
-            post_obj = PostModel.objects.get_post(post_id=post_id)
-            reply = str(request.POST.get('reply'))
-            if "_" in reply:
-                index = reply.index("_")
-                comment_id, reply_id = reply[:index], reply[index+1:len(reply)-1]
-            else:
-                comment_id = reply
-                reply_id = None
-
-            if comment_id == '':
-                # request.user commented on a post with post_id=post_id
-                post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
-                post_obj=post_obj, comment=form.cleaned_data.get('comment')))
-                send_notifications.delay(username=request.user.username, reaction='Commented', post_id=post_id)
-            else:
-                # request.user replied to someone's comment on post with post_id=post_id
-                try:
-                    parent_comment = PostComments.objects.get(comment_id=comment_id)
-                    reply = form.cleaned_data.get('comment')
-                    parent_comment.replies.add(PostComments.objects.create(user=request.user,
-                    post_obj=post_obj, comment=reply, parent=False))
-                    send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id)
-                except ObjectDoesNotExist:
-                    pass
-            post_obj.comment_count = F('comment_count') + 1
-            post_obj.save()
-
-        return redirect(reverse('view_post', kwargs={'post_id':post_id}))
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
-        post_likes_list = post_obj.post_like_obj.select_related('user')
-        post_comments = post_obj.post_comment_obj.get_comments(post_obj)
     except:
         return render(request, 'post_500.html', {})
+
+    if request.is_ajax():
+        if request.POST.get('activity') == 'refresh comments':
+            post_comments = post_obj.post_comment_obj.get_comments(post_obj)
+            post_comments_html = render_to_string("post_comments.html", {'comments':post_comments})
+            return HttpResponse(post_comments_html)
+        elif request.POST.get('activity') == 'refresh likes':
+            post_likes_list = post_obj.post_like_obj.select_related('user')
+            post_likes_html = render_to_string("post_likes.html", {"liked_user_list":post_likes_list})
+            return HttpResponse(post_likes_html)
+        elif request.POST.get('activity') == 'add comment':
+            form = CommentForm(request.POST or None)
+            if form.is_valid():
+                post_obj = PostModel.objects.get_post(post_id=post_id)
+                reply = str(request.POST.get('reply'))
+                if "_" in reply:
+                    index = reply.index("_")
+                    comment_id, reply_id = reply[:index], reply[index+1:len(reply)-1]
+                else:
+                    comment_id = reply
+                    reply_id = None
+
+                if comment_id == '':
+                    # request.user commented on a post with post_id=post_id
+                    post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
+                    post_obj=post_obj, comment=form.cleaned_data.get('comment')))
+                    send_notifications.delay(username=request.user.username, reaction='Commented', post_id=post_id)
+                else:
+                    # request.user replied to someone's comment on post with post_id=post_id
+                    try:
+                        parent_comment = PostComments.objects.get(comment_id=comment_id)
+                        reply = form.cleaned_data.get('comment')
+                        parent_comment.replies.add(PostComments.objects.create(user=request.user,
+                        post_obj=post_obj, comment=reply, parent=False))
+                        send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id)
+                    except ObjectDoesNotExist:
+                        pass
+                post_obj.comment_count = F('comment_count') + 1
+                post_obj.save()
+        
+    post_likes_list = post_obj.post_like_obj.select_related('user')
+    post_comments = post_obj.post_comment_obj.get_comments(post_obj)
 
     editable = False
     if post_obj.user == request.user:
