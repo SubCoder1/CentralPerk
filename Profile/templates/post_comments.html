@@ -1,0 +1,54 @@
+{% if comments %}
+    {% for comment in comments %}
+        <div class="d-flex">
+            <div class="mr-1">
+                <img src="{{ comment.profile_pic }}" class="rounded-circle post-profile-img">
+            </div>
+            <div class="ml-2">
+                <div class="m-0">
+                    <a href="{% url 'view_profile' comment.username %}" class="comment-username">
+                        {{ comment.username }}
+                    </a> :  <h6 class="comment-date-time">{{ comment.date_time|timesince }} ago</h6>
+                </div>
+                <div class="comment-content">
+                    {{ comment.comment }}
+                </div>
+                <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
+                {% if comment.reply %}
+                    <a href="#" class="comment-rep-collapse" id="c-replies-collapse" data-toggle="collapse" data-target="#collapsereplies" aria-expanded="false" aria-controls="collapsereplies">
+                        show replies <i class="fa fa-angle-down"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+        {% if comment.reply %}
+            <div class="collapse" id="collapsereplies">
+                <div class="card card-body comment-rep-card-body">
+                    {% for reply in comment.reply %}
+                        <div class="d-flex">
+                            <div class="mr-1 comment-reply-margin">
+                                <img src="{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="left: 10px;">
+                            </div>
+                            <div class="ml-3">
+                                <div class="m-0">
+                                    <a href="{% url 'view_profile' reply.username %}" class="comment-username">
+                                        {{ reply.username }}
+                                    </a> : <h6 class="comment-date-time">{{ reply.date_time|timesince }} ago</h6>
+                                </div>
+                                <div class="comment-content">
+                                    {{ reply.comment }}
+                                </div>
+                                <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <div class="empty-comments" id="empty-comment">
+        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+            <h4 style="position: relative; left: 2px;">No comments</h4>
+        </div>
+{% endif %}
