@@ -11,6 +11,10 @@
 
 {% block body %}
 <div class="post-view-container">
+    <div class="refresh-btn-container">
+        <a href="#" class="btn btn-dark refresh-btn" id="refresh-content">Refresh</a>
+        <img class="refresh-loading-gif hidden" id="loading-gif" src="{% static '/login/img/loading.gif' %}">
+    </div>
     {% if post_data.pic %}
     <div class="post-view">
         <div class="wrap-img-view" id="post-img">
@@ -77,62 +81,19 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="comment" role="tabpanel" aria-labelledby="comment-tab">
-                {% if post_data.pic %}
+                    {% if post_data.pic %}
                     <div class="card-body comment-view-card-body" id='id_view-post-comment-body'>
-                {% else %}
+                    {% else %}
                     <div class="card-body comment-view-card-body" style="height: 373px;">
-                {% endif %}
-                        {% if comments %}
-                        {{ comments|json_script:"post_comments" }}
-                            {% for comment in comments %}
-                                <div class="d-flex">
-                                    <div class="mr-1">
-                                        <img src="{{ comment.profile_pic }}" class="rounded-circle post-profile-img">
-                                    </div>
-                                    <div class="ml-2">
-                                        <div class="m-0">
-                                            <a href="{% url 'view_profile' comment.username %}" class="comment-username">
-                                                {{ comment.username }}
-                                            </a> :
-                                        </div>
-                                        <div class="comment-content">
-                                            {{ comment.comment }}
-                                        </div>
-                                        <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
-                                        <h6 class="comment-date-time">{{ comment.date_time|timesince }} ago</h6>
-                                    </div>
-                                </div>
-                                {% for reply in comment.reply %}
-                                    <div class="d-flex">
-                                        <div class="mr-1 comment-reply-margin">
-                                            <img src="{{ reply.profile_pic }}" class="rounded-circle post-profile-img" style="left: 10px;">
-                                        </div>
-                                        <div class="ml-3">
-                                            <div class="m-0">
-                                                <a href="{% url 'view_profile' reply.username %}" class="comment-username">
-                                                    {{ reply.username }}
-                                                </a> :
-                                            </div>
-                                            <div class="comment-content">
-                                                {{ reply.comment }}
-                                            </div>
-                                            <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
-                                            <h6 class="comment-date-time">{{ reply.date_time|timesince }} ago</h6>
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            {% endfor %}
-                        {% else %}
-                        <div class="empty-comments" id="empty-comment">
-                            <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                            <h4 style="position: relative; left: 2px;">No comments</h4>
+                    {% endif %}
+                        <div id="post-comments-wrapper">
+                            {% include "post_comments.html" %}
                         </div>
-                        {% endif %}
                     </div>
                     <div class="card-footer comment-section-footer" id='id_view-post-comment-card-footer'>
-                        <form method="POST">
+                        <form method="POST" id="comment_form">
                             {% csrf_token %}
-                            <input type="hidden" class="reply-to" name="reply" value="">
+                            <input type="hidden" id="reply" class="reply-to" name="reply" value="">
                             <textarea type="text" class="form-control comment-input" autocomplete="off" id="comment_box" name="comment" placeholder="Post a comment" style="height: 45px"></textarea>
                             <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
                         </form>
@@ -144,25 +105,9 @@
                 {% else %}
                     <div class="card-body like-view-card-body" style="height: 367px;">
                 {% endif %}
-                        {% if liked_user_list %}
-                        <div class="likes-tab" style="text-align: left">
-                            {% for liked_user in liked_user_list %}
-                                <div class="liked-user">
-                                    <a href="{% url 'view_profile' liked_user.user.username %}">
-                                        <img src="/media/{{ liked_user.user.profile_pic }}" class="rounded-circle post-profile-img like-prof-margin">
-                                        {{ liked_user.user.username }}
-                                    </a>
-                                    <span class="like-date-time">{{ liked_user.date_time|timesince }} ago</span>
-                                    <br/>
-                                </div>
-                            {% endfor %}
+                        <div id="post-likes-wrapper">
+                            {% include "post_likes.html" %}
                         </div>
-                        {% else %}
-                        <div class="empty-likes" id="empty-like">
-                            <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                            <h4 style="position: relative; left: 2px;">No Likes</h4>
-                        </div>
-                        {% endif %}
                     </div>
                     <div class="card-footer like-section-footer">
                         <a href="{% url 'like_from_post_view' post_id True %}" class="btn btn-dark post-view-like-btn"><i class="fas fa-fire-alt"></i></a>
