@@ -4,6 +4,12 @@
     outline: none;
 }
 
+html {
+    margin:0;
+    padding:0;
+    height:100%;
+}
+
 body {
     height: 100vh;
     background: linear-gradient(to right, blueviolet, #4158d0);
