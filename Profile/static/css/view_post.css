@@ -2,6 +2,32 @@
 
 .card-body::-webkit-scrollbar { width: 0 !important; }
 
+.refresh-btn-container {
+    display: flex;
+    flex-flow: column nowrap;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.refresh-btn {
+    height: 50px;
+    width: 93px;
+    line-height: 2.3;
+}
+
+.refresh-loading-gif {
+    position: absolute;
+    display: block;
+    height: 50px;
+    width: 93px;
+    border-radius: 2.25rem !important;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
 /* ------------- Centered container ------------- */
 .post-view-container {
     width: 100%;
@@ -11,7 +37,7 @@
     display: -moz-box;
     display: -ms-flexbox;
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
     justify-content: center;
     align-items: center;
     padding: 20px;
@@ -76,7 +102,9 @@
 /* ---------- post-data detail section ---------- */
 .fa-meh-blank {
     color: springgreen;
-    font-size: 16px;
+    font-size: 17px;
+    position: relative;
+    top: 0.5px;
 }
 
 .postview-pill-align {
@@ -152,9 +180,9 @@
 }
 
 .comment-date-time {
-    font-size: 9px;
+    font-size: 10px;
     float: right;
-    line-height: 2.5;
+    line-height: 3.2;
 }
 
 .comment-user {
@@ -166,12 +194,18 @@
 
 .comment-input { 
     float: left;
-    width: 80%;
+    width: 87%;
  }
 
 .comment-send-btn {
     float: right;
 }
+
+.comment-rep-collapse { float: right; }
+
+.rotate_180 { transform: rotate(180deg); }
+
+.comment-rep-card-body { padding: 7px 0px 7px 0px; }
 /* ---------------------------------------------- */
 
 /* ----------- post-data like section ----------- */
