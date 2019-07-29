@@ -171,8 +171,9 @@
 .comment-content { font-size: 12px; }
 
 .m-0 { font-size: 17px; }
-.mr-1 { margin-top: 5px; }
 .ml-2, .ml-3 { position: unset; }
+
+.post-profile-img { bottom: 0; }
 
 .comment-reply-margin { 
     margin-left: 48px;
@@ -181,8 +182,6 @@
 
 .comment-date-time {
     font-size: 10px;
-    float: right;
-    line-height: 3.2;
 }
 
 .comment-user {
