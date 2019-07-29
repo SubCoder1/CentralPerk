@@ -10,6 +10,12 @@
 {% endblock %}
 
 {% block body %}
+<div class="indicator">
+    <div class="alert alert-success hidden" id="success-msg" role="alert">
+    </div>
+    <div class="alert alert-error hidden" id="error-msg" role="alert">
+    </div>
+</div>
 <div class="post-view-container">
     <div class="refresh-btn-container">
         <a href="#" class="btn btn-dark refresh-btn" id="refresh-content">Refresh</a>
@@ -110,7 +116,7 @@
                         </div>
                     </div>
                     <div class="card-footer like-section-footer">
-                        <a href="{% url 'like_from_post_view' post_id True %}" class="btn btn-dark post-view-like-btn"><i class="fas fa-fire-alt"></i></a>
+                        <a href="{% url 'like_from_post_view' post_id %}" class="btn btn-dark post-view-like-btn"><i class="fas fa-fire-alt"></i></a>
                     </div>
                 </div>
             </div>
