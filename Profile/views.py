@@ -34,7 +34,7 @@ def manage_relation(request, username, option=None):
     result["follower_count"], result["following_count"] = friend.followers.count(), friend.following.count()
     return HttpResponse(json.dumps(result), content_type="application/json")
 
-def manage_profile_post_likes(request, post_id, username=None, view_post=None):
+def manage_post_likes(request, post_id, username=None):
     try:
         post = PostModel.objects.get_post(post_id=post_id)
     except ObjectDoesNotExist:
@@ -56,10 +56,7 @@ def manage_profile_post_likes(request, post_id, username=None, view_post=None):
         # Notify the user whose post is being liked
         send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
 
-    if view_post:
-        return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
-        
-    return redirect(reverse('view_profile', kwargs={ 'username':post.user.username }))
+    return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
 
 def view_profile(request, username=None):
     try:
@@ -115,15 +112,17 @@ def post_view(request, post_id):
             post_comments = post_obj.post_comment_obj.get_comments(post_obj)
             post_comments_html = render_to_string("post_comments.html", {'comments':post_comments})
             return HttpResponse(post_comments_html)
-        elif request.POST.get('activity') == 'refresh likes':
+        if request.POST.get('activity') == 'refresh likes':
             post_likes_list = post_obj.post_like_obj.select_related('user')
             post_likes_html = render_to_string("post_likes.html", {"liked_user_list":post_likes_list})
             return HttpResponse(post_likes_html)
-        elif request.POST.get('activity') == 'add comment':
+        if request.POST.get('activity') == 'add comment':
             form = CommentForm(request.POST or None)
+            result = None
             if form.is_valid():
                 post_obj = PostModel.objects.get_post(post_id=post_id)
                 reply = str(request.POST.get('reply'))
+                print(reply)
                 if "_" in reply:
                     index = reply.index("_")
                     comment_id, reply_id = reply[:index], reply[index+1:len(reply)-1]
@@ -148,7 +147,11 @@ def post_view(request, post_id):
                         pass
                 post_obj.comment_count = F('comment_count') + 1
                 post_obj.save()
-        
+                result = "ready to update"
+            else:
+                result = "save unsuccessful"
+            return HttpResponse(json.dumps(result), content_type='application/json')
+
     post_likes_list = post_obj.post_like_obj.select_related('user')
     post_comments = post_obj.post_comment_obj.get_comments(post_obj)
 
