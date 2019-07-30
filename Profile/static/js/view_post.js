@@ -1,79 +1,80 @@
-// Function to accquire the csrftoken
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+$(document).ready(function() {
+    // Function to accquire the csrftoken
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
             }
         }
+        return cookieValue;
     }
-    return cookieValue;
-}
 
-var csrftoken = getCookie('csrftoken');
+    var csrftoken = getCookie('csrftoken');
 
-// JS code to set height of comment-view-card-body(comment box in view_post) & like-view-card-body
-const post_card = document.getElementById('id_view-post-card');
-if (post_card) {
-    const card_height = parseInt(document.getElementById('id_view-post-card').clientHeight);
-    const card_header_height = parseInt(document.getElementById('id_view-post-card-header').clientHeight);
-    const card_footer_height = 53;
-    const like_card_footer_height = 63;
+    // JS code to set height of comment-view-card-body(comment box in view_post) & like-view-card-body
+    const post_card = document.getElementById('id_view-post-card');
+    if (post_card) {
+        const card_height = parseInt(document.getElementById('id_view-post-card').clientHeight);
+        const card_header_height = parseInt(document.getElementById('id_view-post-card-header').clientHeight);
+        const card_footer_height = 53;
+        const like_card_footer_height = 63;
 
-    var comment_body_height = card_height - (card_header_height + card_footer_height) - 4;
-    var like_body_height = card_height - (card_header_height + like_card_footer_height);
-    var comment_height = "height:" + comment_body_height.toString() + "px";
-    var like_height = "height:" + like_body_height.toString() + "px";
-    var details_height = "height:" + (comment_body_height + 37).toString() + "px";
+        var comment_body_height = card_height - (card_header_height + card_footer_height) - 4;
+        var like_body_height = card_height - (card_header_height + like_card_footer_height);
+        var comment_height = "height:" + comment_body_height.toString() + "px";
+        var like_height = "height:" + like_body_height.toString() + "px";
+        var details_height = "height:" + (comment_body_height + 37).toString() + "px";
 
-    var comment_body_height = document.getElementById('id_view-post-comment-body');
-    var like_body_height = document.getElementById('id_view-post-like-body');
-    var details_body_height = document.getElementById('id_view-post-details-body');
-    comment_body_height.setAttribute('style', comment_height);
-    like_body_height.setAttribute('style', like_height);
-    details_body_height.setAttribute('style', details_height);
+        var comment_body_height = document.getElementById('id_view-post-comment-body');
+        var like_body_height = document.getElementById('id_view-post-like-body');
+        var details_body_height = document.getElementById('id_view-post-details-body');
+        comment_body_height.setAttribute('style', comment_height);
+        like_body_height.setAttribute('style', like_height);
+        details_body_height.setAttribute('style', details_height);
 
-};
+    };
 
-// JS code for handling comment replies
-var length = 0;
-var $comment_box = $('#comment_box');
-var $post_comment_wrapper = $('#post-comments-wrapper');
-$post_comment_wrapper.on("click", ".comment-reply", function() {
-    var reply_to = $(this).siblings('.m-0').children('a').text().replace(/\s+/g, '');
-    $(".reply-to").val($(this).attr('id') + "_" + reply_to);
-    $comment_box.val("@" + reply_to + " ");
-    length = reply_to.length;
-    $comment_box.focus();
-});
-// JS code that removes comment-reply-link if reply-to-username is removed from comment-box
-$comment_box.on('input', function() {
-    if ($(this).val().length < length+1) {
-        $(".reply-to").val("");
+    // JS code for handling comment replies
+    var length = 0;
+    var $comment_box = $('#comment_box');
+    var $post_comment_wrapper = $('#post-comments-wrapper');
+    $post_comment_wrapper.on("click", ".comment-reply", function(event) {
+        event.preventDefault();
+        var reply_to = $(this).siblings('.m-0').children('a').text().replace(/\s+/g, '');
+        $(".reply-to").val($(this).attr('id') + "_" + reply_to);
+        $comment_box.val("@" + reply_to + " ");
+        length = reply_to.length;
+        $comment_box.focus();
+    });
+    // JS code that removes comment-reply-link if reply-to-username is removed from comment-box
+    $comment_box.on('input', function() {
+        if ($(this).val().length < length+1) {
+            $(".reply-to").val("");
+        }
+        else if ($(this).val() == "") {
+            $(".reply-to").val("");
+        }
+    });
+
+    // JS code to split status_caption with newlines (if any)
+    var post_status_container = document.getElementById("status_caption_container");
+    var status_caption = document.getElementById("post-status_caption");
+    var post = JSON.parse(status_caption.textContent);
+    var newline_count = (post.match(/\r\n/g) || '').length + 1;
+    if (newline_count) {
+        var lines = post.split("\r\n");
+        for (var j=0; j < lines.length; j++) {
+            post_status_container.innerHTML += lines[j] + '<br/>';
+        }
     }
-    else if ($(this).val() == "") {
-        $(".reply-to").val("");
-    }
-});
 
-// JS code to split status_caption with newlines (if any)
-var post_status_container = document.getElementById("status_caption_container");
-var status_caption = document.getElementById("post-status_caption");
-var post = JSON.parse(status_caption.textContent);
-var newline_count = (post.match(/\r\n/g) || '').length + 1;
-if (newline_count) {
-    var lines = post.split("\r\n");
-      for (var j=0; j < lines.length; j++) {
-        post_status_container.innerHTML += lines[j] + '<br/>';
-      }
-}
-
-$(document).ready(function() {
     // Refresh content on refresh-btn click
     var $refresh_content_loading_gif = $('#loading-gif');
     var $refresh_btn = $('#refresh-content');
@@ -141,7 +142,8 @@ $(document).ready(function() {
     // show/hide comment replies toggle
     var $comment_replies = $('#c-replies-collapse');
     var $c_replies_arrow = $('.fa-angle-down');
-    $comment_replies.on('click', function() {
+    $comment_replies.on('click', function(event) {
+        event.preventDefault();
         if ($comment_replies.html().indexOf("hide replies") != -1) {
             $comment_replies.html("show replies <i class='fas fa-angle-down'></i>");
             $(this).children($c_replies_arrow).removeClass('rotate_180');
@@ -210,6 +212,56 @@ $(document).ready(function() {
                     $comment_send_form.css("pointer-events", "all");
                }
             }
+        });
+    });
+
+    // handle likes send and update
+    var $post_like_btn = $('#post_like_btn');
+    $post_like_btn.on("click", function(event) {
+        event.preventDefault();
+        // send response to server
+        $.ajax({
+            url : $post_like_btn.attr("href"),
+            type : "POST",
+            data : {
+                csrfmiddlewaretoken : csrftoken,
+                activity : "like post",
+            },
+            complete : function(response) {
+                // liked or disliked post, now update body
+                if (response.responseJSON['status'] == 'ready to update') {
+                    var action = response.responseJSON['action'];
+                    $.ajax({
+                        url : "",
+                        type : "POST",
+                        data : {
+                            csrfmiddlewaretoken : csrftoken,
+                            activity : "refresh likes",
+                        },
+                        complete : function(response) {
+                            $indicator.toggleClass("notif-active");
+                            $success.text(action);
+                            $success.removeClass("hidden");
+                            setTimeout(function(){
+                                $indicator.removeClass("notif-active");
+                                $success.text("");
+                                $success.toggleClass("hidden");
+                            }, 2000);
+                            $('#post-likes-wrapper').html(response.responseText);
+                        }
+                    });
+                } else {
+                    $indicator.toggleClass("notif-active");
+                    $error.text("Something went wrong, Try again!");
+                    $error.removeClass("hidden");
+                    setTimeout(function(){
+                        $indicator.removeClass("notif-active");
+                        $error.text("");
+                        $error.toggleClass("hidden");
+                    }, 3000);
+                }
+            }
+            
         });
     });
 });
