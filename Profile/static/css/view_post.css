@@ -51,10 +51,8 @@
 
 .status-view {
     border-radius: 1rem;
-    position: absolute;
     width: 100%;
     justify-content: center;
-    flex: 1;
 }
 
 .wrap-img-view {
@@ -269,6 +267,7 @@
 
     .wrap-data-view {
         border-radius: 0rem 0rem 2rem 2rem;
+        width: 100%;
     }
 
     .post-view-card-body, .comment-view-card-body {
