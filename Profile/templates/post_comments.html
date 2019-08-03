@@ -15,14 +15,14 @@
                 </div>
                 <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
                 {% if comment.reply %}
-                    <a href="#" class="comment-rep-collapse" id="c-replies-collapse" data-toggle="collapse" data-target="#collapsereplies" aria-expanded="false" aria-controls="collapsereplies">
+                    <a href="#" class="comment-rep-collapse" id="c-replies-collapse" data-toggle="collapse" data-target="#collapse-r-{{ comment.comment_id }}" aria-expanded="false" aria-controls="collapse-r-{{ comment.comment_id }}">
                         show replies <i class="fa fa-angle-down"></i>
                     </a>
                 {% endif %}
             </div>
         </div>
         {% if comment.reply %}
-            <div class="collapse" id="collapsereplies">
+            <div class="collapse" id="collapse-r-{{ comment.comment_id }}">
                 <div class="card card-body comment-rep-card-body">
                     {% for reply in comment.reply %}
                         <div class="d-flex">
