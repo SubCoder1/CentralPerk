@@ -44,7 +44,7 @@
                         <a class="nav-link link" id="comment-tab" data-toggle="tab" href="#comment" role="tab" aria-controls="comment" aria-selected="true">
                             <h4 class="postview-pill-align">
                                 <i class="fas fa-comment-alt"></i>
-                                <span>{{ comment_count }}</span>
+                                <span id="comment_count">{{ comment_count }}</span>
                             </h4>
                         </a>
                     </li>
@@ -52,7 +52,7 @@
                         <a class="nav-link link" id="like-tab" data-toggle="tab" href="#like" role="tab" aria-controls="like" aria-selected="true">
                             <h4 class="postview-pill-align">
                                 <i class="fas fa-fire-alt like-pill-ico"></i>
-                                <span style="font-size: 17px">{{ post_data.likes_count }}</span>
+                                <span id="likes_count" style="font-size: 17px">{{ post_data.likes_count }}</span>
                             </h4>
                         </a>
                     </li>
@@ -116,7 +116,13 @@
                         </div>
                     </div>
                     <div class="card-footer like-section-footer">
-                        <a href="{% url 'like_from_post_view' post_id %}" id="post_like_btn" class="btn btn-dark post-view-like-btn"><i class="fas fa-fire-alt"></i></a>
+                        <a href="{% url 'like_from_post_view' post_id %}" id="post_like_btn" class="btn btn-dark post-view-like-btn">
+                            {% if liked_by_user %}
+                                <i class="fas fa-fire-alt liked"></i>
+                            {% else %}
+                                <i class="fas fa-fire-alt disliked"></i>
+                            {% endif %}
+                        </a>
                     </div>
                 </div>
             </div>
