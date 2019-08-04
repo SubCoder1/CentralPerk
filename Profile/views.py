@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Notif_Settings
-from Profile.tasks import update_user_acc_settings
+from Profile.tasks import update_user_acc_settings, manage_likes
 from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications, del_notifications
 from Home.forms import CommentForm
@@ -34,36 +34,22 @@ def manage_relation(request, username, option=None):
     result["follower_count"], result["following_count"] = friend.followers.count(), friend.following.count()
     return HttpResponse(json.dumps(result), content_type="application/json")
 
-def manage_post_likes(request, post_id, username=None):
-    try:
-        post = PostModel.objects.get_post(post_id=post_id)
-    except ObjectDoesNotExist:
-        return render(request, 'post_500.html', {})
-     
-    user = request.user
-    if post.post_like_obj.filter(user=user).exists():
-        # Dislike post
-        post.post_like_obj.filter(user=user).delete()
-        del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
-        post.likes_count = F('likes_count') - 1
-        post.save()
-    else:
-        # Like post
-        post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
-        post.likes_count = F('likes_count') + 1
-        post.save()
-
-        # Notify the user whose post is being liked
-        send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-
-    return redirect(reverse('view_post', kwargs={ 'post_id':post_id }))
+def manage_post_likes(request, post_id):
+    if request.is_ajax():
+        action = request.POST.get('action')
+        if action == 'liked':
+            action = "Liked the post!"
+        else:
+            action = "Disliked the post!"
+        manage_likes.delay(post_id, str(request.user.username))
+        return HttpResponse(json.dumps({"status": "ready to update", "action":action}), content_type="application/json")
 
 def view_profile(request, username=None):
     try:
         user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
-        
+
     user_posts = user.posts.all()
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
@@ -102,30 +88,33 @@ def view_profile(request, username=None):
     return render(request, 'profile.html', context=context)
 
 def post_view(request, post_id):
-    try:
-        post_obj = PostModel.objects.get_post(post_id=post_id)
-    except:
+    post_obj = PostModel.objects.get_post(post_id=post_id)
+    if post_obj is None:
         return render(request, 'post_500.html', {})
 
     if request.is_ajax():
-        if request.POST.get('activity') == 'refresh comments':
-            post_comments = post_obj.post_comment_obj.get_comments(post_obj)
+        try:
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+        except ObjectDoesNotExist:
+            return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
+
+        if request.GET.get('activity') == 'refresh comments':
+            post_comments, comment_count = post_obj.post_comment_obj.get_comments(post_obj)
             post_comments_html = render_to_string("post_comments.html", {'comments':post_comments})
-            return HttpResponse(post_comments_html)
-        if request.POST.get('activity') == 'refresh likes':
+            return HttpResponse(json.dumps({"post_comments_html":post_comments_html, "comment_count":comment_count}), content_type="application/json")
+        if request.GET.get('activity') == 'refresh likes':
             post_likes_list = post_obj.post_like_obj.select_related('user')
             post_likes_html = render_to_string("post_likes.html", {"liked_user_list":post_likes_list})
-            return HttpResponse(post_likes_html)
+            return HttpResponse(json.dumps({"post_likes_html":post_likes_html, "likes_count":len(post_likes_list)}), content_type="application/json")
         if request.POST.get('activity') == 'add comment':
             form = CommentForm(request.POST or None)
             result = None
             if form.is_valid():
                 post_obj = PostModel.objects.get_post(post_id=post_id)
                 reply = str(request.POST.get('reply'))
-                print(reply)
                 if "_" in reply:
                     index = reply.index("_")
-                    comment_id, reply_id = reply[:index], reply[index+1:len(reply)-1]
+                    comment_id, reply_id = reply[:index], reply[index+1:len(reply)]
                 else:
                     comment_id = reply
                     reply_id = None
@@ -134,7 +123,7 @@ def post_view(request, post_id):
                     # request.user commented on a post with post_id=post_id
                     post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
                     post_obj=post_obj, comment=form.cleaned_data.get('comment')))
-                    send_notifications.delay(username=request.user.username, reaction='Commented', post_id=post_id)
+                    send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=post_obj.user.username, post_id=post_id)
                 else:
                     # request.user replied to someone's comment on post with post_id=post_id
                     try:
@@ -147,21 +136,27 @@ def post_view(request, post_id):
                         pass
                 post_obj.comment_count = F('comment_count') + 1
                 post_obj.save()
+                post_obj.refresh_from_db()
                 result = "ready to update"
             else:
                 result = "save unsuccessful"
             return HttpResponse(json.dumps(result), content_type='application/json')
 
     post_likes_list = post_obj.post_like_obj.select_related('user')
-    post_comments = post_obj.post_comment_obj.get_comments(post_obj)
+    post_comments, comment_count = post_obj.post_comment_obj.get_comments(post_obj)
 
     editable = False
     if post_obj.user == request.user:
         editable = True
     
+    liked_by_user = False
+    if post_obj.post_like_obj.filter(user=request.user).exists():
+        liked_by_user = True
+    
     context = { 'post_data':post_obj, 'post_id': post_id, 
     'liked_user_list':post_likes_list, 'editable':editable, 
-    'comments':post_comments, 'comment_count':post_obj.comment_count }
+    'comments':post_comments, 'comment_count':comment_count,
+    'liked_by_user':liked_by_user }
 
     return render(request, 'view_post.html', context=context)
 
