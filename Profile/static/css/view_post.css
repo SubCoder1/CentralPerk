@@ -245,6 +245,9 @@
     border-color: transparent;
 }
 
+.liked { color: orangered; }
+.disliked { color: darkgrey; }
+
 .post-view-like-btn:hover {
     background-color: black;
     border-color: black;
