@@ -76,25 +76,30 @@ $(document).ready(function() {
     }
 
     // Refresh content on refresh-btn click
+    var $post_likes_wrapper = $('#post-likes-wrapper');
     var $refresh_content_loading_gif = $('#loading-gif');
     var $refresh_btn = $('#refresh-content');
+    var $comment_count = $('#comment_count');
+    var $likes_count = $('#likes_count');
     var $indicator = $('.indicator');
     var $success = $('#success-msg');
     var $error = $('#error-msg');
     $refresh_btn.on('click', function(event) {
         event.preventDefault();
+        $refresh_btn.css("pointer-events", "none");
         $refresh_content_loading_gif.removeClass('hidden');
         // One request for refreshed-comments
         $.ajax({
             url : "",
-            type : "POST",
+            type : "GET",
             data : {
-                csrfmiddlewaretoken : csrftoken,
                 activity : "refresh comments",
             },
             complete : function(response) {
-                $post_comment_wrapper.html(response.responseText);
-            }, 
+                $post_comment_wrapper.html(response.responseJSON['post_comments_html']);
+                $comment_count.text(response.responseJSON['comment_count']);
+                $refresh_btn.css("pointer-events", "all");
+            },
             error : function() {
                 $indicator.toggleClass("notif-active");
                 $error.text("Refresh failed, Try again!");
@@ -109,9 +114,8 @@ $(document).ready(function() {
         // One request for refreshed-likes
         $.ajax({
             url : "",
-            type : "POST",
+            type : "GET",
             data : {
-                csrfmiddlewaretoken : csrftoken,
                 activity : "refresh likes",
             },
             complete : function(response) {
@@ -124,7 +128,8 @@ $(document).ready(function() {
                     $success.toggleClass("hidden");
                 }, 2000);
                 $refresh_content_loading_gif.toggleClass('hidden');
-                $('#post-likes-wrapper').html(response.responseText);
+                $post_likes_wrapper.html(response.responseJSON['post_likes_html']);
+                $likes_count.text(response.responseJSON['likes_count']);
             }, 
             error : function() {
                 $indicator.toggleClass("notif-active");
@@ -173,14 +178,13 @@ $(document).ready(function() {
             },
             complete : function(response) { 
                 $comment_box.val("");
-                
                 if (response.responseJSON == 'ready to update') {
                     // another request to update post_comments
+                    $comment_count.text(parseInt($comment_count.text()) + 1);
                     $.ajax({
                         url : "",
-                        type : "POST",
+                        type : "GET",
                         data : {
-                            csrfmiddlewaretoken : csrftoken,
                             activity : "refresh comments",
                         },
                         complete : function(response) {
@@ -195,7 +199,7 @@ $(document).ready(function() {
                             }, 2000);
                             $comment_body.css({"opacity":"1", "pointer-events":"all"});
                             $comment_send_form.css("pointer-events", "all");
-                            $post_comment_wrapper.html(response.responseText);
+                            $post_comment_wrapper.html(response.responseJSON['post_comments_html']);
                         },
                     });
                 } else {
@@ -217,25 +221,36 @@ $(document).ready(function() {
 
     // handle likes send and update
     var $post_like_btn = $('#post_like_btn');
+    var $liked_by_user = $('#post_like_btn').children('i');
+    var action;
     $post_like_btn.on("click", function(event) {
         event.preventDefault();
+        $post_like_btn.css("pointer-events", "none");
+        if ($liked_by_user.hasClass('liked')) {
+            $liked_by_user.removeClass('liked');
+            action = 'disliked';
+            $liked_by_user.toggleClass('disliked');
+        } else {
+            $liked_by_user.removeClass('disliked');
+            action = 'liked';
+            $liked_by_user.toggleClass('liked');
+        }
         // send response to server
         $.ajax({
             url : $post_like_btn.attr("href"),
             type : "POST",
             data : {
                 csrfmiddlewaretoken : csrftoken,
-                activity : "like post",
+                action : action,
             },
             complete : function(response) {
+                action = response.responseJSON['action'];
                 // liked or disliked post, now update body
                 if (response.responseJSON['status'] == 'ready to update') {
-                    var action = response.responseJSON['action'];
                     $.ajax({
                         url : "",
-                        type : "POST",
+                        type : "GET",
                         data : {
-                            csrfmiddlewaretoken : csrftoken,
                             activity : "refresh likes",
                         },
                         complete : function(response) {
@@ -246,8 +261,10 @@ $(document).ready(function() {
                                 $indicator.removeClass("notif-active");
                                 $success.text("");
                                 $success.toggleClass("hidden");
+                                $post_like_btn.css("pointer-events", "all");
                             }, 2000);
-                            $('#post-likes-wrapper').html(response.responseText);
+                            $post_likes_wrapper.html(response.responseJSON['post_likes_html']);
+                            $likes_count.text(response.responseJSON['likes_count']);
                         }
                     });
                 } else {
@@ -258,10 +275,10 @@ $(document).ready(function() {
                         $indicator.removeClass("notif-active");
                         $error.text("");
                         $error.toggleClass("hidden");
+                        $post_like_btn.css("pointer-events", "all");
                     }, 3000);
                 }
             }
-            
         });
     });
 });
