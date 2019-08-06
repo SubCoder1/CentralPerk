@@ -22,11 +22,19 @@
         <img class="refresh-loading-gif hidden" id="loading-gif" src="{% static '/login/img/loading.gif' %}">
     </div>
     {% if post_data.pic %}
+    {% if post_data.pic.width >= post_data.pic.height %}
     <div class="post-view">
         <div class="wrap-img-view" id="post-img">
             <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
         </div>
         <div class="card wrap-data-view" id="id_view-post-card">
+    {% else %}
+    <div class="potrait-view">
+        <div class="wrap-potrait-view potrait-hw" id="post-img">
+            <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view potrait-height" alt="Responsive image">
+        </div>
+        <div class="card wrap-potrait-data-view" id="id_view-post-card">
+    {% endif %}
     {% else %}
     <div class="post-view status-view">
         <div class="card wrap-data-view data-view-enlarged" style="border-radius: 1rem">
