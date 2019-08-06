@@ -43,7 +43,7 @@
     padding: 20px;
 }
 
-.post-view {
+.post-view, .potrait-view {
     display: flex;
     overflow: hidden;
     padding: 20px;
@@ -55,11 +55,16 @@
     justify-content: center;
 }
 
-.wrap-img-view {
+.wrap-img-view, .wrap-potrait-view {
     max-width: 768px;
     background: black;
     overflow: hidden;
     border-radius: 1.5rem 0rem 0rem 1.5rem;
+}
+
+.potrait-hw {
+    height: 600px;
+    width: 480px;
 }
 /* ---------------------------------------------- */
 
@@ -68,10 +73,14 @@
     width: 100%;
     border-radius: 1rem 0rem 0rem 1rem;
 }
+
+.potrait-height {
+    height: 600px;
+}
 /* ---------------------------------------------- */
 
 /* ----------- post-data on the right ----------- */
-.wrap-data-view {
+.wrap-data-view, .wrap-potrait-data-view {
     width: 415px;
     background: #2e2a4b;
     border-radius: 0rem 1rem 1rem 0rem;    
@@ -255,6 +264,21 @@
 /* ---------------------------------------------- */
 
 /* ------------- Reponsive content -------------- */
+@media only screen and (max-width: 768px) {
+    .potrait-view {
+        flex-direction: column;
+    }
+
+    .wrap-potrait-data-view {
+        border-radius: 0rem 0rem 2rem 2rem;
+        width: 100%;
+    }
+
+    .wrap-potrait-view {
+        border-radius: 1.5rem 1.5rem 0rem 0rem;
+    }
+}
+
 @media only screen and (max-width: 1024px) {
     .post-view {
         flex-direction: column;
