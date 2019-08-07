@@ -1,0 +1,59 @@
+{% for post in posts %}
+    <div class="card post-card index-post-card" id="{{ post.post_id }}">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="mr-0">
+                        <img src="/media/{{ post.user__profile_pic }}" class="rounded-circle post-profile-img">
+                    </div>
+                    <div class="ml-2">
+                        <div class="h5 m-0 body">
+                          <a class="body_link" href="{% url 'view_profile' post.user__username %}">{{ post.user__username }}</a>
+                        </div>
+                        {% if post.location %}
+                          <h6>{{ post.location }}</h6>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if post.status_caption and not post.pic %}
+            <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container"> 
+                {{ post.status_caption|json_script:"post-data" }}
+                <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
+            </div>
+        {% elif post.status_caption and post.pic %}
+            <div class="card-body index-img-post-card-body">
+                <img src="/media/{{ post.pic }}" class="post-card-body-img">
+            </div>
+        {% else %}
+            <div class="card-body index-img-post-card-body">
+                <img src="/media/{{ post.pic }}" class="post-card-body-img">
+            </div>
+        {% endif %}
+        <div class="card-footer">
+            <div class="upper-row">
+                <a href="#" class="wall-post-like" style="float:left"><i class="fas fa-fire-alt home-like-ico"></i></a>
+                <span class="likes-counter">{{ post.likes_count }}</span>
+                <a href="{% url 'view_post' post.post_id %}"><i class="fas fa-comment-alt"></i></a>
+                <span class="comment-counter">{{ post.comment_count }}</span>
+                <span class="post-date-time">{{ post.date_time|timesince }} ago</span>
+            </div>
+            <div class="lower-row">
+                {% if post.status_caption and post.pic %}
+                    <div class="text-align-left display-3 index-post-card-body" id="status_caption-container">
+                        {{ post.status_caption|json_script:"post-data" }}
+                        <a href="{% url 'view_post' post.post_id %}" hidden="true">Read More..</a>
+                    </div>
+                {% endif %}
+                    <form method="POST" style="margin-top: 8px">
+                      {% csrf_token %}
+                      <input type="hidden" name="post_id" value="{{ post.post_id }}">
+                      <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment" style="height: 42px;"></textarea>
+                      <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
+                    </form>
+            </div>
+        </div>
+    </div>
+    <br/>
+{% endfor %}
