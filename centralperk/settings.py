@@ -28,9 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'channels',
     #third party
-    'debug_toolbar',
+    #'debug_toolbar',
     'django_extensions',
     
     #own
@@ -49,7 +49,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'centralperk.middleware.login_required_middleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'centralperk.urls'
@@ -71,6 +71,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'centralperk.wsgi.application'
+# Channels
+ASGI_APPLICATION = "centralperk.routing.application"
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+        },
+    },
+}
+
 
 PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.Argon2PasswordHasher',
