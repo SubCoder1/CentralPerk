@@ -8,10 +8,13 @@ $(document).ready(function() {
     
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
+        // Update likes count for a particular post
         if (data['type'] == 'likes_count') {
             var post_id = '#' + data['post_id'];
             $(post_id).children('.card-footer').children('.upper-row').children('.likes-counter').text(data['count']);
-        } else if (data['type'] == 'comment_count') {
+        }
+        // Update comment count for a particular post 
+        else if (data['type'] == 'comment_count') {
             var post_id = '#' + data['post_id'];
             $(post_id).children('.card-footer').children('.upper-row').children('.comment-counter').text(data['count']);
         }
