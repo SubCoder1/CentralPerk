@@ -6,7 +6,6 @@ from Profile.views import (
     manage_relation, del_user_post,
     post_view, manage_post_likes )
 from Home.views import home_view, clear_all_notification
-from Home.views import manage_home_post_likes as manage_likes_home
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -19,7 +18,6 @@ AUth = [
 
 Home = [
     path('home/', home_view.as_view(), name='home_view'),
-    path('home/<str:post_id>/like', manage_likes_home, name='post_like_home'),
     path('home/notifications/del_all', clear_all_notification, name='clear_notifications'),
 ]
 
@@ -33,10 +31,3 @@ Profile = [
 ]
 
 urlpatterns = AUth + Home + Profile + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
-if settings.DEBUG:
-    import debug_toolbar
-
-    urlpatterns = [
-                      path('__debug__/', include(debug_toolbar.urls)),
-                  ] + urlpatterns
