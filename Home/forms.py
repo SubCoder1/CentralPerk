@@ -17,16 +17,3 @@ class PostForm(forms.ModelForm):
                 self.add_error('pic', 'cannot be blank')
 
         return self.cleaned_data
-
-class CommentForm(forms.ModelForm):
-
-    class Meta:
-        model = PostComments
-        fields = ('comment',)
-
-    def clean_comment(self):
-        comment = str(self.cleaned_data.get('comment'))
-        if comment.isspace() or not len(comment):
-            # Cannot accept blank comments or comments with only spaces or newlines
-            self.add_error('comment', 'cannot be empty')
-        return comment
