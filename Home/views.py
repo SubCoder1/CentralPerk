@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from Home.models import PostModel, PostLikes, PostComments, UserNotification
-from Home.forms import PostForm, CommentForm
+from Home.forms import PostForm
 from Profile.models import Friends, User
 from Home.tasks import share_posts, send_notifications, del_notifications
 from datetime import datetime
