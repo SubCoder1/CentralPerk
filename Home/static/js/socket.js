@@ -10,8 +10,10 @@ $(document).ready(function() {
         var data = JSON.parse(server_response.data);
         if (data['type'] == 'likes_count') {
             var post_id = '#' + data['post_id'];
-            console.log(post_id);
             $(post_id).children('.card-footer').children('.upper-row').children('.likes-counter').text(data['count']);
+        } else if (data['type'] == 'comment_count') {
+            var post_id = '#' + data['post_id'];
+            $(post_id).children('.card-footer').children('.upper-row').children('.comment-counter').text(data['count']);
         }
     };
 
@@ -28,5 +30,19 @@ $(document).ready(function() {
             'task' : 'post_like',
             'post_id' : post_id,
         }));
+    });
+
+    // Send posted comments from wall
+    var $wall_comment_form = $('.wall-comment-form');
+    $wall_comment_form.on('submit', function(event) {
+        event.preventDefault();
+        var post_id = $(this).children('input').val();
+        var comment = $(this).children('textarea').val();
+        homeSocket.send(JSON.stringify({
+            'task' : 'post_comment',
+            'post_id' : post_id,
+            'comment' : comment,
+        }));
+        $(this).children('textarea').val("");
     });
 });
