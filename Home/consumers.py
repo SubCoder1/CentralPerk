@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from django.template.loader import render_to_string
 from django.db.models import F
 from Profile.models import User
 from Home.models import PostModel, PostLikes, PostComments
@@ -42,9 +43,16 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                         'post_id' : post_id,
                         'count' : response,
                     }))
+            # Clear all notifications
+            elif data_from_client['task'] == 'clear_notif_all':
+                response = await self.del_notifications_all()
+                if response is not None:
+                    await self.send(text_data=json.dumps({
+                        'type' : 'updated_notif',
+                        'notif' : render_to_string("notifications.html", {'notifications':response}),
+                    }))
             else:
                 pass
-
     
     @database_sync_to_async
     def like_post_from_wall(self, post_id):
@@ -87,3 +95,14 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return post_obj.comment_count
         except:
             pass
+    
+    @database_sync_to_async
+    def del_notifications_all(self):
+        try:
+            user = self.scope['user']
+            user.notifications.all().delete()
+            notifications = user.notifications.all().values_list(
+                'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', named=True)
+            return notifications
+        except:
+            return None
