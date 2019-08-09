@@ -84,70 +84,12 @@
                   </div>
                   <!-- Notification body -->
                   <div class="modal-body">
-                    {% if notifications %}
-                    {% for notification in notifications %}
-                      <div class="card notification">
-                        <div class="card-body notify-body">
-                          <div class="d-flex">
-                            <div class="mr-1">
-                              <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
-                            </div>
-                            {% if notification.reaction == 'Liked' %}
-                            <div class="ml-2 ml-2-align">
-                              <div class="m-0">
-                                <a href="{% url 'view_profile' notification.poked_by %}">
-                                {{ notification.poked_by }}
-                                </a> Liked your status.
-                              </div>
-                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
-                            </div>
-                            {% elif notification.reaction == 'Sent Follow Request' %}
-                            <div class="ml-2 ml-2-align">
-                              <div class="m-0">
-                                <a href="{% url 'view_profile' notification.poked_by__username %}">
-                                {{ notification.poked_by__username }}
-                                </a> started to follow you.
-                              </div>
-                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
-                            </div>
-                            {% elif notification.reaction == 'Commented' %}
-                            <div class="ml-2">
-                              <div class="m-0">
-                                <a href="{% url 'view_profile' notification.poked_by %}">
-                                {{ notification.poked_by }}
-                                </a> commented on your post.
-                              </div>
-                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
-                            </div>
-                            {% elif notification.reaction == 'Replied' %}
-                            <div class="ml-2">
-                              <div class="m-0">
-                                <a href="{% url 'view_profile' notification.poked_by %}">
-                                {{ notification.poked_by }}
-                                </a> replied to your comment.
-                              </div>
-                              <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
-                            </div>
-                            {% else %}
-                            <div class="empty-notif">
-                              <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                              <h5 style="position: relative; left: 2px;">No Notifications</h5>
-                            </div>
-                            {% endif %}
-                          </div>
-                        </div>
-                      </div>
-                    <br/>
-                    {% endfor %}
-                    {% else %}
-                    <div class="empty-notif">
-                      <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                      <h5 style="position: relative; left: 2px;">No Notifications</h5>
+                    <div class="notif-wrapper">
+                      {% include "notifications.html" %}
                     </div>
-                    {% endif %}
                   </div>
                   <div class="modal-footer">
-                    <a href="{% url 'clear_notifications' %}" class="clear-notify"><i class="far fa-trash-alt"></i></a>
+                    <a href="#" class="clear-notify"><i class="far fa-trash-alt"></i></a>
                   </div>
                 </div>
               </div>
