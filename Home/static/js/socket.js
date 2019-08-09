@@ -18,6 +18,11 @@ $(document).ready(function() {
             var post_id = '#' + data['post_id'];
             $(post_id).children('.card-footer').children('.upper-row').children('.comment-counter').text(data['count']);
         }
+        // Update notifications wrapper
+        else if (data['type'] == 'updated_notif') {
+            var $notif_wrapper = $('.notif-wrapper');
+            $notif_wrapper.html(data['notif']);
+        }
     };
 
     homeSocket.onclose = function() {
@@ -47,5 +52,13 @@ $(document).ready(function() {
             'comment' : comment,
         }));
         $(this).children('textarea').val("");
+    });
+
+    // Clear all notifications
+    $('.clear-notify').on('click', function(event) {
+        event.preventDefault();
+        homeSocket.send(JSON.stringify({
+            'task' : 'clear_notif_all',
+        }));
     });
 });
