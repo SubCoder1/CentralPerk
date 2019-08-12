@@ -18,7 +18,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         await self.add_channel_name_to_user(channel_name=self.channel_name)
 
     async def disconnect(self, close_code):
-        await self.rm_channel_name_from_user()
+        pass
 
     async def receive(self, text_data):
         data_from_client = json.loads(text_data)
@@ -64,12 +64,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     def add_channel_name_to_user(self, channel_name):
         user = self.scope['user']
         user.channel_name = channel_name
-        user.save()
-    
-    @database_sync_to_async
-    def rm_channel_name_from_user(self):
-        user = self.scope['user']
-        user.channel_name = ""
         user.save()
 
     @database_sync_to_async
