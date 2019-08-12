@@ -2,7 +2,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.template.loader import render_to_string
 from django.db.models import F
-from Profile.models import User
 from Home.models import PostModel, PostLikes, PostComments
 from Home.tasks import send_notifications, del_notifications
 import json
@@ -10,11 +9,17 @@ import json
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        await self.accept()
+        if self.scope["user"].is_anonymous:
+            # Reject the connection
+            await self.close()
+        else:
+            # Accept the connection
+            await self.accept()
+        await self.add_channel_name_to_user(channel_name=self.channel_name)
 
     async def disconnect(self, close_code):
-        pass
-    
+        await self.rm_channel_name_from_user()
+
     async def receive(self, text_data):
         data_from_client = json.loads(text_data)
         if data_from_client.get('task') is not None:
@@ -45,7 +50,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     }))
             # Clear all notifications
             elif data_from_client['task'] == 'clear_notif_all':
-                response = await self.del_notifications_all()
+                await self.del_notifications_all()
+                response = await self.send_updated_notif()
                 if response is not None:
                     await self.send(text_data=json.dumps({
                         'type' : 'updated_notif',
@@ -54,6 +60,18 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             else:
                 pass
     
+    @database_sync_to_async
+    def add_channel_name_to_user(self, channel_name):
+        user = self.scope['user']
+        user.channel_name = channel_name
+        user.save()
+    
+    @database_sync_to_async
+    def rm_channel_name_from_user(self):
+        user = self.scope['user']
+        user.channel_name = ""
+        user.save()
+
     @database_sync_to_async
     def like_post_from_wall(self, post_id):
         user = self.scope['user']
@@ -106,3 +124,15 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return notifications
         except:
             return None
+
+    async def send_updated_notif(self, event=None):
+        try:
+            user = self.scope['user']
+            notifications = user.notifications.all().values_list(
+                    'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', named=True)
+            await self.send(text_data=json.dumps({
+                'type' : 'updated_notif',
+                'notif' : render_to_string("notifications.html", {'notifications':notifications}),
+            }))
+        except:
+            pass
