@@ -7,7 +7,6 @@ from Profile.models import User
 
 @receiver([post_save, post_delete], sender=UserNotification)
 def update_notifications(sender, instance, **kwargs):
-    print("signal received!")
     channel_name = instance.user_to_notify.channel_name
     if channel_name is not "":
         channel_layer = get_channel_layer()
