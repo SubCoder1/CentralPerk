@@ -23,6 +23,7 @@ def update_user_activity_on_logout(username):
     user = User.get_user_obj(username=username)
     user.active = False
     user.session_key = ''
+    user.channel_name = ''
     tz = pytz.timezone('Asia/Kolkata')
     user.last_login = datetime.now().astimezone(tz=tz)
     user.save()
