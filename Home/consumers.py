@@ -2,9 +2,10 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.template.loader import render_to_string
 from django.db.models import F
+from Profile.models import Friends
 from Home.models import PostModel, PostLikes, PostComments
 from Home.tasks import send_notifications, del_notifications
-import json
+import json, asyncio
 
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
@@ -16,6 +17,17 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # Accept the connection
             await self.accept()
         await self.add_channel_name_to_user(channel_name=self.channel_name)
+
+        # Send list of followers, following & online friends
+        while True:
+            await asyncio.sleep(2)
+            online_user_list, followers_list, following_list = await self.update_friends_list()
+            await self.send(text_data=json.dumps({
+                'type' : 'update_friends_list',
+                'online-users-list': render_to_string("u-online.html", {'online_users':online_user_list}),
+                'followers-list': render_to_string("u-followers.html", {'followers':followers_list}),
+                'following-list': render_to_string("u-following.html", {'following':following_list}),
+            }))
 
     async def disconnect(self, close_code):
         pass
@@ -65,6 +77,12 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         user = self.scope['user']
         user.channel_name = channel_name
         user.save()
+    
+    @database_sync_to_async
+    def update_friends_list(self):
+        user = self.scope['user']
+        online_users, followers, following = Friends.get_friends_list(current_user=user)
+        return [online_users, followers, following]
 
     @database_sync_to_async
     def like_post_from_wall(self, post_id):
