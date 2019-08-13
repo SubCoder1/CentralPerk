@@ -1,0 +1,16 @@
+{% if followers %}
+    {% for user in followers %}
+    <div class="follower-user">
+        <a href="{% url 'view_profile' user.username %}">
+            <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded user-pic-margin"/>
+            {{ user.username }}
+        </a>
+    </div>
+    <br/>
+    {% endfor %}
+{% else %}
+    <div class="empty-notif">
+        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+        <h5 style="position: relative; left: 2px;">No followers</h5>
+    </div>
+{% endif %}
