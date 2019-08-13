@@ -5,6 +5,8 @@ from django.db.models import Q
 from celery import shared_task
 from Profile.models import Friends, User, Account_Notif_Settings
 from Home.models import PostModel, UserNotification
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 @shared_task
 def share_posts(username, post_id):
@@ -51,6 +53,7 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
     
     # There's no restrictions on notifications set by send_to_user
     # Proceed with setting-up & sending notif to send_to_user
+    channel_layer = get_channel_layer()
     if reaction == 'Liked' or reaction == 'Commented':
         try:
             post = PostModel.objects.get_post(post_id=post_id)
@@ -62,6 +65,9 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
             return "User liked/commented_on his/her own post :|"
         
         if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post):
+            if send_to.channel_name is not "":
+                async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
+
             if reaction == 'Liked':
                 return "like_notif sent successfully :)"
             else:
@@ -69,9 +75,11 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
 
     elif reaction == 'Sent Follow Request' or reaction == 'Replied':
         if send_to_username == username and reaction == 'Replied':
-            #return f"({username}, {send_to_username})"
             return "User replied to his/her own comment :|"
         if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction):
+            if send_to.channel_name is not "":
+                async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
+
             if reaction == 'Sent Follow Request':
                 return "follow_notif sent successfully :)"
             else:
@@ -102,6 +110,9 @@ def del_notifications(username, reaction, send_to_username=None, post_id=None):
 
     if UserNotification.objects.filter(query).exists():
         UserNotification.objects.filter(query).first().delete()
+        channel_layer = get_channel_layer()
+        if to_notify.channel_name is not "":
+            async_to_sync(channel_layer.send)(to_notify.channel_name, { "type" : "send.updated.notif" })
         return 'notif deleted successfully :)'
     else:
         return "filtered query doesn't exist.(Maybe user cleared his/her notif?)"       
