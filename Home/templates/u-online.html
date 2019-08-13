@@ -1,0 +1,17 @@
+{% if online_users %}
+    {% for user in online_users %}
+    <div class="online-user">
+        <a href="{% url 'view_profile' user.username %}">
+            <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded user-pic-margin"/>
+            {{ user.username }}
+        </a>
+        <i class="material-icons online-green-ico">lens</i>
+    </div>
+    <br/>
+    {% endfor %}
+{% else %}
+    <div class="empty-notif">
+        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+        <h5 style="position: relative; left: 2px;">No one's online</h5>
+    </div>
+{% endif %}
