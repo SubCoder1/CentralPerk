@@ -619,6 +619,10 @@ h6 { font-size: 13px; }
     background: #1d1d1d;
     border-radius: 1.00rem;
     margin: 2px;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
 }
 
 .notify-body {
@@ -743,11 +747,13 @@ h6 { font-size: 13px; }
     line-height: 5;
 }
 
+.user-pic-margin { margin-right: 5px; }
+
 .last_login_date_time {
     text-align: right;
     float: right;
-    line-height: 3.4;
-    font-size: 13px;
+    line-height: 3.9;
+    font-size: 11px;
 }
 /* ----------------------------------------------- */
 
