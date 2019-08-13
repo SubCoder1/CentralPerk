@@ -23,6 +23,16 @@ $(document).ready(function() {
             var $notif_wrapper = $('.notif-wrapper');
             $notif_wrapper.html(data['notif']);
         }
+        // Update friends list
+        else if (data['type'] == 'update_friends_list') {
+            var $online_wrapper = $('.online-wrapper');
+            var $followers_wrapper = $('.followers-wrapper');
+            var $following_wrapper = $('.following-wrapper');
+
+            $online_wrapper.html(data['online-users-list']);
+            $followers_wrapper.html(data['followers-list']);
+            $following_wrapper.html(data['following-list']);
+        }
     };
 
     homeSocket.onclose = function() {
