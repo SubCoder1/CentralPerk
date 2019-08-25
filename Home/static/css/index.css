@@ -47,7 +47,22 @@ input {
     z-index: 0;
 }
 
-.card { border: none; background: transparent; }
+.card { 
+    border: none; 
+    background: transparent; 
+    animation-duration: 1s;
+    animation-fill-mode: both;
+    animation-name: fadeInBottom;
+}
+
+@keyframes fadeInBottom {
+    from {
+        opacity: 0;
+        transform: translateY(70%);
+    }
+    to { opacity: 1 }
+}
+
 
 .card::-webkit-scrollbar { width: 0 !important; }
 
