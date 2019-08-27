@@ -1,6 +1,7 @@
 django
 pytz
 Pillow
+argon2-cffi
 django-debug-toolbar
 django_extensions
 django_redis
@@ -8,4 +9,4 @@ redis
 channels
 channels_redis
 celery
-argon2-cffi
+flower
