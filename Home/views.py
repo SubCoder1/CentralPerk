@@ -43,7 +43,3 @@ class home_view(TemplateView):
             messages.error(request, 'Post Unsuccessful!')
             return redirect(reverse('home_view'))
         return redirect(reverse('home_view'))
-
-def clear_all_notification(request):
-    request.user.notifications.all().delete()
-    return redirect(reverse('home_view'))
