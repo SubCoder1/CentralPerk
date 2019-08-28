@@ -25,6 +25,7 @@ $(document).ready(function() {
         }
         // Update friends list
         else if (data['type'] == 'update_friends_list') {
+            // console.log("friend_list_updated");
             var $online_wrapper = $('.online-wrapper');
             var $followers_wrapper = $('.followers-wrapper');
             var $following_wrapper = $('.following-wrapper');
@@ -32,6 +33,23 @@ $(document).ready(function() {
             $online_wrapper.html(data['online-users-list']);
             $followers_wrapper.html(data['followers-list']);
             $following_wrapper.html(data['following-list']);
+        }
+        // Update wall
+        else if (data['type'] == 'updated_wall') {
+            var $post_container = $('.post-container');
+            var $wrap_update_posts = $('#update-posts');
+            $wrap_update_posts.css('display', 'block');
+
+            $wrap_update_posts.on('click', function() {
+                $("body").scrollTop(0);
+                if (data) {
+                    if (data['posts']) {
+                        $post_container.html(data['posts']);
+                        $post_container.trigger('contentchanged');
+                    }
+                }
+                $(this).css('display', 'none');
+            });
         }
     };
 
