@@ -5,7 +5,7 @@ from Profile.views import (
     view_profile, edit_profile, 
     manage_relation, del_user_post,
     post_view, manage_post_likes )
-from Home.views import home_view, clear_all_notification
+from Home.views import home_view
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -18,7 +18,6 @@ AUth = [
 
 Home = [
     path('home/', home_view.as_view(), name='home_view'),
-    path('home/notifications/del_all', clear_all_notification, name='clear_notifications'),
 ]
 
 Profile = [
