@@ -20,42 +20,85 @@ $(document).ready(function() {
     }
   }
 
-  // JS code for post-card data overflow management
-  var elms = document.querySelectorAll("[id='post-data']");
-  var post_container = document.querySelectorAll("[id='status_caption-container']");
-  for(var i=0; i < elms.length; i++) {
-    (function (i) {
-      var post = JSON.parse(elms[i].textContent);
-      var newline_count = (post.match(/\r\n/g) || '').length + 1;
-      if (newline_count) {
-        var lines = post.split("\r\n");
-        if (lines.length > 5) {
-          var read_less = lines.slice(0,5);
-          for (var j=0; j < 5; j++) {
-            post_container[i].innerHTML += read_less[j] + '<br/>';
-          }
-          var read_more = post_container[i].getElementsByTagName("a")[0];
-          post_container[i].removeChild(read_more);
-          var read_more_link = '<a class="body_link read-more" href="' + read_more + '">Read more...</a>'
-          post_container[i].innerHTML += read_more_link;
-        } else {
-          var read_less = lines.slice(0,lines.length);
-          for (var j=0; j < lines.length; j++) {
-            post_container[i].innerHTML += read_less[j] + '<br/>';
-          }
-        }
-      } else if (post.length > 200) {
-        post_container[i].innerHTML += post.slice(0,200);
-        var read_more = post_container[i].getElementsByTagName("a")[0];
-        post_container[i].removeChild(read_more);
-        var read_more_link = '<a class="body_link read-more" href="' + read_more + '"></a>'
-        post_container[i].innerHTML += read_more_link;
+  // JS code for slide-in-as-you-scroll-down-post-cards
+  (function($) {
+    $.fn.visible = function(partial) {
+      
+        var $t            = $(this),
+            $w            = $(window),
+            viewTop       = $w.scrollTop(),
+            viewBottom    = viewTop + $w.height(),
+            _top          = $t.offset().top,
+            _bottom       = _top + $t.height(),
+            compareTop    = partial === true ? _bottom : _top,
+            compareBottom = partial === true ? _top : _bottom;
+      
+      return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+    };
+  })(jQuery);
+
+  var win = $(window);
+  function post_card_stack_up() {
+    var allMods = $(".index-post-card");
+
+    // Already visible post-cards
+    allMods.each(function(i, el) {
+      var el = $(el);
+      if (el.visible(true)) {
+        el.addClass("already-visible"); 
       } 
-      else {
-        post_container[i].innerHTML += post;
-      }
-    }).call(this, i);
+    });
+
+    win.scroll(function(event) {
+
+      allMods.each(function(i, el) {
+        var el = $(el);
+        if (el.visible(true) && !el.hasClass("already-visible")) {
+          el.addClass("come-in"); 
+        } 
+      });
+      
+    });
   }
+
+  post_card_stack_up();
+
+  // JS code for post-card data overflow management
+  function manage_status_caption() {
+    var $post_container = $('.index-post-card-body, .prof-post-card-body');
+    var $elms = $post_container.children('#post-data');
+    $.each($post_container, function (index, value) {
+        var post = $elms[index].textContent.replace(/"/g, "");
+        var newline_count = (post.match(/\\r\\n/g) || '').length + 1;
+          if (newline_count) {
+            var lines = post.split("\\r\\n");
+            if (lines.length > 5) {
+              var read_less = lines.slice(0,5);
+              for (var j=0; j < 5; j++) {
+                $post_container[index].innerHTML += read_less[j] + '<br/>';
+              }
+              var read_more = $post_container[index].getElementsByTagName("a")[0];
+              $post_container[index].removeChild(read_more);
+              var read_more_link = '<a class="body_link read-more" href="' + read_more + '">Read more. . .</a>'
+              $post_container[index].innerHTML += read_more_link;
+            } else {
+              var read_less = lines.slice(0,lines.length);
+              for (var j=0; j < lines.length; j++) {
+                $post_container[index].innerHTML += read_less[j] + '<br/>';
+              }
+            }
+          } else {
+            $post_container[index].innerHTML += post;
+          }
+    });
+  }
+
+  manage_status_caption();
+
+  $('.post-container').on('contentchanged', function() {
+    manage_status_caption();
+    post_card_stack_up();
+  })
 
   // JQuery code to preview uploaded image and clear it (if clicked on img)
   var $real_upload_btn = $('#real-file');
