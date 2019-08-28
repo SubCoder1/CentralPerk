@@ -50,19 +50,19 @@ input {
 .card { 
     border: none; 
     background: transparent; 
-    animation-duration: 1s;
-    animation-fill-mode: both;
-    animation-name: fadeInBottom;
 }
 
-@keyframes fadeInBottom {
-    from {
-        opacity: 0;
-        transform: translateY(70%);
-    }
-    to { opacity: 1 }
+.come-in {
+    transform: translateY(150px);
+    animation: come-in 0.8s ease forwards;
 }
-
+.come-in:nth-child(odd) {
+    animation-duration: 0.6s; /* So they look staggered */
+}
+  
+@keyframes come-in {
+    to { transform: translateY(0); }
+}
 
 .card::-webkit-scrollbar { width: 0 !important; }
 
@@ -139,10 +139,39 @@ h6 { font-size: 13px; }
     height: 55px;
   }
 
+  #update-posts {
+    height: 0;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    display: none;
+  }
+
+  .lnr-redo {
+    height: 23px;
+    width: 35px;
+    position: relative;
+    left: 5px;
+    fill: white;
+    transition: transform 0.5s ease;
+    transform-origin: center center;
+    transform-style: preserve-3d;
+  }
+
+  #update-posts:hover .alert-success {
+    background: mediumpurple;
+    border: 3px solid mediumpurple;
+  }
+
+  #update-posts:hover .lnr-redo {
+      transform: rotate(620deg);
+  }
+
   .alert {
     border-radius: 2rem;
     margin-bottom: 0rem;
     color: white;
+    transition: all 0.3s;
   }
   
   .alert-success {
@@ -304,7 +333,7 @@ h6 { font-size: 13px; }
 
 /* ----------------- post card ------------------- */
 .post-card {
-    background: #2e2a4b;
+    background: #1d1d1d;
     border-radius: 1.00rem;
 }
 
@@ -403,7 +432,7 @@ h6 { font-size: 13px; }
     bottom: 4px;
     margin-right: 5px;
     padding: 0.9rem 0.1rem;
-    background-color: #2e2a4b;
+    background-color: #1d1d1d;
     color: white;
     font-size: 13px;
     overflow-x: auto;
@@ -417,7 +446,7 @@ h6 { font-size: 13px; }
 .comment-input::-webkit-scrollbar { width: 0 !important; }
 
 .comment-input:focus {
-    background-color: #2e2a4b;
+    background-color: #1d1d1d;
     box-shadow: none;
     color: white;
 }
@@ -426,13 +455,13 @@ h6 { font-size: 13px; }
     border-radius: 50% !important;
     height: 39px;
     width: 40px;
-    background: mediumvioletred;
-    border-color: mediumvioletred;
+    background: deeppink;
+    border-color: deeppink;
 }
 
 .comment-send-btn:hover {
-    background-color: #b01d7a;
-    border-color: #b01d7a;
+    border-color: #da0076;
+    background: #da0076;
 }
 
 .cmmnt-send-ico {
@@ -460,7 +489,7 @@ h6 { font-size: 13px; }
     position: -webkit-sticky;
     position: sticky;
     top: 10%;
-    background: #2e2a4b;
+    background: #1d1d1d;
     border-radius: 1.00rem;
     width: 100%;
     height: 220px;
@@ -482,27 +511,28 @@ h6 { font-size: 13px; }
     margin-left: 5px;
 }
 
-.notif-btn { 
-    background: #31b689;
+.notif-btn {
+    background: #4904d2;
     margin-left: 0px;
 }
-.notif-btn:hover { background: #368f71; }
+
+.notif-btn:hover { background: #2d19a9; }
 .options-link:hover .fa-bell { animation: ring 1s ease; }
 
 .upload-btn { background: mediumorchid; }
 .upload-btn:hover { background: #a241ba; }
 .fa-plus { transition: transform 0.3s; }
-.options-link:hover .fa-plus { transform: rotate(45deg); }
+.options-link:hover .fa-plus { transform: rotateZ(45deg); }
 
-.online-users-btn { background: #ee5f2b; }
-.online-users-btn:hover { background: #d95524; }
-.fa-user-alt { transition: transform 0.3s; }
-.options-link:hover .fa-user-alt { transform: scale(1.2); }
+.online-users-btn { background: #ff7600; }
+.online-users-btn:hover { background: #ff0000; }
+.fa-user-alt { transition: transform 0.3s ease; }
+.options-link:hover .fa-user-alt { transform: scale3d(1.5, 1.5, 1.5); }
 
-.search-btn { background: rebeccapurple; }
-.search-btn:hover { background: #572885; }
+.search-btn { background: darkturquoise; }
+.search-btn:hover { background: mediumturquoise; }
 .fa-search { transition: transform 0.3s; }
-.options-link:hover .fa-search { transform: rotate(20deg); }
+.options-link:hover .fa-search { transform: rotateZ(20deg); }
 
 @-webkit-keyframes ring {
     0% {
@@ -802,7 +832,9 @@ h6 { font-size: 13px; }
 .story-border {
     position: relative;
     left: 3%;
-    top: 2%;
-    width: 100px;
+    top: 3%;
+    width: 35px;
+    background: magenta;
+    border: 1px solid magenta!important;
 }
 /* ----------------------------------------------- */
