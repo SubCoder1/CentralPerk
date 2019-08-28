@@ -9,6 +9,17 @@ import json, asyncio
 
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
+    async def update_friends_list(self):
+        while True:
+            await asyncio.sleep(2)
+            online_user_list, followers_list, following_list = await self.get_friends_list()
+            await self.send(text_data=json.dumps({
+                'type' : 'update_friends_list',
+                'online-users-list': render_to_string("u-online.html", {'online_users':online_user_list}),
+                'followers-list': render_to_string("u-followers.html", {'followers':followers_list}),
+                'following-list': render_to_string("u-following.html", {'following':following_list}),
+            }))
+
     async def connect(self):
         if self.scope["user"].is_anonymous:
             # Reject the connection
@@ -19,15 +30,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         await self.add_channel_name_to_user(channel_name=self.channel_name)
 
         # Send list of followers, following & online friends
-        while True:
-            await asyncio.sleep(2)
-            online_user_list, followers_list, following_list = await self.update_friends_list()
-            await self.send(text_data=json.dumps({
-                'type' : 'update_friends_list',
-                'online-users-list': render_to_string("u-online.html", {'online_users':online_user_list}),
-                'followers-list': render_to_string("u-followers.html", {'followers':followers_list}),
-                'following-list': render_to_string("u-following.html", {'following':following_list}),
-            }))
+        run_task = asyncio.ensure_future(self.update_friends_list())
 
     async def disconnect(self, close_code):
         pass
@@ -79,7 +82,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         user.save()
     
     @database_sync_to_async
-    def update_friends_list(self):
+    def get_friends_list(self):
         user = self.scope['user']
         online_users, followers, following = Friends.get_friends_list(current_user=user)
         return [online_users, followers, following]
@@ -140,11 +143,25 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     async def send_updated_notif(self, event=None):
         try:
             user = self.scope['user']
-            notifications = user.notifications.all().values_list(
+            notifications = user.notifications.values_list(
                     'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', named=True)
             await self.send(text_data=json.dumps({
                 'type' : 'updated_notif',
                 'notif' : render_to_string("notifications.html", {'notifications':notifications}),
+            }))
+        except:
+            pass
+
+    async def update_wall(self, event=None):
+        try:
+            user = self.scope['user']
+            posts = user.connections.all().values_list(
+                'status_caption', 'pic',
+                'location', 'user__username', 'user__profile_pic',
+                'date_time', 'likes_count', 'comment_count', 'post_id', named=True)
+            await self.send(text_data=json.dumps({
+                'type' : 'updated_wall',
+                'posts' : render_to_string("wall.html", {'posts':posts}),
             }))
         except:
             pass
