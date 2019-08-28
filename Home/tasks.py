@@ -19,9 +19,12 @@ def share_posts(username, post_id):
     following_list, created = Friends.objects.get_or_create(current_user=request_user)
     if not created:
         users = following_list.followers.all()
+        channel_layer = get_channel_layer()
         if len(users) > 0:
             for user in users:
                 post.send_to.add(user)
+                if user.channel_name is not "":
+                    async_to_sync(channel_layer.send)(user.channel_name, { "type" : "update.wall" })
             return "complete :)"
         else:
             return "user is lonely :("
