@@ -17,12 +17,12 @@ class home_view(TemplateView):
 
     def get(self, request):
         form = PostForm()
-        posts = request.user.connections.all().values_list(
+        posts = request.user.connections.values_list(
             'status_caption', 'pic',
             'location', 'user__username', 'user__profile_pic',
             'date_time', 'likes_count', 'comment_count', 'post_id', named=True)
-        notifications = request.user.notifications.all().values_list(
-            'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic',named=True)
+        notifications = request.user.notifications.values_list(
+            'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', named=True)
         online_users, followers, following = Friends.get_friends_list(current_user=request.user)
 
         args = { 'form':form, 'posts':posts, 'notifications':notifications,
