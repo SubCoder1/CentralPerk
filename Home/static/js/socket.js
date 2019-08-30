@@ -6,6 +6,8 @@ $(document).ready(function() {
         // console.log(event);
     }
     
+    var $wrap_search = $('.wrap-search-res');
+
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
         // Update likes count for a particular post
@@ -51,6 +53,10 @@ $(document).ready(function() {
                 $(this).css('display', 'none');
             });
         }
+        // Display search result
+        else if (data['type'] == 'search_results') {
+            $wrap_search.html(data['results']);
+        }
     };
 
     homeSocket.onclose = function() {
@@ -83,10 +89,24 @@ $(document).ready(function() {
     });
 
     // Clear all notifications
-    $('.clear-notify').on('click', function(event) {
+    var $clear_notify = $('.clear-notify');
+    $clear_notify.on('click', function(event) {
         event.preventDefault();
         homeSocket.send(JSON.stringify({
             'task' : 'clear_notif_all',
         }));
+    });
+
+    // Send Search query to server
+    var $search_bar = $('.search-bar');
+    $search_bar.on('input', function(event) {
+        if ($search_bar.val() == '') {
+            $wrap_search.html("");
+        } else {
+            homeSocket.send(JSON.stringify({
+                'task' : 'search',
+                'query' : $search_bar.val(),
+            }));
+        }
     });
 });
