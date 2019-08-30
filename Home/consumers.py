@@ -1,7 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.template.loader import render_to_string
-from django.db.models import F
+from django.db.models import F, Count
 from Profile.models import Friends
 from Home.models import PostModel, PostLikes, PostComments
 from Home.tasks import send_notifications, del_notifications
@@ -11,7 +11,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def update_friends_list(self):
         while True:
-            await asyncio.sleep(2)
+            await asyncio.sleep(60)
             online_user_list, followers_list, following_list = await self.get_friends_list()
             await self.send(text_data=json.dumps({
                 'type' : 'update_friends_list',
@@ -71,6 +71,14 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     await self.send(text_data=json.dumps({
                         'type' : 'updated_notif',
                         'notif' : render_to_string("notifications.html", {'notifications':response}),
+                    }))
+            # Username search
+            elif data_from_client['task'] == 'search':
+                if data_from_client['query'] is not None:
+                    response = await self.search_results(query=data_from_client['query'])
+                    await self.send(text_data=json.dumps({
+                        'type' : 'search_results',
+                        'results' : render_to_string("search.html", {'results':response[:10]}),
                     }))
             else:
                 pass
@@ -139,6 +147,12 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return notifications
         except:
             return None
+
+    @database_sync_to_async
+    def search_results(self, query=None):
+        query_res = Friends.objects.filter(current_user__username__startswith=query).annotate(f_count=Count('followers'))\
+            .order_by('-f_count').values_list('current_user__username', 'current_user__full_name', 'current_user__profile_pic', named=True)
+        return query_res
 
     async def send_updated_notif(self, event=None):
         try:
