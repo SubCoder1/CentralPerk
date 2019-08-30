@@ -78,7 +78,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     response = await self.search_results(query=data_from_client['query'])
                     await self.send(text_data=json.dumps({
                         'type' : 'search_results',
-                        'results' : render_to_string("search.html", {'results':response[:10]}),
+                        'results' : render_to_string("search.html", {'results':response}),
                     }))
             else:
                 pass
@@ -152,7 +152,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     def search_results(self, query=None):
         query_res = Friends.objects.filter(current_user__username__startswith=query).annotate(f_count=Count('followers'))\
             .order_by('-f_count').values_list('current_user__username', 'current_user__full_name', 'current_user__profile_pic', named=True)
-        return query_res
+        return query_res[:10]
 
     async def send_updated_notif(self, event=None):
         try:
