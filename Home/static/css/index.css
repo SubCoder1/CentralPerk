@@ -372,6 +372,13 @@ h6 { font-size: 13px; }
     font-size: 14px;
 }
 
+.lnr-bookmark {
+    height: 21px;
+    width: 40px;
+    color: antiquewhite;
+    fill: currentColor;
+}
+
 .fa-fire-alt {
     font-size: 15px;
     vertical-align: middle;
