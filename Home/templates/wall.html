@@ -4,18 +4,24 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="mr-0">
-                        <img src="/media/{{ post.user__profile_pic }}" class="rounded-circle post-profile-img">
+                        <img src="/media/{{ post.user.profile_pic }}" class="rounded-circle post-profile-img">
                     </div>
                     <div class="ml-2">
                         <div class="h5 m-0 body">
-                          <a class="body_link" href="{% url 'view_profile' post.user__username %}">{{ post.user__username }}</a>
+                          <a class="body_link" href="{% url 'view_profile' post.user.username %}">{{ post.user.username }}</a>
                         </div>
                         {% if post.location %}
                           <h6>{{ post.location }}</h6>
                         {% endif %}
                     </div>
                 </div>
-                <svg class="lnr lnr-bookmark"><use xlink:href="#lnr-bookmark"></use></svg>
+                <div class="wrap-save-post">
+                    {% if user in post.saved_by.all %}
+                        <svg class="lnr lnr-bookmark bookmark-saved"><use xlink:href="#lnr-bookmark"></use></svg>
+                    {% else %}
+                        <svg class="lnr lnr-bookmark"><use xlink:href="#lnr-bookmark"></use></svg>
+                    {% endif %}
+                </div>
             </div>
         </div>
         {% if post.status_caption and not post.pic %}
