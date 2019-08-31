@@ -20,6 +20,16 @@ $(document).ready(function() {
             var post_id = '#' + data['post_id'];
             $(post_id).children('.card-footer').children('.upper-row').children('.comment-counter').text(data['count']);
         }
+        // Update save/unsave post icon
+        else if (data['type'] == 'save_unsave_post_response') {
+            var post_id = '#' + data['post_id'];
+            var $post_bookmark = $(post_id).children('.card-header').children('.d-flex').children('.wrap-save-post').children('.lnr-bookmark');
+            if (data['result'] == 'saved') {
+                $post_bookmark.toggleClass('bookmark-saved');
+            } else {
+                $post_bookmark.removeClass('bookmark-saved');
+            } 
+        }
         // Update notifications wrapper
         else if (data['type'] == 'updated_notif') {
             var $notif_wrapper = $('.notif-wrapper');
@@ -70,6 +80,17 @@ $(document).ready(function() {
         var post_id = $(this).closest('.card').attr('id');
         homeSocket.send(JSON.stringify({
             'task' : 'post_like',
+            'post_id' : post_id,
+        }));
+    });
+
+    // Save/Unsave Posts from wall
+    var $post_bookmark = $('.lnr-bookmark');
+    $post_bookmark.on("click", function(event) {
+        event.preventDefault();
+        var post_id = $(this).closest('.card').attr('id');
+        homeSocket.send(JSON.stringify({
+            'task' : 'save_unsave_post',
             'post_id' : post_id,
         }));
     });
