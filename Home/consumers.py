@@ -1,7 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.template.loader import render_to_string
-from django.db.models import F, Count
+from django.db.models import F, Count, Prefetch
 from Profile.models import Friends
 from Home.models import PostModel, PostLikes, PostComments
 from Home.tasks import send_notifications, del_notifications
@@ -62,6 +62,21 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                         'type' : 'comment_count',
                         'post_id' : post_id,
                         'count' : response,
+                    }))
+            # Save/Unsave posts
+            elif data_from_client['task'] == 'save_unsave_post':
+                post_id = data_from_client.get('post_id', None)
+                response = await self.save_unsave_post(post_id=post_id)
+                if response is None:
+                    await self.send(text_data=json.dumps({
+                        'type' : 'error',
+                        'error' : response,
+                    }))
+                else:
+                    await self.send(text_data=json.dumps({
+                        'type' : 'save_unsave_post_response',
+                        'post_id' : post_id,
+                        'result' : response,
                     }))
             # Clear all notifications
             elif data_from_client['task'] == 'clear_notif_all':
@@ -138,6 +153,20 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             pass
     
     @database_sync_to_async
+    def save_unsave_post(self, post_id):
+        try:
+            user = self.scope['user']
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+            if user in post_obj.saved_by.all():
+                post_obj.saved_by.remove(user)
+                return 'unsaved'
+            else:
+                post_obj.saved_by.add(user)
+                return 'saved'
+        except:
+            pass
+    
+    @database_sync_to_async
     def del_notifications_all(self):
         try:
             user = self.scope['user']
@@ -169,10 +198,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     async def update_wall(self, event=None):
         try:
             user = self.scope['user']
-            posts = user.connections.all().values_list(
-                'status_caption', 'pic',
-                'location', 'user__username', 'user__profile_pic',
-                'date_time', 'likes_count', 'comment_count', 'post_id', named=True)
+            posts = user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
             await self.send(text_data=json.dumps({
                 'type' : 'updated_wall',
                 'posts' : render_to_string("wall.html", {'posts':posts}),
