@@ -23,6 +23,7 @@ def user_directory_path(instance, filename):
 class PostModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, related_name='posts')
     send_to = models.ManyToManyField(User, related_name='connections', default=1)
+    saved_by = models.ManyToManyField(User, related_name='saved_by', default=1)
     likes_count = models.PositiveIntegerField(default=0)
     comment_count = models.PositiveIntegerField(default=0)
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
