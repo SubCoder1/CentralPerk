@@ -377,7 +377,11 @@ h6 { font-size: 13px; }
     width: 40px;
     color: antiquewhite;
     fill: currentColor;
+    cursor: pointer;
+    transition: all 0.3s;
 }
+
+.bookmark-saved { color: greenyellow; }
 
 .fa-fire-alt {
     font-size: 15px;
