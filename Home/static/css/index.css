@@ -700,6 +700,23 @@ h6 { font-size: 13px; }
     font-size: 12px;
 }
 
+.lnr-arrow-right {
+    width: 24px;
+    height: 20px;
+    fill: currentColor;
+    color: white;
+    position: relative;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.notif-link:hover .lnr-arrow-right {
+    color: #9662ff;
+    right: 5px;
+}
+
 .empty-notif {
     position: absolute;
     top: 50%;
