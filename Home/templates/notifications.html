@@ -15,6 +15,9 @@
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
+                    <a class="notif-link" href="{% url 'view_post' notification.post__post_id %}">
+                        <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
+                    </a>
                 {% elif notification.reaction == 'Sent Follow Request' %}
                     <div class="ml-2 ml-2-align">
                         <div class="m-0">
@@ -33,6 +36,9 @@
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
+                    <a class="notif-link" href="{% url 'view_post' notification.post__post_id %}">
+                        <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
+                    </a>
                 {% elif notification.reaction == 'Replied' %}
                     <div class="ml-2">
                         <div class="m-0">
@@ -42,6 +48,7 @@
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
+                    <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
                 {% else %}
                     <div class="empty-notif">
                         <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
