@@ -19,7 +19,7 @@ class home_view(TemplateView):
         form = PostForm()
         posts = request.user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
         notifications = request.user.notifications.values_list(
-            'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', named=True)
+            'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', 'post__post_id', named=True)
         online_users, followers, following = Friends.get_friends_list(current_user=request.user)
 
         args = { 'user':request.user, 'form':form, 'posts':posts, 'notifications':notifications,
