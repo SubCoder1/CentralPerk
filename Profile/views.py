@@ -51,6 +51,7 @@ def view_profile(request, username=None):
         return render(request, 'profile_500.html', {})
 
     user_posts = user.posts.all()
+    saved_posts = user.saved_by.all()
 
     current_user, created = Friends.objects.get_or_create(current_user=user)
     isFollower, isFollowing, follow_count, follower_count = None, None, 0, 0
@@ -64,7 +65,7 @@ def view_profile(request, username=None):
         follow_count = current_user.following.count()
         follower_count = current_user.followers.count()
 
-    if request.POST:
+    if request.is_ajax():
         ajax_request = request.POST.get("activity")
         if ajax_request == 'get_user_acc_settings':
             # send current user account settings
@@ -80,7 +81,7 @@ def view_profile(request, username=None):
             'f_requests': request.POST.get('f_requests') }
             update_user_acc_settings.delay(username=username, data=data)
     
-    context = { 'profile':user, 'posts':user_posts, 'editable':editable, 
+    context = { 'profile':user, 'posts':user_posts, 'saved_posts':saved_posts, 'editable':editable, 
                 'isFollowing':isFollowing, 'isFollower': isFollower,
                 'follow_count':follow_count, 'follower_count':follower_count,
              }
