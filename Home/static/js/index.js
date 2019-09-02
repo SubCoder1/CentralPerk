@@ -78,9 +78,13 @@ $(document).ready(function() {
                 $post_container[index].innerHTML += read_less[j] + '<br/>';
               }
               var read_more = $post_container[index].getElementsByTagName("a")[0];
-              $post_container[index].removeChild(read_more);
-              var read_more_link = '<a class="body_link read-more" href="' + read_more + '">Read more. . .</a>'
-              $post_container[index].innerHTML += read_more_link;
+              if (read_more) {
+                $post_container[index].removeChild(read_more);
+                var read_more_link = '<a class="body_link read-more" href="' + read_more + '">Read more. . .</a>'
+                $post_container[index].innerHTML += read_more_link;
+              } else {
+                $post_container[index].innerHTML += ". . . .";
+              }
             } else {
               var read_less = lines.slice(0,lines.length);
               for (var j=0; j < lines.length; j++) {
