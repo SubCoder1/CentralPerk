@@ -38,6 +38,9 @@
   flex-grow: 1;
 }
 
+.fade { display: none; }
+.show { display: block; }
+
 .account-settings-loading-gif {
   max-width: 100%;
   height: 335px;
@@ -52,7 +55,7 @@
 
 .modal-body::-webkit-scrollbar { width: 0 !important; }
 
-#notif { 
+#notif, #privacy { 
   padding: 0rem 0.6rem 0rem 0.4rem;
   overflow-x: auto;
   resize: none;
