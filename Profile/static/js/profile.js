@@ -22,6 +22,8 @@ var bio_switch = document.getElementById('more-bio-content');
 var $user_acc_settings_form = $("#user_acc_settings_form");
 var $disable_all_switch = $('#disable-all-switch');
 var $disable_f_switch = $('#disable-f-switch');
+var $private_acc = $('#private-acc-switch');
+var $act_status = $('#activity-status-switch');
 var $post_settings = $('#post-settings');
 
 function rearrange_profile_bio() {
@@ -81,6 +83,10 @@ function get_user_account_settings() {
                 var p_comments = response.responseJSON['p_comments'];
                 var p_comment_likes = response.responseJSON['p_comment_likes'];
                 var f_req = response.responseJSON['f_requests'];
+
+                var private_acc = response.responseJSON['private_acc'];
+                var activity_status = response.responseJSON['activity_status'];
+
                 if (p_likes == 'Disable') {
                     $disable_p_like.prop("checked", true);
                 } else if (p_likes == 'From People I Follow') {
@@ -107,6 +113,12 @@ function get_user_account_settings() {
 
                 if (f_req == true) { $disable_f_switch.prop("checked", true); }
                 else { $disable_f_switch.prop("checked", false); }
+
+                if (private_acc == true) { $private_acc.prop("checked", true); } 
+                else { $private_acc.prop("checked", false); }
+
+                if(activity_status == true) { $act_status.prop("checked", true); } 
+                else { $act_status.prop("checked", false); }
         }
     });
 };
@@ -126,6 +138,8 @@ function set_user_acc_settings() {
             p_comments : $p_comments.val(),
             p_comment_likes : $p_comment_likes.val(),
             f_requests : $disable_f_switch.prop("checked"),
+            private_acc : $private_acc.prop("checked"),
+            activity_status : $act_status.prop("checked"),
         },
         complete : function() {},
         error : function() { 
