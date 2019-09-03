@@ -72,13 +72,15 @@ def view_profile(request, username=None):
             user_acc_settings = Account_Notif_Settings.objects.get(user=request.user)
             context = { 'disable_all':user_acc_settings.disable_all, 'p_likes':user_acc_settings.p_likes, 
             'p_comments':user_acc_settings.p_comments, 'f_requests':user_acc_settings.f_requests,
-            'p_comment_likes': user_acc_settings.p_comment_likes, }
+            'p_comment_likes': user_acc_settings.p_comment_likes, 'private_acc':user_acc_settings.private_acc,
+            'activity_status': user_acc_settings.activity_status, }
             return HttpResponse(json.dumps(context), content_type='application/json')
         elif ajax_request == 'set_user_acc_settings':
             # set current user account settings from data sent by client
             data = {'disable_all': request.POST.get('disable_all'), 'p_likes': request.POST.get('p_likes'),
             'p_comments': request.POST.get('p_comments'), 'p_comment_likes': request.POST.get('p_comment_likes'),
-            'f_requests': request.POST.get('f_requests') }
+            'f_requests': request.POST.get('f_requests'), 'private_acc': request.POST.get('private_acc'),
+            'activity_status': request.POST.get('activity_status'), }
             update_user_acc_settings.delay(username=username, data=data)
     
     context = { 'profile':user, 'posts':user_posts, 'saved_posts':saved_posts, 'editable':editable, 
