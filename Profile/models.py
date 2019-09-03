@@ -68,6 +68,9 @@ class Account_Notif_Settings(models.Model):
     p_comments = models.CharField(verbose_name='Post Comments', max_length=21, choices=POST_NOTIF_CHOICES, default=POST_NOTIF_CHOICES[2][1])
     p_comment_likes = models.CharField(verbose_name='Post Comment Likes', max_length=21, choices=POST_NOTIF_CHOICES, default=POST_NOTIF_CHOICES[0][1])
     f_requests = models.BooleanField(default=False)
+    private_acc = models.BooleanField(default=False, null=True)
+    activity_status = models.BooleanField(default=True, null=True)
+
     objects = models.Manager()
 
     class Meta:
