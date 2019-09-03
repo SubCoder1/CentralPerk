@@ -22,10 +22,9 @@ def update_user_acc_settings(username, data):
             user_acc_settings.p_comments = data['p_comments']
         if data.get('p_comment_likes') in post_choices:
             user_acc_settings.p_comment_likes = data['p_comment_likes']
-        if data.get('f_requests') == 'true':
-            user_acc_settings.f_requests = True
-        else:
-            user_acc_settings.f_requests = False
+        user_acc_settings.f_requests = data.get('f_requests') == 'true'
+        user_acc_settings.private_acc = data.get('private_acc') == 'true'
+        user_acc_settings.activity_status = data.get('activity_status') == 'true'
         user_acc_settings.save()
 
         return f"User - {user.username}'s account was successfully updated."
