@@ -52,91 +52,111 @@
                                 </li>
                             </ul>
                             <div class="tab-content" id="cardtabContent">
-                                <div class="tab-pane fade show active" id="notif" role="tabpanel" aria-labelledby="notif-tab">
-                                    <img class="account-settings-loading-gif" src="{% static 'login/img/loading.gif' %}"/>
-                                    <form id="user_acc_settings_form" method="post">
-                                        {% csrf_token %}
+                                <form id="user_acc_settings_form" method="post">
+                                    {% csrf_token %}
+                                    <div class="tab-pane fade show active" id="notif" role="tabpanel" aria-labelledby="notif-tab">
+                                        <img class="account-settings-loading-gif" src="{% static 'login/img/loading.gif' %}"/>
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="disable-all-switch">
                                             <label class="custom-control-label" for="disable-all-switch">Disable all</label>
                                         </div>
                                         <br/>
                                         <div class="p-settings" id="post-settings">
-                                            <h5>Posts</h5>
-                                            <div class="settings-notif-border"></div>
-                                            <br/>
-                                            <div class="p-likes-settings">
-                                                <h6 class="settings-sub-headline">Likes</h6>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="disable-p-like-radio" name="p-likes" value="Disable">
-                                                    <label class="custom-control-label" for="disable-p-like-radio">Disable</label>
-                                                    <br/>
-                                                </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="p-like-from-following-radio" name="p-likes" value="From People I Follow">
-                                                    <label class="custom-control-label" for="p-like-from-following-radio">From People I Follow</label>
-                                                    <br/>
-                                                </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="p-like-from-every-radio" name="p-likes" value="From Everyone">
-                                                    <label class="custom-control-label" for="p-like-from-every-radio">From Everyone</label>
-                                                </div>
-                                            </div>
-                                            <br/>
-                                            <div class="p-comments-settings">
-                                                <h6 class="settings-sub-headline">Comments</h6>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="disable-p-c-radio" name="p-comments" value="Disable">
-                                                    <label class="custom-control-label" for="disable-p-c-radio">Disable</label>
-                                                    <br/>
-                                                </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="p-c-from-following-radio" name="p-comments" value="From People I Follow">
-                                                    <label class="custom-control-label" for="p-c-from-following-radio">From People I Follow</label>
-                                                    <br/>
-                                                </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="p-c-from-every-radio" name="p-comments" value="From Everyone">
-                                                    <label class="custom-control-label" for="p-c-from-every-radio">From Everyone</label>
-                                                </div>
-                                            </div>
-                                            <br/>
-                                            <div class="p-c-like-settings">
-                                                <h6 class="settings-sub-headline">Comment Likes</h6>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="disable-p-c-l-radio" name="p-c-likes" value="Disable">
-                                                    <label class="custom-control-label" for="disable-p-c-l-radio">Disable</label>
-                                                    <br/>
-                                                </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="p-c-l-following-radio" name="p-c-likes" value="From People I Follow">
-                                                    <label class="custom-control-label" for="p-c-l-following-radio">From People I Follow</label>
-                                                    <br/>
-                                                </div>
-                                                <div class="custom-control custom-radio">
-                                                    <input type="radio" class="custom-control-input" id="p-c-l-every-radio" name="p-c-likes" value="From Everyone">
-                                                    <label class="custom-control-label" for="p-c-l-every-radio">From Everyone</label>
-                                                </div>
-                                            </div>
-                                            <br/>
-                                            <div class="follow-following-settings">
-                                                <h5>Following & Followers</h5>
+                                                <h5>Posts</h5>
                                                 <div class="settings-notif-border"></div>
                                                 <br/>
-                                                <div class="f-settings">
-                                                    <h6 class="settings-sub-headline">New Followers</h6>
-                                                    <div class="custom-control custom-switch">
-                                                        <input type="checkbox" class="custom-control-input" id="disable-f-switch">
-                                                        <label class="custom-control-label" for="disable-f-switch">Disable</label>
+                                                <div class="p-likes-settings">
+                                                    <h6 class="settings-sub-headline">Likes</h6>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="disable-p-like-radio" name="p-likes" value="Disable">
+                                                        <label class="custom-control-label" for="disable-p-like-radio">Disable</label>
+                                                        <br/>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="p-like-from-following-radio" name="p-likes" value="From People I Follow">
+                                                        <label class="custom-control-label" for="p-like-from-following-radio">From People I Follow</label>
+                                                        <br/>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="p-like-from-every-radio" name="p-likes" value="From Everyone">
+                                                        <label class="custom-control-label" for="p-like-from-every-radio">From Everyone</label>
                                                     </div>
                                                 </div>
-                                            </div>
+                                                <br/>
+                                                <div class="p-comments-settings">
+                                                    <h6 class="settings-sub-headline">Comments</h6>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="disable-p-c-radio" name="p-comments" value="Disable">
+                                                        <label class="custom-control-label" for="disable-p-c-radio">Disable</label>
+                                                        <br/>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="p-c-from-following-radio" name="p-comments" value="From People I Follow">
+                                                        <label class="custom-control-label" for="p-c-from-following-radio">From People I Follow</label>
+                                                        <br/>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="p-c-from-every-radio" name="p-comments" value="From Everyone">
+                                                        <label class="custom-control-label" for="p-c-from-every-radio">From Everyone</label>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <div class="p-c-like-settings">
+                                                    <h6 class="settings-sub-headline">Comment Likes</h6>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="disable-p-c-l-radio" name="p-c-likes" value="Disable">
+                                                        <label class="custom-control-label" for="disable-p-c-l-radio">Disable</label>
+                                                        <br/>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="p-c-l-following-radio" name="p-c-likes" value="From People I Follow">
+                                                        <label class="custom-control-label" for="p-c-l-following-radio">From People I Follow</label>
+                                                        <br/>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input type="radio" class="custom-control-input" id="p-c-l-every-radio" name="p-c-likes" value="From Everyone">
+                                                        <label class="custom-control-label" for="p-c-l-every-radio">From Everyone</label>
+                                                    </div>
+                                                </div>
+                                                <br/>
+                                                <div class="follow-following-settings">
+                                                    <h5>Following & Followers</h5>
+                                                    <div class="settings-notif-border"></div>
+                                                    <br/>
+                                                    <div class="f-settings">
+                                                        <h6 class="settings-sub-headline">New Followers</h6>
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" class="custom-control-input" id="disable-f-switch">
+                                                            <label class="custom-control-label" for="disable-f-switch">Disable</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div class="tab-pane fade" id="privacy" role="tabpanel" aria-labelledby="privacy-tab">
-                                    
-                                </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="privacy" role="tabpanel" aria-labelledby="privacy-tab">
+                                        <h5>Account Privacy</h5>
+                                        <div class="settings-notif-border"></div>
+                                        <br/>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="private-acc-switch">
+                                            <label class="custom-control-label" for="private-acc-switch">Private Account</label>
+                                            <p style="opacity: 0.7;font-size: 13px;"> When your account is private, strangers can't see your photos & videos, it won't affect
+                                                those following you.</p>
+                                        </div>
+                                        <br/>
+                                        <h5>Activity Status</h5>
+                                        <div class="settings-notif-border"></div>
+                                        <br/>
+                                        <div class="custom-control custom-switch">
+                                            <input type="checkbox" class="custom-control-input" id="activity-status-switch">
+                                            <label class="custom-control-label" for="activity-status-switch">Show Activity Status</label>
+                                            <p style="opacity: 0.7;font-size: 13px;">
+                                                Allow accounts you follow & anyone you message to see when you were last active in CentralPerk.
+                                                If this option is turned off, you can't see other user's activity status.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
