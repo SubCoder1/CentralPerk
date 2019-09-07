@@ -193,10 +193,9 @@ $('document').ready(function() {
                     }
                     pass_error.text(status);
                 } if (status == 'valid form') {
-                    window.location.href += 'home/';
+                    window.location.href = window.location.href.toString().replace('register/', '') +  'home/';
                 }
             }
-
         });
     });
 });
