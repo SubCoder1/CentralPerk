@@ -178,7 +178,11 @@ $(document).ready(function(){
             },
             complete : function(response) {
                 $follow_unfollow_user.text(response.responseJSON["option"]);
-                $follow_unfollow_user.attr('id', response.responseJSON["option"].toLowerCase());
+                if (response.responseJSON['option'] == 'Requested') {
+                    $follow_unfollow_user.attr('id', 'unfollow');    
+                } else {
+                    $follow_unfollow_user.attr('id', response.responseJSON["option"].toLowerCase());
+                }
                 $follower_count.text(response.responseJSON["follower_count"]);
                 $following_count.text(response.responseJSON["following_count"]);
             }
