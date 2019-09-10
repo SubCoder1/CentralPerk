@@ -130,4 +130,27 @@ $(document).ready(function() {
             }));
         }
     });
+
+    // Accept/Reject private friend requests
+    var $accept_request = $('.accept-request');
+    $accept_request.on('click', function(event) {
+        event.preventDefault();
+        homeSocket.send(JSON.stringify({
+            'task' : 'accept_reject_p_request',
+            'notif_id' : $(this).attr('id'),
+            'option' : 'accept_request',
+        }));
+        $(this).parent().parent().parent().remove();
+    });
+    var $reject_request = $('.reject-request');
+    $reject_request.on('click', function(event) {
+        event.preventDefault();
+        homeSocket.send(JSON.stringify({
+            'task' : 'accept_reject_p_request',
+            'notif_id' : $(this).attr('id'),
+            'option' : 'reject_request',
+        }));
+        $(this).parent().parent().parent().remove();
+    });
+
 });
