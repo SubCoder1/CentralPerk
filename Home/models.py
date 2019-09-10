@@ -6,6 +6,8 @@ import uuid, pytz
 from Profile.models import User
 from datetime import datetime
 from collections import namedtuple
+from hashlib import sha256
+from random import getrandbits
 
 # Create your models here.
 class PostModelManager(models.Manager):
@@ -132,8 +134,11 @@ REACTION = (('Liked', 'Liked'), ('Commented', 'Commented'), ('Mentioned', 'Menti
             ('Sent Follow Request', 'Sent Follow Request'), ('Replied', 'Replied'),)
 
 class UserNotification(models.Model):
+    notif_id = models.CharField(default='', max_length=65, blank=True, null=True)
     user_to_notify = models.ForeignKey(User, on_delete=models.CASCADE, default=1, related_name='notifications', verbose_name="to_notify")
-    # User who liked/commented 'to_notify's post or send him/her a follow request
+    private_request = models.BooleanField(default=False, null=True)
+    private_request_id = models.CharField(max_length=100, blank=True, null=True)
+    # User who liked/commented 'user_to_notify's post or send him/her a follow request
     poked_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, blank=False, verbose_name="reacting_user")
     post = models.ForeignKey(PostModel, on_delete=models.CASCADE, related_name="post", null=True, blank=True)
     date_time = models.DateTimeField(auto_now_add=True)
@@ -144,10 +149,16 @@ class UserNotification(models.Model):
         ordering = ('-date_time',)
 
     def __str__(self):
-        return str(self.poked_by) + " --> " + str(self.user_to_notify)
+        return str(self.poked_by) + " --> " + str(self.user_to_notify) + " " + str(self.reaction)
 
     @classmethod
-    def create_notify_obj(cls, to_notify, by, reaction, post_obj=None):
+    def create_notify_obj(cls, to_notify, by, reaction, post_obj=None, private_request=False):
         poked_user = User.get_user_obj(username=by)
-        obj = cls.objects.create(user_to_notify=to_notify, poked_by=poked_user, post=post_obj, reaction=reaction)
+        obj = cls.objects.create(user_to_notify=to_notify, private_request=private_request, poked_by=poked_user, post=post_obj, reaction=reaction)
+        obj.notif_id = getrandbits(64)
+        if private_request:
+            request_id = str(to_notify.user_id) + str(obj.notif_id)
+            request_id_hash = sha256(bytes(request_id, encoding='utf-8'))
+            obj.private_request_id = request_id_hash.hexdigest()
+        obj.save()
         return obj
