@@ -13,7 +13,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def update_friends_list(self):
         while True:
-            await asyncio.sleep(60)
+            await asyncio.sleep(2)
             online_user_list, followers_list, following_list = await self.get_friends_list()
             await self.send(text_data=json.dumps({
                 'type' : 'update_friends_list',
@@ -93,7 +93,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             elif data_from_client['task'] == 'accept_reject_p_request':
                 notif_id = data_from_client.get('notif_id', None)
                 option = data_from_client.get('option', None)
-                await self.accept_private_request(notif_id, option)
+                await self.accept_reject_private_request(notif_id, option)
             # Username search
             elif data_from_client['task'] == 'search':
                 if data_from_client['query'] is not None:
@@ -174,7 +174,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             pass
 
     @database_sync_to_async
-    def accept_private_request(self, notif_id, option):
+    def accept_reject_private_request(self, notif_id, option):
         user = self.scope['user']
         private_request_id = str(user.user_id) + str(notif_id) 
         private_request_hash = sha256(bytes(private_request_id, encoding='utf-8')).hexdigest()
@@ -183,7 +183,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             notification = UserNotification.objects.get(private_request_id=private_request_hash)
             request_by = notification.poked_by
             if option == 'accept_request':
-                Friends.follow(user, request_by)
+                Friends.follow(request_by, user)
             notification.delete()
             Friends.rm_from_pending(user, request_by)
 
