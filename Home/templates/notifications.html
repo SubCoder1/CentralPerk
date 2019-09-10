@@ -23,10 +23,22 @@
                         <div class="m-0">
                             <a href="{% url 'view_profile' notification.poked_by__username %}">
                                 {{ notification.poked_by__username }}
+                            {% if notification.private_request %}
+                            </a> requested to follow you.
+                            {% else %}
                             </a> started to follow you.
+                            {% endif %}
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
+                    {% if notification.private_request %}
+                        <a class="notif-link accept-request" href="#" id="{{ notification.notif_id }}">
+                            <svg class="lnr lnr-checkmark-circle"><use xlink:href="#lnr-checkmark-circle"></use></svg>
+                        </a>
+                        <a class="notif-link reject-request" href="#" id="{{ notification.notif_id }}">
+                            <svg class="lnr lnr-cross-circle"><use xlink:href="#lnr-cross-circle"></use></svg>
+                        </a>
+                    {% endif %}
                 {% elif notification.reaction == 'Commented' %}
                     <div class="ml-2">
                         <div class="m-0">
@@ -48,7 +60,9 @@
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
-                    <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
+                    <a class="notif-link" href="{% url 'view_post' notification.post__post_id %}">
+                        <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
+                    </a>
                 {% else %}
                     <div class="empty-notif">
                         <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
