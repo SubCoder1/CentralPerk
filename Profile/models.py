@@ -80,34 +80,45 @@ class Account_Notif_Settings(models.Model):
         return str(self.user)
 
 class Friends(models.Model):
-    followers = models.ManyToManyField(User)
     current_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='current_user')
+    followers = models.ManyToManyField(User)
+    pending = models.ManyToManyField(User, related_name='pending_requests')
     following = models.ManyToManyField(User, related_name='following')
     objects = models.Manager()
 
     @classmethod
     def follow(cls, current_user, follow_user):
         # current_user -> following +1
-        friend, created = cls.objects.get_or_create(current_user=current_user)
-        del created
+        friend = cls.objects.get(current_user=current_user)
         friend.following.add(follow_user)
         
         # follow_user -> follow +1
-        friend, created = cls.objects.get_or_create(current_user=follow_user)
-        del created
+        friend= cls.objects.get(current_user=follow_user)
         friend.followers.add(current_user)
 
     @classmethod
     def unfollow(cls, current_user, unfollow_user):
         # current_user -> following -1
-        friend, created = cls.objects.get_or_create(current_user=current_user)
-        del created
+        friend= cls.objects.get(current_user=current_user)
         friend.following.remove(unfollow_user)
 
         #unfollow_user -> follow -1
-        friend, created = cls.objects.get_or_create(current_user=unfollow_user)
-        del created
+        friend = cls.objects.get(current_user=unfollow_user)
         friend.followers.remove(current_user)
+
+    @classmethod
+    def add_to_pending(cls, current_user, pending_user):
+        # add the current_user to pending_user's pending list.
+        friend = cls.objects.get(current_user=pending_user)
+        friend.pending.add(current_user)
+
+    @classmethod
+    def rm_from_pending(cls, current_user, pending_user):
+        # remove the current_user from pending_user's pending list.
+        # This function is called when the current_user wants to cancel any friend request sent to pending_user.
+        # (Private Account)
+        friend = cls.objects.get(current_user=pending_user)
+        friend.pending.remove(current_user)
 
     @classmethod
     def get_friends_list(cls, current_user):
