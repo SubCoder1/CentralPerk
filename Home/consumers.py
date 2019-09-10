@@ -3,9 +3,11 @@ from channels.db import database_sync_to_async
 from django.template.loader import render_to_string
 from django.db.models import F, Count, Prefetch
 from Profile.models import Friends
-from Home.models import PostModel, PostLikes, PostComments
+from Home.models import PostModel, PostLikes, PostComments, UserNotification
+from Profile.models import Friends
 from Home.tasks import send_notifications, del_notifications
 import json, asyncio
+from hashlib import sha256
 
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
@@ -87,6 +89,11 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                         'type' : 'updated_notif',
                         'notif' : render_to_string("notifications.html", {'notifications':response}),
                     }))
+            #accept_reject_private_request
+            elif data_from_client['task'] == 'accept_reject_p_request':
+                notif_id = data_from_client.get('notif_id', None)
+                option = data_from_client.get('option', None)
+                await self.accept_private_request(notif_id, option)
             # Username search
             elif data_from_client['task'] == 'search':
                 if data_from_client['query'] is not None:
@@ -165,7 +172,21 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 return 'saved'
         except:
             pass
-    
+
+    @database_sync_to_async
+    def accept_private_request(self, notif_id, option):
+        user = self.scope['user']
+        private_request_id = str(user.user_id) + str(notif_id) 
+        private_request_hash = sha256(bytes(private_request_id, encoding='utf-8')).hexdigest()
+        #print(private_request_hash)
+        if UserNotification.objects.filter(private_request_id=private_request_hash).exists():
+            notification = UserNotification.objects.get(private_request_id=private_request_hash)
+            request_by = notification.poked_by
+            if option == 'accept_request':
+                Friends.follow(user, request_by)
+            notification.delete()
+            Friends.rm_from_pending(user, request_by)
+
     @database_sync_to_async
     def del_notifications_all(self):
         try:
