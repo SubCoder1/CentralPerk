@@ -700,7 +700,7 @@ h6 { font-size: 13px; }
     font-size: 12px;
 }
 
-.lnr-arrow-right {
+.lnr-arrow-right, .lnr-checkmark-circle, .lnr-cross-circle {
     width: 24px;
     height: 20px;
     fill: currentColor;
@@ -711,6 +711,14 @@ h6 { font-size: 13px; }
     cursor: pointer;
     transition: all 0.3s;
 }
+
+.lnr-checkmark-circle, .lnr-cross-circle {
+    width: 40px;
+    height: 28px;
+}
+
+.lnr-checkmark-circle:hover { color: greenyellow; }
+.lnr-cross-circle:hover { color: red; }
 
 .notif-link:hover .lnr-arrow-right {
     color: #9662ff;
