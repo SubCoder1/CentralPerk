@@ -32,7 +32,7 @@ def share_posts(username, post_id):
         return "user is lonely :("
 
 @shared_task
-def send_notifications(username, reaction, send_to_username=None, post_id=None):
+def send_notifications(username, reaction, send_to_username=None, post_id=None, private_request=None):
     # Check user account settings conditions before sending notifications
     send_to = User.get_user_obj(username=send_to_username)
     acc_settings = Account_Notif_Settings.objects.get(user=send_to)
@@ -57,36 +57,40 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None):
     # There's no restrictions on notifications set by send_to_user
     # Proceed with setting-up & sending notif to send_to_user
     channel_layer = get_channel_layer()
-    if reaction == 'Liked' or reaction == 'Commented':
+    if reaction == 'Liked' or reaction == 'Commented' or reaction == 'Replied':
+        if send_to_username == username and reaction == 'Replied':
+            return "User replied to his/her own comment :|"
         try:
             post = PostModel.objects.get_post(post_id=post_id)
         except ObjectDoesNotExist:
             return "Task aborted, post not found(del?)"
- 
-        send_to = post.user
-        if send_to.username == username:
-            return "User liked/commented_on his/her own post :|"
         
-        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post):
-            if send_to.channel_name is not "":
-                async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
-
-            if reaction == 'Liked':
-                return "like_notif sent successfully :)"
-            else:
-                return "comment_notif sent successfully :)"
-
-    elif reaction == 'Sent Follow Request' or reaction == 'Replied':
         if send_to_username == username and reaction == 'Replied':
             return "User replied to his/her own comment :|"
-        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction):
+        
+        if reaction != "Replied":
+            send_to = post.user
+            if send_to.username == username:
+                return "User liked/commented on his/her own post :|"
+        
+        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post, private_request=False):
             if send_to.channel_name is not "":
                 async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
 
-            if reaction == 'Sent Follow Request':
-                return "follow_notif sent successfully :)"
-            else:
-                return "reply_notif sent successfully :)"
+        if reaction == 'Liked':
+            return "like_notif sent successfully :)"
+        elif reaction == 'Replied':
+            return 'Reply_Notif sent successfully :)'
+        else:
+            return "comment_notif sent successfully :)"
+
+    elif reaction == 'Sent Follow Request':
+        UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, private_request=private_request)
+
+        if send_to.channel_name is not "":
+            async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
+
+        return "follow_notif sent successfully :)"
 
 @shared_task
 def del_notifications(username, reaction, send_to_username=None, post_id=None):
