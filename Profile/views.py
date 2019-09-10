@@ -16,16 +16,33 @@ import json
 # Create your views here.
 
 def manage_relation(request, username, option=None):
+    """ 
+        This view handles follow/unfollow/block requests from client against an user with username.
+        ----- args -----
+        username -> The user whom request.user is trying to follow/unfollow/block
+        option -> Is he/she trying to follow/unfollow/block the user
+
+        RETURNS -> An HttpResponse with Count of followers, following of the user(username), with a change in option
+        (follow->unfollow, block->unblock & vice-versa)
+    """
+
     current_user = request.user
     follow_unfollow_user = User.get_user_obj(username=username)
+    user_acc_settings = Account_Notif_Settings.objects.get(user=follow_unfollow_user)
     result = {}
     if option in ('follow', 'follow_back'):
-        Friends.follow(current_user, follow_unfollow_user)
-        # Notify the user to whom this follow request is being sent
-        send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
-        result["option"] = 'Unfollow'
+        if user_acc_settings.private_acc:
+            send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username, private_request=True)
+            Friends.add_to_pending(current_user, follow_unfollow_user)
+            result["option"] = 'Requested'
+        else:
+            send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username, private_request=False)
+            Friends.follow(current_user, follow_unfollow_user)
+            result["option"] = 'Unfollow'
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
+        if user_acc_settings.private_acc:
+            Friends.rm_from_pending(current_user, follow_unfollow_user)
         # Delete any follow requests sent to follow_unfollow_usrname
         del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
         result["option"] = 'Follow'
@@ -35,41 +52,76 @@ def manage_relation(request, username, option=None):
     return HttpResponse(json.dumps(result), content_type="application/json")
 
 def manage_post_likes(request, post_id):
+    """ 
+        This view handles post like/dislike from client against any post with post_id as args.
+        ---- args ----
+        post_id -> unique id of a post by an user
+
+        RETURNS -> An HttpResponse sending a status update to the client whether the post was liked/disliked
+    """
+
     if request.is_ajax():
         action = request.POST.get('action')
         if action == 'liked':
             action = "Liked the post!"
         else:
             action = "Disliked the post!"
-        manage_likes.delay(post_id, str(request.user.username))
+        manage_likes.delay(post_id, request.user.username)
         return HttpResponse(json.dumps({"status": "ready to update", "action":action}), content_type="application/json")
 
 def view_profile(request, username=None):
+    """ 
+        This view handles the profile page of any user.
+        ---- args ----
+        username -> user whose account profile page request.user wants to check out.
+                    username will be = request.user.username if request.user is checking his/her own profile.
+        
+        RETURNS -> user data
+    """
+
     try:
         user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
     except ObjectDoesNotExist:
         return render(request, 'profile_500.html', {})
 
-    user_posts = user.posts.all()
-    saved_posts = user.saved_by.all()
-
-    current_user, created = Friends.objects.get_or_create(current_user=user)
-    isFollower, isFollowing, follow_count, follower_count = None, None, 0, 0
-    if not created:
-        # True if request.user follows the user he/she is searching for
-        isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
-        if not isFollowing:
-            # True if request.user is being followed by 'username'
-            isFollower = True if current_user.following.filter(username=request.user).exists() else False
+    current_user= Friends.objects.get(current_user=user)
+    isFollower, isFollowing, isPending, follow_count, follower_count = None, None, None, 0, 0
+    user_posts, saved_posts = None, None
         
-        follow_count = current_user.following.count()
-        follower_count = current_user.followers.count()
+    # True if request.user follows the user he/she is searching for
+    isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
+    if not isFollowing:
+        # True if request.user is being followed by 'username'
+        isFollower = True if current_user.following.filter(username=request.user).exists() else False
+        if not isFollower:
+            # True if request.user is in pending list of 'username'
+            isPending = True if current_user.pending.filter(username=request.user).exists() else False
+        
+    follow_count = current_user.following.count()
+    follower_count = current_user.followers.count()
+
+    # Get user account settings
+    user_acc_settings = Account_Notif_Settings.objects.get(user=user)
+    if user != request.user:
+        # if account_settings of the user is set to Private, then request.user can only see user's photos or vidoes
+        # iff isFollowing is True
+        if user_acc_settings.private_acc:
+            if isFollowing:
+                user_posts = user.posts.all()
+            else:
+                user_posts, saved_posts = None, None
+        else:   # account_settings of the user is set to Public
+            user_posts = user.posts.all()
+    else:
+        # well, no restrictions for the user him/herself
+        user_posts = user.posts.all()
+        saved_posts = user.saved_by.all()
 
     if request.is_ajax():
         ajax_request = request.POST.get("activity")
         if ajax_request == 'get_user_acc_settings':
             # send current user account settings
-            user_acc_settings = Account_Notif_Settings.objects.get(user=request.user)
+            user_acc_settings = Account_Notif_Settings.objects.get(user=user)
             context = { 'disable_all':user_acc_settings.disable_all, 'p_likes':user_acc_settings.p_likes, 
             'p_comments':user_acc_settings.p_comments, 'f_requests':user_acc_settings.f_requests,
             'p_comment_likes': user_acc_settings.p_comment_likes, 'private_acc':user_acc_settings.private_acc,
@@ -84,13 +136,21 @@ def view_profile(request, username=None):
             update_user_acc_settings.delay(username=username, data=data)
     
     context = { 'profile':user, 'posts':user_posts, 'saved_posts':saved_posts, 'editable':editable, 
-                'isFollowing':isFollowing, 'isFollower': isFollower,
+                'isFollowing':isFollowing, 'isFollower': isFollower, 'isPending':isPending,
                 'follow_count':follow_count, 'follower_count':follower_count,
              }
 
     return render(request, 'profile.html', context=context)
 
 def post_view(request, post_id):
+    """
+        This view handles post view page.
+        ---- args ----
+        post_id -> unique id of a post by an user
+
+        RETURNS -> Post Data
+    """
+
     post_obj = PostModel.objects.get_post(post_id=post_id)
     if post_obj is None:
         return render(request, 'post_500.html', {})
@@ -134,7 +194,7 @@ def post_view(request, post_id):
                         reply = form.cleaned_data.get('comment')
                         parent_comment.replies.add(PostComments.objects.create(user=request.user,
                         post_obj=post_obj, comment=reply, parent=False))
-                        send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id)
+                        send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id, post_id=post_id)
                     except ObjectDoesNotExist:
                         pass
                 post_obj.comment_count = F('comment_count') + 1
@@ -164,13 +224,25 @@ def post_view(request, post_id):
     return render(request, 'view_post.html', context=context)
 
 def del_user_post(request, post_id):
+    """ 
+        This view handles deletion of user posts iff a post with post_id sent through args is valid.
+        ---- args ----
+        post_id -> unique id of a post by an user
+
+        RETURNS -> A redirect to view_profile
+    """
+
     try:
         request.user.posts.get_post(post_id=post_id).delete()
     except ObjectDoesNotExist:
         pass
     return redirect(reverse('view_profile', kwargs={ 'username':request.user.username }))
-
+    
 class edit_profile(TemplateView):
+    """ 
+        Self Explanatory. 
+    """
+
     template_name = 'edit_profile.html'
 
     def get(self, request, username):
