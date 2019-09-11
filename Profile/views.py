@@ -42,6 +42,9 @@ def manage_relation(request, username, option=None):
     else:
         Friends.unfollow(current_user, follow_unfollow_user)
         if user_acc_settings.private_acc:
+            # To deny users to view posts of they just unfollowed.
+            # Only if the user whom request.user unfollowed has a private account.
+            result['prof_posts'] = render_to_string('prof_posts.html', {'posts':None})
             Friends.rm_from_pending(current_user, follow_unfollow_user)
         # Delete any follow requests sent to follow_unfollow_usrname
         del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
@@ -89,13 +92,13 @@ def view_profile(request, username=None):
     user_posts, saved_posts = None, None
         
     # True if request.user follows the user he/she is searching for
-    isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
-    if not isFollowing:
-        # True if request.user is being followed by 'username'
-        isFollower = True if current_user.following.filter(username=request.user).exists() else False
-        if not isFollower:
-            # True if request.user is in pending list of 'username'
-            isPending = True if current_user.pending.filter(username=request.user).exists() else False
+    # True if request.user is in pending list of 'username'
+    isPending = True if current_user.pending.filter(username=request.user).exists() else False
+    if not isPending:
+        isFollowing = True if current_user.followers.filter(username=request.user).exists() else False
+        if not isFollowing:
+            # True if request.user is being followed by 'username'
+            isFollower = True if current_user.following.filter(username=request.user).exists() else False
         
     follow_count = current_user.following.count()
     follower_count = current_user.followers.count()
