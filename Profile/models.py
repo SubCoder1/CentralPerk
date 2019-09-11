@@ -117,8 +117,8 @@ class Friends(models.Model):
         # remove the current_user from pending_user's pending list.
         # This function is called when the current_user wants to cancel any friend request sent to pending_user.
         # (Private Account)
-        friend = cls.objects.get(current_user=pending_user)
-        friend.pending.remove(current_user)
+        friend = cls.objects.get(current_user=current_user)
+        friend.pending.remove(pending_user)
 
     @classmethod
     def get_friends_list(cls, current_user):
