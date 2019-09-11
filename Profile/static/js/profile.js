@@ -167,6 +167,7 @@ $(document).ready(function(){
     var $follow_unfollow_user = $('.follow_unfollow_user');
     var $follower_count = $('#follower_count');
     var $following_count = $('#following_count');
+    var $prof_posts = $('#prof-posts');
     $follow_unfollow_user.on('click', function(event) {
         event.preventDefault();
         $.ajax({
@@ -185,6 +186,9 @@ $(document).ready(function(){
                 }
                 $follower_count.text(response.responseJSON["follower_count"]);
                 $following_count.text(response.responseJSON["following_count"]);
+                if (response.responseJSON['prof_posts']) {
+                    $prof_posts.html(response.responseJSON['prof_posts']);
+                }
             }
         });
     });
