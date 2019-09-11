@@ -1,0 +1,38 @@
+{% if posts %}
+{% for post in posts %}
+    {% if posts|length < 2 %}
+        {% if post.status_caption and not post.pic %}
+        <div class="card prof-post-card" style="width: 100%">
+        {% else %}
+        <div class="card prof-post-card">
+        {% endif %}
+    {% else %}
+        <div class="card prof-post-card">
+    {% endif %}
+        {% if post.status_caption and not post.pic %}
+            <a href="{% url 'view_post' post.post_id %}" class="card-body display-3 prof-post-card-body" id="status_caption-container">
+                {{ post.status_caption|json_script:"post-data" }}
+            </a>
+        {% elif post.status_caption and post.pic %}
+            <div class="card-body prof-img-post-card-body">
+                <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
+            </div>
+        {% else %}
+            <div class="card-body prof-img-post-card-body">
+                <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
+            </div>
+        {% endif %}
+            <div class="prof-post-actions">
+                <i class="fas fa-fire-alt prof-like-ico"></i>
+                <span class="prof-likes-counter">{{ post.likes_count }}</span>
+                <i class="fas fa-comment-alt prof-comment-ico"></i>
+                <span class="prof-comments-counter">{{ post.comment_count }}</span>
+            </div>
+        </div>
+{% endfor %}
+{% else %}
+    <div class="prof-posts-private">
+        <i class="fas fa-fingerprint"></i>
+        <h5>This account is private.</h5>
+    </div>
+{% endif %}
