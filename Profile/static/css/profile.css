@@ -198,6 +198,17 @@
   position: absolute;
   cursor: pointer;
 }
+
+.fa-fingerprint {
+  font-size: 80px;
+  margin-bottom: 10px;
+  color: #ff6226;
+}
+
+.prof-posts-private {
+  text-align: center;
+  margin-right: 14px;
+}
 /* ----------------------------------------- */
 
 /* ------------- Profile Pic --------------- */
