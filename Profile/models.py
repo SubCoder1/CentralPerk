@@ -1,5 +1,4 @@
 from django.db import models
-from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
@@ -61,8 +60,8 @@ def submission_delete(sender, instance, **kwargs):
     instance.pic.delete(False)
 
 POST_NOTIF_CHOICES = (('Disable', 'Disable'), ('From People I Follow', 'From People I Follow'), ('From Everyone', 'From Everyone'))
-class Account_Notif_Settings(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class Account_Settings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_setting")
     disable_all = models.BooleanField(default=False)
     p_likes = models.CharField(verbose_name='Post Likes', max_length=21, choices=POST_NOTIF_CHOICES, default=POST_NOTIF_CHOICES[2][1])
     p_comments = models.CharField(verbose_name='Post Comments', max_length=21, choices=POST_NOTIF_CHOICES, default=POST_NOTIF_CHOICES[2][1])
@@ -125,9 +124,9 @@ class Friends(models.Model):
         friend_obj, created = cls.objects.get_or_create(current_user=current_user)
         online_friends, followers, following = None, None, None
         if not created:
-            online_friends = friend_obj.following.filter(active=True).values_list('username', 'profile_pic', named=True)
+            online_friends = friend_obj.following.filter(active=True, user_setting__activity_status=True).values_list('username', 'profile_pic', named=True)
             followers = friend_obj.followers.values_list('username', 'profile_pic', named=True)
-            following = friend_obj.following.values_list('username', 'profile_pic', 'last_login', 'active', named=True)
+            following = friend_obj.following.filter(user_setting__activity_status=True).values_list('username', 'profile_pic', 'last_login', 'active', named=True)
         return (online_friends, followers, following)
 
     class Meta:
