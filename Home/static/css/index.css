@@ -381,6 +381,10 @@ h6 { font-size: 13px; }
     transition: all 0.3s;
 }
 
+.bookmarked { color: greenyellow; }
+
+.lnr-bookmark:hover { color: darkorange; }
+
 .bookmark-saved { color: greenyellow; }
 
 .fa-fire-alt {
@@ -407,7 +411,6 @@ h6 { font-size: 13px; }
 }
 
 .comment-counter {
-    vertical-align: text-bottom;
     font-size: 16px;
     margin-left: 1px;
 }
