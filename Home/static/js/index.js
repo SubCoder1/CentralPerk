@@ -20,6 +20,16 @@ $(document).ready(function() {
     }
   }
 
+  // Bookmark posts on-click effect
+  var $post_bookmark = $('.lnr-bookmark');
+  $post_bookmark.on('click', function() {
+    if ($post_bookmark.hasClass('bookmarked')) {
+      $post_bookmark.removeClass('bookmarked');
+    } else {
+      $post_bookmark.toggleClass('bookmarked');
+    }
+  });
+
   // JS code for slide-in-as-you-scroll-down-post-cards
   (function($) {
     $.fn.visible = function(partial) {
