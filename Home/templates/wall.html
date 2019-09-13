@@ -7,7 +7,11 @@
                         <img src="/media/{{ post.user.profile_pic }}" class="rounded-circle post-profile-img">
                     </div>
                     <div class="ml-2">
+                        {% if post.location %}
                         <div class="h5 m-0 body">
+                        {% else %}
+                        <div class="h5 body">
+                        {% endif %}
                           <a class="body_link" href="{% url 'view_profile' post.user.username %}">{{ post.user.username }}</a>
                         </div>
                         {% if post.location %}
