@@ -125,7 +125,7 @@ class Friends(models.Model):
         online_friends, followers, following = None, None, None
         if not created:
             online_friends = friend_obj.following.filter(active=True, user_setting__activity_status=True).values_list('username', 'full_name', 'profile_pic', named=True)
-            followers = friend_obj.followers.values_list('username', 'profile_pic', named=True)
+            followers = friend_obj.followers.values_list('username', 'full_name', 'profile_pic', named=True)
             following = friend_obj.following.filter(user_setting__activity_status=True).values_list('username', 'profile_pic', 'full_name', 'last_login', 'active', named=True)
         return (online_friends, followers, following)
 
