@@ -1,13 +1,17 @@
 {% if online_users %}
     {% for user in online_users %}
-    <div class="online-user">
-        <a href="{% url 'view_profile' user.username %}">
-            <img src="/media/{{ user.profile_pic }}" class="notify-pic-rounded user-pic-margin"/>
-            {{ user.username }}
-        </a>
+    <div class="d-flex justify-content-between align-items-center">
+        <div class="mr-0">
+            <img src="/media/{{ user.profile_pic }}" class="rounded-circle post-profile-img">
+        </div>
+        <div class="ml-2">
+            <div class="h5 m-0 body">
+                <a class="body_link" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>
+            </div>
+            <h6>{{ user.full_name }}</h6>
+        </div>
         <i class="material-icons online-green-ico">lens</i>
     </div>
-    <br/>
     {% endfor %}
 {% else %}
     <div class="empty-notif">
