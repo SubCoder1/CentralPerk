@@ -7,7 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
-from Profile.models import User, Friends, Account_Notif_Settings
+from Profile.models import User, Friends, Account_Settings
 from Profile.tasks import update_user_acc_settings, manage_likes
 from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications, del_notifications
@@ -28,7 +28,7 @@ def manage_relation(request, username, option=None):
 
     current_user = request.user
     follow_unfollow_user = User.get_user_obj(username=username)
-    user_acc_settings = Account_Notif_Settings.objects.get(user=follow_unfollow_user)
+    user_acc_settings = Account_Settings.objects.get(user=follow_unfollow_user)
     result = {}
     if option in ('follow', 'follow_back'):
         if user_acc_settings.private_acc:
@@ -104,7 +104,7 @@ def view_profile(request, username=None):
     follower_count = current_user.followers.count()
 
     # Get user account settings
-    user_acc_settings = Account_Notif_Settings.objects.get(user=user)
+    user_acc_settings = Account_Settings.objects.get(user=user)
     if user != request.user:
         # if account_settings of the user is set to Private, then request.user can only see user's photos or vidoes
         # iff isFollowing is True
@@ -124,7 +124,7 @@ def view_profile(request, username=None):
         ajax_request = request.POST.get("activity")
         if ajax_request == 'get_user_acc_settings':
             # send current user account settings
-            user_acc_settings = Account_Notif_Settings.objects.get(user=user)
+            user_acc_settings = Account_Settings.objects.get(user=user)
             context = { 'disable_all':user_acc_settings.disable_all, 'p_likes':user_acc_settings.p_likes, 
             'p_comments':user_acc_settings.p_comments, 'f_requests':user_acc_settings.f_requests,
             'p_comment_likes': user_acc_settings.p_comment_likes, 'private_acc':user_acc_settings.private_acc,
@@ -240,7 +240,7 @@ def del_user_post(request, post_id):
     except ObjectDoesNotExist:
         pass
     return redirect(reverse('view_profile', kwargs={ 'username':request.user.username }))
-    
+
 class edit_profile(TemplateView):
     """ 
         Self Explanatory. 

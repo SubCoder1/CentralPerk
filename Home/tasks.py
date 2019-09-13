@@ -3,7 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from celery import shared_task
-from Profile.models import Friends, User, Account_Notif_Settings
+from Profile.models import Friends, User, Account_Settings
 from Home.models import PostModel, UserNotification
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
@@ -35,7 +35,7 @@ def share_posts(username, post_id):
 def send_notifications(username, reaction, send_to_username=None, post_id=None, private_request=None):
     # Check user account settings conditions before sending notifications
     send_to = User.get_user_obj(username=send_to_username)
-    acc_settings = Account_Notif_Settings.objects.get(user=send_to)
+    acc_settings = Account_Settings.objects.get(user=send_to)
     if acc_settings.disable_all:
         return 'User disabled all incoming notifications'
         

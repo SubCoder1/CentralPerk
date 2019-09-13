@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import F
-from Profile.models import User, Account_Notif_Settings
+from Profile.models import User, Account_Settings
 from Home.tasks import send_notifications, del_notifications
 from Home.models import PostModel, PostLikes
 
@@ -10,7 +10,7 @@ from Home.models import PostModel, PostLikes
 def update_user_acc_settings(username, data):
     try:
         user = User.get_user_obj(username=username)
-        user_acc_settings = Account_Notif_Settings.objects.get(user=user)
+        user_acc_settings = Account_Settings.objects.get(user=user)
         post_choices = ('Disable', 'From People I Follow', 'From Everyone')
         if data.get('disable_all') == 'true':
             user_acc_settings.disable_all = True

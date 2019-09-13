@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Profile.models import User, Friends, Account_Notif_Settings
+from Profile.models import User, Friends, Account_Settings
 from Profile.forms import UserAdminChangeForm
 from AUth.forms import Registerform
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -29,4 +29,4 @@ class UserAdmin(BaseUserAdmin):
 # Register your models here.
 admin.site.register(User, UserAdmin)
 admin.site.register(Friends)
-admin.site.register(Account_Notif_Settings)
+admin.site.register(Account_Settings)
