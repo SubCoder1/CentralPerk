@@ -834,6 +834,7 @@ h6 { font-size: 13px; }
 .user-pic-margin { margin-right: 5px; }
 
 .last_login_date_time {
+    width: 100%;
     text-align: right;
     float: right;
     line-height: 3.9;
