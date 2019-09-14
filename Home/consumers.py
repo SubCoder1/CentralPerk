@@ -38,6 +38,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         pass
 
     async def receive(self, text_data):
+        if self.scope["user"].is_anonymous:
+            # Reject the connection
+            await self.close()
         data_from_client = json.loads(text_data)
         if data_from_client.get('task') is not None:
             # like/Dislike posts from wall-posts
