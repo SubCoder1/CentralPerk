@@ -408,6 +408,8 @@ h6 { font-size: 13px; }
 .fa-comment-alt {
     color: mediumpurple;
     font-size: 15px;
+    position: relative;
+    top: 0.8px;
 }
 
 .comment-counter {
