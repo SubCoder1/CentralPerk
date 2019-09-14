@@ -645,6 +645,8 @@ h6 { font-size: 13px; }
 /* ----------------------------------------------- */
 
 /* ---------------- Notifications ---------------- */
+.modal-body::-webkit-scrollbar { width: 0 !important; }
+
 .ml-2 {
     font-size: 13px;
     width: 100%;
