@@ -8,6 +8,8 @@ from datetime import datetime
 from collections import namedtuple
 from hashlib import sha256
 from random import getrandbits
+from PIL import Image
+from django.core.files import File
 
 # Create your models here.
 class PostModelManager(models.Manager):
@@ -47,7 +49,16 @@ class PostModel(models.Model):
             return 'caption_pic ' + self.post_id
 
     def save(self, *args, **kwargs):
-        return super(PostModel, self).save(*args, **kwargs)
+        instance = super(PostModel, self).save(*args, **kwargs)
+        pic = Image.open(self.pic.path)
+        if pic.format is not 'GIF':
+            # Compress image
+            if pic.format is 'PNG':
+                pic = pic.convert('RGB')
+            size = (700,700)
+            pic.thumbnail(size, Image.ANTIALIAS)
+            pic.save(self.pic.path, format='JPEG', quality=95, optimize=True)
+        return instance
 
 @receiver(post_delete, sender=PostModel)
 def submission_delete(sender, instance, **kwargs):
