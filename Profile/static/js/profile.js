@@ -225,7 +225,51 @@ $(document).ready(function(){
     if ($prof_posts.prop('offsetHeight') < $prof_posts.prop('scrollHeight') || 
         $prof_posts.prop('offsetWidth') < $prof_posts.prop('scrollWidth')) {
         // Profile post container is overflowing, increase height
-        var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 10;
+        var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 20;
         $prof_posts.css("height", change_height+"em");
     }
+    
+  // JS code for slide-in-as-you-scroll-down-post-cards
+  // Profile post stack up effect
+  (function($) {
+    $.fn.visible = function(partial) {
+      
+        var $t            = $(this),
+            $w            = $(window),
+            viewTop       = $w.scrollTop(),
+            viewBottom    = viewTop + $w.height(),
+            _top          = $t.offset().top,
+            _bottom       = _top + $t.height(),
+            compareTop    = partial === true ? _bottom : _top,
+            compareBottom = partial === true ? _top : _bottom;
+      
+      return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+    };
+  })(jQuery);
+
+  var win = $(window);
+  function post_card_stack_up() {
+    var allMods = $(".prof-post-card");
+
+    // Already visible post-cards
+    allMods.each(function(i, el) {
+      var el = $(el);
+      if (el.visible(true)) {
+        el.addClass("already-visible"); 
+      } 
+    });
+
+    win.scroll(function(event) {
+
+      allMods.each(function(i, el) {
+        var el = $(el);
+        if (el.visible(true) && !el.hasClass("already-visible")) {
+          el.addClass("come-in"); 
+        } 
+      });
+      
+    });
+  }
+
+  post_card_stack_up();
 });
