@@ -219,4 +219,13 @@ $(document).ready(function(){
             $indicator.removeClass("notif-active");
         }, 2000);
     });
+
+    // Gallery masonry effect
+    var $prof_posts = $('#prof-posts');
+    if ($prof_posts.prop('offsetHeight') < $prof_posts.prop('scrollHeight') || 
+        $prof_posts.prop('offsetWidth') < $prof_posts.prop('scrollWidth')) {
+        // Profile post container is overflowing, increase height
+        var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 10;
+        $prof_posts.css("height", change_height+"em");
+    }
 });

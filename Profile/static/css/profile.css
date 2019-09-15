@@ -119,7 +119,8 @@
   width: 939px;
 }
 /* tab pane in profile.html containing user posts */
-#post, #saved {
+#prof-posts, #saved {
+  display: flex;
   flex-flow: column wrap;
   height: 29em;
   align-content: start;
@@ -154,7 +155,10 @@
   transition: transform 0.2s;
 }
 
-.prof-img-post-card-body { padding: 0rem; }
+.prof-img-post-card-body { 
+  padding: 0rem;
+  min-width: 300px;
+}
 
 .prof-post-actions { display: none; }
 
