@@ -148,7 +148,7 @@ function set_user_acc_settings() {
     });
 };
 
-$(document).ready(function(){
+$(window).on("load", function(){
     // Manage oveflowing(if) profile bio
     rearrange_profile_bio();
 
@@ -225,7 +225,7 @@ $(document).ready(function(){
     if ($prof_posts.prop('offsetHeight') < $prof_posts.prop('scrollHeight') || 
         $prof_posts.prop('offsetWidth') < $prof_posts.prop('scrollWidth')) {
         // Profile post container is overflowing, increase height
-        var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 20;
+        var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 8;
         $prof_posts.css("height", change_height+"em");
     }
     
