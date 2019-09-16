@@ -66,7 +66,6 @@ class PostModel(models.Model):
                     pic = pic.convert('RGB')
 
                 # Compress and save actual pic
-                pic = Image.open(self.pic)
                 size = (700, 700)
                 pic.thumbnail(size, Image.ANTIALIAS)
                 pic.save(self.pic.path, format='JPEG', quality=95, optimize=True)
