@@ -238,17 +238,17 @@
                 <div id="saved-posts">
                     {% for post in saved_posts %}
                         <div class="card prof-post-card">
-                            {% if post.status_caption and not post.pic %}
+                            {% if post.status_caption and not post.pic_thumbnail %}
                                 <a href="{% url 'view_post' post.post_id %}" class="card-body display-3 prof-post-card-body" id="status_caption-container">
                                     {{ post.status_caption|json_script:"post-data" }}
                                 </a>
-                            {% elif post.status_caption and post.pic %}
+                            {% elif post.status_caption and post.pic_thumbnail %}
                                 <div class="card-body prof-img-post-card-body">
-                                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
+                                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic_thumbnail }}" class="prof-card-body-img"></a>
                                 </div>
                             {% else %}
                                 <div class="card-body prof-img-post-card-body">
-                                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic }}" class="prof-card-body-img"></a>
+                                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic_thumbnail }}" class="prof-card-body-img"></a>
                                 </div>
                             {% endif %}
                                 <div class="prof-post-actions">
