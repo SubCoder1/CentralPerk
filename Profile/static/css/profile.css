@@ -119,7 +119,7 @@
   width: 939px;
 }
 /* tab pane in profile.html containing user posts */
-#prof-posts, #saved {
+#prof-posts, #saved-posts {
   display: flex;
   flex-flow: column wrap;
   height: 29em;
