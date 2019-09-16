@@ -123,6 +123,7 @@
   display: flex;
   flex-flow: column wrap;
   height: 29em;
+  width: 58em;
   align-content: start;
 }
 
@@ -157,7 +158,6 @@
 
 .prof-img-post-card-body { 
   padding: 0rem;
-  min-width: 300px;
 }
 
 .prof-post-actions { display: none; }
