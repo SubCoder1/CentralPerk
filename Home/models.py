@@ -9,20 +9,25 @@ from collections import namedtuple
 from hashlib import sha256
 from random import getrandbits
 from PIL import Image
-from django.core.files import File
 
 # Create your models here.
 class PostModelManager(models.Manager):
     def get_post(self, post_id):
         return self.filter(post_id=post_id).select_related('user').first()
 
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<username>/<filename>
+def pic_directory_path(instance, filename):
+    # pic will be uploaded to MEDIA_ROOT/user_<username>/pic/<filename>
     user_id = instance.user.user_id
     name = str(instance.unique_id)
     extension = filename[len(filename)-4:len(filename)]
     file_name = name + extension
-    return f"post_images/{user_id}/{file_name}"
+    return f"post_images/{user_id}/pics/{file_name}"
+
+def thumb_directory_path(instance, filename):
+    # pic_thumbnail will be uploaded to MEDIA_ROOT/user_<username>/thumbnail/<filename>
+    user_id = instance.user.user_id
+    name = str(instance.unique_id)
+    return f"post_images/{user_id}/thumbnails/{filename}"
 
 class PostModel(models.Model):
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, related_name='posts')
@@ -35,7 +40,8 @@ class PostModel(models.Model):
     date_time = models.DateTimeField(auto_now_add=True)
     status_caption = models.CharField(max_length=500, blank=True)
     location = models.CharField(max_length=200, blank=True)
-    pic = models.ImageField(upload_to=user_directory_path, blank=True)
+    pic = models.ImageField(upload_to=pic_directory_path, blank=True)
+    pic_thumbnail = models.ImageField(upload_to=thumb_directory_path, blank=True)
     objects = PostModelManager()
 
     class Meta:
@@ -49,16 +55,22 @@ class PostModel(models.Model):
             return 'caption_pic ' + self.post_id
 
     def save(self, *args, **kwargs):
-        instance = super(PostModel, self).save(*args, **kwargs)
+        instance = super().save(*args, **kwargs)
         if self.pic:
             pic = Image.open(self.pic.path)
+
             if pic.format is not 'GIF':
                 # Compress image
+
                 if pic.format is 'PNG':
                     pic = pic.convert('RGB')
-                size = (700,700)
+
+                # Compress and save actual pic
+                pic = Image.open(self.pic)
+                size = (700, 700)
                 pic.thumbnail(size, Image.ANTIALIAS)
                 pic.save(self.pic.path, format='JPEG', quality=95, optimize=True)
+
         return instance
 
 @receiver(post_delete, sender=PostModel)
