@@ -22,11 +22,12 @@ $(document).ready(function() {
 
   // Bookmark posts on-click effect
   var $post_bookmark = $('.lnr-bookmark');
-  $post_bookmark.on('click', function() {
-    if ($post_bookmark.hasClass('bookmarked')) {
-      $post_bookmark.removeClass('bookmarked');
+  var $post_container = $('.post-container');
+  $post_container.on('click', $post_bookmark, function(){
+    if ($(this).hasClass('bookmarked')) {
+      $(this).removeClass('bookmarked');
     } else {
-      $post_bookmark.toggleClass('bookmarked');
+      $(this).toggleClass('bookmarked');
     }
   });
 
