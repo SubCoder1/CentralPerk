@@ -82,7 +82,7 @@
 /* ----------- post-data on the right ----------- */
 .wrap-data-view, .wrap-potrait-data-view {
     width: 415px;
-    background: #2e2a4b;
+    background: #1d1d1d;
     border-radius: 0rem 1rem 1rem 0rem;    
 }
 
@@ -112,6 +112,7 @@
     font-size: 17px;
     position: relative;
     top: 0.5px;
+    font-weight: 100;
 }
 
 .postview-pill-align {
