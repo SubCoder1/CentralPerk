@@ -47,7 +47,7 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
             if not relation_obj.following.filter(username=username).exists():
                 return f'User has set Post {reaction} notifications to following only'
 
-    if reaction == 'Sent Follow Request':
+    if reaction == 'Sent Follow Request' or reaction == 'Accept Follow Request':
         if acc_settings.f_requests:
             return 'User has disabled all incoming Follow Requests'
 
@@ -84,13 +84,13 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
         else:
             return "comment_notif sent successfully :)"
 
-    elif reaction == 'Sent Follow Request':
+    elif reaction == 'Sent Follow Request' or reaction == 'Accept Follow Request':
         UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, private_request=private_request)
 
         if send_to.channel_name is not "":
             async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
 
-        return "follow_notif sent successfully :)"
+        return "follow_notif send/accept sent successfully :)"
 
 @shared_task
 def del_notifications(username, reaction, send_to_username=None, post_id=None):
