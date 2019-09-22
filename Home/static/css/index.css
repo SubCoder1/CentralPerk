@@ -520,11 +520,19 @@ h6 { font-size: 13px; }
 }
 
 .options-link {
-    height: 39px;
+    height: 40px;
     width: 40px;
     border: none;
     border-radius: 50% !important;
     margin-left: 5px;
+}
+
+.notif-block {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .notif-btn {
@@ -534,6 +542,15 @@ h6 { font-size: 13px; }
 
 .notif-btn:hover { background: #2d19a9; }
 .options-link:hover .fa-bell { animation: ring 1s ease; }
+
+.new-notif-indicator {
+    position: absolute;
+    height: 5px;
+    width: 5px;
+    border-radius: 50% !important;
+    background: red;
+    margin-top: 10px;
+}
 
 .upload-btn { background: mediumorchid; }
 .upload-btn:hover { background: #a241ba; }
