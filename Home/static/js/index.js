@@ -20,6 +20,13 @@ $(document).ready(function() {
     }
   }
 
+  // Hide new-notification till new notifications pushes-in via socket
+  var $new_notif_indicator = $('.new-notif-indicator');
+  var $notif_btn = $('.notif-btn');
+  $notif_btn.on('click', function() {
+    $new_notif_indicator.css('display', 'none');
+  });
+
   // Bookmark posts on-click effect
   var $post_bookmark = $('.lnr-bookmark');
   var $post_container = $('.post-container');
