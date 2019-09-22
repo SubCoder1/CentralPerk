@@ -32,6 +32,8 @@ $(document).ready(function() {
         }
         // Update notifications wrapper
         else if (data['type'] == 'updated_notif') {
+            var $new_notif_indicator = $('.new-notif-indicator');
+            $new_notif_indicator.css('display', 'block');
             var $notif_wrapper = $('.notif-wrapper');
             $notif_wrapper.html(data['notif']);
         }
