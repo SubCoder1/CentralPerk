@@ -187,6 +187,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             request_by = notification.poked_by
             if option == 'accept_request':
                 Friends.follow(request_by, user)
+                send_notifications.delay(username=user.username, reaction="Accept Follow Request", 
+                send_to_username=request_by.username, private_request=False)
             notification.delete()
             Friends.rm_from_pending(user, request_by)
 
