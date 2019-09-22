@@ -153,8 +153,11 @@ class PostComments(models.Model):
             return True
         return False
 
-REACTION = (('Liked', 'Liked'), ('Commented', 'Commented'), ('Mentioned', 'Mentioned'),
-            ('Sent Follow Request', 'Sent Follow Request'), ('Replied', 'Replied'),)
+REACTION = (
+        ('Liked', 'Liked'), ('Commented', 'Commented'), 
+        ('Mentioned', 'Mentioned'), ('Sent Follow Request', 'Sent Follow Request'), 
+        ('Accept Follow Request', 'Accept Follow Request'), ('Replied', 'Replied'),
+    )
 
 class UserNotification(models.Model):
     notif_id = models.CharField(default='', max_length=65, blank=True, null=True)
