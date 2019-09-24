@@ -47,6 +47,7 @@
       </nav>
     <div class="container-fluid">
       <br/><br/><br/>
+      {% block indicator %}
       <div id="update-posts" style="cursor: pointer">
         <div class='indicator notif-active'>
           <div class='alert alert-success' id='success-msg' role='alert'>
@@ -55,6 +56,7 @@
           </div>
         </div>
       </div>
+      {% endblock %}
       {% block body %}
       {% if messages %}
         {% for message in messages %}
