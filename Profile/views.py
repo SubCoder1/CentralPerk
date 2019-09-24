@@ -65,11 +65,30 @@ def manage_post_likes(request, post_id):
 
     if request.is_ajax():
         action = request.POST.get('action')
-        if action == 'liked':
-            action = "Liked the post!"
-        else:
-            action = "Disliked the post!"
-        manage_likes.delay(post_id, request.user.username)
+        try:
+            post = PostModel.objects.get_post(post_id=post_id)
+
+            if action == 'liked':
+                action = "Liked the post!"
+            else:
+                action = "Disliked the post!"
+
+            if post.post_like_obj.filter(user=request.user).exists():
+                # Dislike post
+                post.post_like_obj.filter(user=request.user).delete()
+                del_notifications.delay(username=request.user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
+                post.likes_count = F('likes_count') - 1
+                post.save()
+            else:
+                # Like post
+                post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
+                post.likes_count = F('likes_count') + 1
+                post.save()
+                # Notify the user whose post is being liked
+                send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
+        except:
+            return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
+
         return HttpResponse(json.dumps({"status": "ready to update", "action":action}), content_type="application/json")
 
 def view_profile(request, username=None):
