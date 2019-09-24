@@ -9,14 +9,17 @@
     <link href="{% static 'css/profile.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block body %}
-{% if editable %}
-    <div class="indicator">
-        <div class="alert alert-success" id="success-msg" role="alert">
-            Your account settings was successfully updated!
+{% block indicator %}
+    {% if editable %}
+        <div class="indicator">
+            <div class="alert alert-success" id="success-msg" role="alert">
+                Your account settings was successfully updated!
+            </div>
         </div>
-    </div>
-{% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block body %}
 <div class="row">
     <div class="col-lg-3"></div>
     <div class="col-lg-6">
