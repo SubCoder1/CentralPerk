@@ -10,12 +10,14 @@
 {% endblock %}
 
 {% block body %}
-<div class="indicator">
-    <div class="alert alert-success hidden" id="success-msg" role="alert">
-    </div>
-    <div class="alert alert-error hidden" id="error-msg" role="alert">
-    </div>
-</div>
+    {% block indicator %}
+        <div class="indicator">
+            <div class="alert alert-success hidden" id="success-msg" role="alert">
+            </div>
+            <div class="alert alert-error hidden" id="error-msg" role="alert">
+            </div>
+        </div>
+    {% endblock %}
 <div class="post-view-container">
     <div class="refresh-btn-container">
         <a href="#" class="btn btn-dark refresh-btn" id="refresh-content">Refresh</a>
