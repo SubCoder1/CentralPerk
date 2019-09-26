@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, reverse
 from django.views.generic import TemplateView
 from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponse
-from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from django.db import transaction
@@ -67,7 +66,7 @@ def manage_post_likes(request, post_id):
     if request.is_ajax():
         action = request.POST.get('action')
         try:
-            post = PostModel.objects.get_post(post_id=post_id)
+            post = PostModel.objects.select_for_update().get(post_id=post_id)
 
             if action == 'liked':
                 action = "Liked the post!"
@@ -78,13 +77,15 @@ def manage_post_likes(request, post_id):
                 # Dislike post
                 post.post_like_obj.filter(user=request.user).delete()
                 del_notifications.delay(username=request.user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
-                post.likes_count = F('likes_count') - 1
-                post.save()
+                with transaction.atomic():
+                    post.likes_count -= 1
+                    post.save()
             else:
                 # Like post
                 post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
-                post.likes_count = F('likes_count') + 1
-                post.save()
+                with transaction.atomic():
+                    post.likes_count += 1
+                    post.save()
                 # Notify the user whose post is being liked
                 send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
         except:
@@ -180,73 +181,78 @@ def post_view(request, post_id):
 
     if request.is_ajax():
         try:
-            post_obj = PostModel.objects.get_post(post_id=post_id)
-        except:
-            return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
-
-        if request.GET.get('activity') == 'refresh comments':
-            post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
-            editable = True if post_obj.user == request.user else False
-            post_comments_html = render_to_string("post_comments.html", {'comments':post_comments, 'editable':editable})
-            return HttpResponse(json.dumps({"post_comments_html":post_comments_html, "comment_count":comment_count}), content_type="application/json")
-        if request.GET.get('activity') == 'refresh likes':
-            post_likes_list = post_obj.post_like_obj.select_related('user')
-            post_likes_html = render_to_string("post_likes.html", {"liked_user_list":post_likes_list})
-            return HttpResponse(json.dumps({"post_likes_html":post_likes_html, "likes_count":len(post_likes_list)}), content_type="application/json")
-        if request.POST.get('activity') == 'add comment':
-            form = CommentForm(request.POST or None)
-            result = None
-            if form.is_valid():
+            post_obj = None
+            if request.GET.get('activity') is not None:
+                # GET request, nothing needs to be updated
                 post_obj = PostModel.objects.get_post(post_id=post_id)
-                reply = str(request.POST.get('reply'))
-                if "_" in reply:
-                    index = reply.index("_")
-                    comment_id, reply_id = reply[:index], reply[index+1:len(reply)]
-                else:
-                    comment_id = reply
-                    reply_id = None
-
-                if comment_id == '':
-                    # request.user commented on a post with post_id=post_id
-                    post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
-                    post_obj=post_obj, comment=form.cleaned_data.get('comment')))
-                    send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=post_obj.user.username, post_id=post_id)
-                else:
-                    # request.user replied to someone's comment on post with post_id=post_id
-                    try:
-                        parent_comment = PostComments.objects.get(comment_id=comment_id)
-                        reply = form.cleaned_data.get('comment')
-                        parent_comment.replies.add(PostComments.objects.create(user=request.user,
-                        post_obj=post_obj, comment=reply, parent=False))
-                        send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id, post_id=post_id)
-                    except ObjectDoesNotExist:
-                        pass
-                post_obj.comment_count = F('comment_count') + 1
-                post_obj.save()
-                post_obj.refresh_from_db()
-                result = "ready to update"
             else:
-                result = "save unsuccessful"
-            return HttpResponse(json.dumps(result), content_type='application/json')
-        if request.POST.get('activity') == 'delete comment':
-            # Lock the rows of this obj till update is completed
-            post_obj = PostModel.objects.select_for_update().get(post_id=post_id)
-            comment_id = str(request.POST.get('comment_id'))
-            try:
-                PostComments.objects.get(comment_id=comment_id).delete()
-                # After comment_delete, send refreshed comments
+                # POST request, post_obj needs to be updated
+                # Lock the rows of this obj till update is completed
+                post_obj = PostModel.objects.select_for_update().get(post_id=post_id)
+
+            if request.GET.get('activity') == 'refresh comments':
                 post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
-
-                with transaction.atomic():
-                    # to ensure atomicity while updating values
-                    post_obj.comment_count = comment_count
-                    post_obj.save()
-
                 editable = True if post_obj.user == request.user else False
                 post_comments_html = render_to_string("post_comments.html", {'comments':post_comments, 'editable':editable})
                 return HttpResponse(json.dumps({"post_comments_html":post_comments_html, "comment_count":comment_count}), content_type="application/json")
-            except:
-                return HttpResponse(json.dumps("post_comment doesn't exist"), content_type="application/json")
+            if request.GET.get('activity') == 'refresh likes':
+                post_likes_list = post_obj.post_like_obj.select_related('user')
+                post_likes_html = render_to_string("post_likes.html", {"liked_user_list":post_likes_list})
+                return HttpResponse(json.dumps({"post_likes_html":post_likes_html, "likes_count":len(post_likes_list)}), content_type="application/json")
+            if request.POST.get('activity') == 'add comment':
+                form = CommentForm(request.POST or None)
+                result = None
+                if form.is_valid():
+                    post_obj = PostModel.objects.get_post(post_id=post_id)
+                    reply = str(request.POST.get('reply'))
+                    if "_" in reply:
+                        index = reply.index("_")
+                        comment_id, reply_id = reply[:index], reply[index+1:len(reply)]
+                    else:
+                        comment_id = reply
+                        reply_id = None
+
+                    if comment_id == '':
+                        # request.user commented on a post with post_id=post_id
+                        post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
+                        post_obj=post_obj, comment=form.cleaned_data.get('comment')))
+                        send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=post_obj.user.username, post_id=post_id)
+                    else:
+                        # request.user replied to someone's comment on post with post_id=post_id
+                        try:
+                            parent_comment = PostComments.objects.get(comment_id=comment_id)
+                            reply = form.cleaned_data.get('comment')
+                            parent_comment.replies.add(PostComments.objects.create(user=request.user,
+                            post_obj=post_obj, comment=reply, parent=False))
+                            send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id, post_id=post_id)
+                        except ObjectDoesNotExist:
+                            pass
+                    with transaction.atomic():
+                        post_obj.comment_count += 1
+                        post_obj.save()
+                    result = "ready to update"
+                else:
+                    result = "save unsuccessful"
+                return HttpResponse(json.dumps(result), content_type='application/json')
+            if request.POST.get('activity') == 'delete comment':
+                comment_id = str(request.POST.get('comment_id'))
+                try:
+                    PostComments.objects.get(comment_id=comment_id).delete()
+                    # After comment_delete, send refreshed comments
+                    post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
+
+                    with transaction.atomic():
+                        # to ensure atomicity while updating values
+                        post_obj.comment_count = comment_count
+                        post_obj.save()
+
+                    editable = True if post_obj.user == request.user else False
+                    post_comments_html = render_to_string("post_comments.html", {'comments':post_comments, 'editable':editable})
+                    return HttpResponse(json.dumps({"post_comments_html":post_comments_html, "comment_count":comment_count}), content_type="application/json")
+                except:
+                    return HttpResponse(json.dumps("post_comment doesn't exist"), content_type="application/json")
+        except:
+            return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
 
     post_likes_list = post_obj.post_like_obj.select_related('user')
     post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
