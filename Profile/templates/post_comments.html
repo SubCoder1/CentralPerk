@@ -1,6 +1,10 @@
 {% if comments %}
     {% for comment in comments %}
-        <div class="d-flex">
+    {% if forloop.counter == 1 %}
+        <div class="d-flex" style="margin-top: 5px;">
+    {% else %}
+        <div class="d-flex" style="margin-top: 8px;">
+    {% endif %}
             <div class="mr-1">
                 <img src="{{ comment.profile_pic }}" class="rounded-circle post-profile-img">
             </div>
@@ -13,7 +17,14 @@
                 <div class="comment-content">
                     {{ comment.comment }}
                 </div>
-                <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
+                <a href="#" class="comment-reply" id="{{ comment.comment_id }}">
+                    <i class="fas fa-reply"></i>
+                </a>
+                {% if editable or canDelete %}
+                    <a href="#" class="comment-dlt" id="{{ comment.comment_id }}">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                {% endif %}
                 {% if comment.reply %}
                     <a href="#" class="comment-rep-collapse" id="c-replies-collapse" data-toggle="collapse" data-target="#collapse-r-{{ comment.comment_id }}" aria-expanded="false" aria-controls="collapse-r-{{ comment.comment_id }}">
                         show replies <i class="fa fa-angle-down"></i>
@@ -38,7 +49,14 @@
                                 <div class="comment-content">
                                     {{ reply.comment }}
                                 </div>
-                                <a href="#" style="float: left" class="comment-reply" id="{{ comment.comment_id }}">reply</a>
+                                <a href="#" class="comment-reply" id="{{ comment.comment_id }}">
+                                    <i class="fas fa-reply"></i>
+                                </a>
+                            {% if editable or canDelete %}
+                                <a href="#" class="comment-dlt" id="{{ reply.comment_id }}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </a>
+                            {% endif %}
                             </div>
                         </div>
                     {% endfor %}
