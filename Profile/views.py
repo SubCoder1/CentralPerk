@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.db.models import F
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
+from django.db import transaction
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Settings
@@ -180,12 +181,13 @@ def post_view(request, post_id):
     if request.is_ajax():
         try:
             post_obj = PostModel.objects.get_post(post_id=post_id)
-        except ObjectDoesNotExist:
+        except:
             return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
 
         if request.GET.get('activity') == 'refresh comments':
-            post_comments, comment_count = post_obj.post_comment_obj.get_comments(post_obj)
-            post_comments_html = render_to_string("post_comments.html", {'comments':post_comments})
+            post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
+            editable = True if post_obj.user == request.user else False
+            post_comments_html = render_to_string("post_comments.html", {'comments':post_comments, 'editable':editable})
             return HttpResponse(json.dumps({"post_comments_html":post_comments_html, "comment_count":comment_count}), content_type="application/json")
         if request.GET.get('activity') == 'refresh likes':
             post_likes_list = post_obj.post_like_obj.select_related('user')
@@ -226,13 +228,30 @@ def post_view(request, post_id):
             else:
                 result = "save unsuccessful"
             return HttpResponse(json.dumps(result), content_type='application/json')
+        if request.POST.get('activity') == 'delete comment':
+            # Lock the rows of this obj till update is completed
+            post_obj = PostModel.objects.select_for_update().get(post_id=post_id)
+            comment_id = str(request.POST.get('comment_id'))
+            try:
+                PostComments.objects.get(comment_id=comment_id).delete()
+                # After comment_delete, send refreshed comments
+                post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
+
+                with transaction.atomic():
+                    # to ensure atomicity while updating values
+                    post_obj.comment_count = comment_count
+                    post_obj.save()
+
+                editable = True if post_obj.user == request.user else False
+                post_comments_html = render_to_string("post_comments.html", {'comments':post_comments, 'editable':editable})
+                return HttpResponse(json.dumps({"post_comments_html":post_comments_html, "comment_count":comment_count}), content_type="application/json")
+            except:
+                return HttpResponse(json.dumps("post_comment doesn't exist"), content_type="application/json")
 
     post_likes_list = post_obj.post_like_obj.select_related('user')
-    post_comments, comment_count = post_obj.post_comment_obj.get_comments(post_obj)
+    post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
 
-    editable = False
-    if post_obj.user == request.user:
-        editable = True
+    editable = True if post_obj.user == request.user else False
     
     liked_by_user = False
     if post_obj.post_like_obj.filter(user=request.user).exists():
@@ -259,7 +278,6 @@ def del_user_post(request, post_id):
     except ObjectDoesNotExist:
         pass
     return redirect(reverse('view_profile', kwargs={ 'username':request.user.username }))
-
 class edit_profile(TemplateView):
     """ 
         Self Explanatory. 
