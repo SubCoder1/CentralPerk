@@ -157,6 +157,8 @@
 }
 
 .post-status-caption { font-size: 15px; }
+
+.fa-trash-alt { font-weight: 500; }
 /* ---------------------------------------------- */
 
 /* ---------- post-data comment section --------- */
@@ -177,6 +179,24 @@
 }
 
 .comment-content { font-size: 12px; }
+
+.comment-reply {
+    float: left;
+    margin-top: 8px;
+    margin-bottom: 5px;
+    color: mediumpurple;
+}
+
+.comment-dlt {
+    float: left;
+    margin-top: 8px;
+    margin-left: 15px;
+    color: red;
+}
+
+.comment-dlt:hover {
+    color: orangered;
+}
 
 .m-0 { font-size: 17px; }
 .ml-2, .ml-3 { position: unset; }
@@ -208,7 +228,11 @@
     float: right;
 }
 
-.comment-rep-collapse { float: right; }
+.comment-rep-collapse { 
+    float: right; 
+    color: mediumpurple;
+    margin-top: 5px;
+}
 
 .rotate_180 { transform: rotate(180deg); }
 
