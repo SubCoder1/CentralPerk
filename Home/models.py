@@ -93,10 +93,10 @@ class PostCommentsManager(models.Manager):
         qs = super(PostCommentsManager, self).filter(parent=True)
         return qs
 
-    def get_comments(self, post):
+    def get_comments(self, request_username, post):
             #post = PostModel.objects.get_post(post_id=post_id)
             qs = []
-            layout = namedtuple("comment", ["profile_pic", "username", "comment", "comment_id", "date_time", "reply"])
+            layout = namedtuple("comment", ["profile_pic", "username", "comment", "comment_id", "date_time", "reply", "canDelete"])
             parent_comment_qs = post.post_comment_obj.parent().select_related('user')
             comments = parent_comment_qs.prefetch_related(Prefetch('replies',queryset=PostComments.objects.select_related('user')))
             count = 0
@@ -104,6 +104,7 @@ class PostCommentsManager(models.Manager):
                 count += 1
                 prof_pic = parent_comment.user.profile_pic.url
                 username = parent_comment.user.username
+                canDelete = True if request_username == username else False
                 comment = parent_comment.comment
                 c_id = parent_comment.comment_id
                 date_time = parent_comment.date_time
@@ -113,14 +114,15 @@ class PostCommentsManager(models.Manager):
                     count += 1
                     reply_prof_pic = reply.user.profile_pic.url
                     reply_username = reply.user.username
+                    canDelete = True if request_username == reply_username else False
                     reply_comment = reply.comment
                     reply_id = reply.comment_id
                     reply_dt = reply.date_time
                     replies.append(layout(profile_pic=reply_prof_pic, username=reply_username, comment=reply_comment, 
-                    comment_id=reply_id, date_time=reply_dt, reply=None))
+                    comment_id=reply_id, date_time=reply_dt, reply=None, canDelete=canDelete))
                 
                 qs.append(layout(profile_pic=prof_pic, username=username, comment=comment, comment_id=c_id, 
-                date_time=date_time, reply=replies))
+                date_time=date_time, reply=replies, canDelete=canDelete))
             
             return (qs, count)
 
