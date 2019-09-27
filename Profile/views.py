@@ -284,6 +284,7 @@ def del_user_post(request, post_id):
     except ObjectDoesNotExist:
         pass
     return redirect(reverse('view_profile', kwargs={ 'username':request.user.username }))
+
 class edit_profile(TemplateView):
     """ 
         Self Explanatory. 

@@ -219,6 +219,42 @@ $(document).ready(function() {
         });
     });
 
+    // handle comment_delete
+    $post_comment_wrapper.on('click', '.comment-dlt', function(event) {
+        event.preventDefault();
+        $post_comment_wrapper.css('pointer-events', 'none');
+        $.ajax({
+            url : '',
+            type : 'POST',
+            data : {
+                csrfmiddlewaretoken : csrftoken,
+                activity: "delete comment",
+                comment_id : $(this).attr('id'),
+            },
+            success : function(response) {
+                // Update comment-section
+                if (response != "post_comment doesn't exist") {
+                    $post_comment_wrapper.html(response['post_comments_html']);
+                    $comment_count.text(response['comment_count']);
+                } else {
+                    setTimeout(function(){
+                        $indicator.removeClass("notif-active");
+                        $error.text("Comment delete unsuccessful!");
+                        $error.toggleClass("hidden");
+                    }, 3000);
+                }
+            }, 
+            error : function(response) {
+                setTimeout(function(){
+                    $indicator.removeClass("notif-active");
+                    $error.text("Error! Try again");
+                    $error.toggleClass("hidden");
+                }, 3000);
+            }
+        });
+        $post_comment_wrapper.css('pointer-events', 'all');
+    });
+
     // handle likes send and update
     var $post_like_btn = $('#post_like_btn');
     var $liked_by_user = $('#post_like_btn').children('i');
