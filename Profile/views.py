@@ -8,7 +8,7 @@ from django.db import transaction
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Settings
-from Profile.tasks import update_user_acc_settings, manage_likes
+from Profile.tasks import update_user_acc_settings
 from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications, del_notifications
 from Home.forms import CommentForm
