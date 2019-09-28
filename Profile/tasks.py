@@ -2,8 +2,6 @@ from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from django.core.exceptions import ObjectDoesNotExist
 from Profile.models import User, Account_Settings
-from Home.tasks import send_notifications, del_notifications
-from Home.models import PostModel, PostLikes
 
 @shared_task
 def update_user_acc_settings(username, data):
