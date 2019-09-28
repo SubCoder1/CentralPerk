@@ -26,7 +26,6 @@ def pic_directory_path(instance, filename):
 def thumb_directory_path(instance, filename):
     # pic_thumbnail will be uploaded to MEDIA_ROOT/user_<username>/thumbnail/<filename>
     user_id = instance.user.user_id
-    name = str(instance.unique_id)
     return f"post_images/{user_id}/thumbnails/{filename}"
 
 class PostModel(models.Model):
