@@ -79,7 +79,10 @@ $(document).ready(function() {
             complete : function(response) {
                 $edit_profile_loading_gif.removeClass("loading-gif-active");
                 var status = response.responseJSON;
-                if (status == 'valid edit_prof_form') {
+                if (status['result'] == 'valid edit_prof_form') {
+                    if (status['updated_nav']) {
+                        $('#centralperk-navbar').html(status['updated_nav']);
+                    }
                     $username_error.text("");
                     $edit_username.css('border-bottom', '2.5px solid mediumturquoise');
                     $fullname_error.text("");
