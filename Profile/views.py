@@ -116,6 +116,7 @@ def view_profile(request, username=None):
     current_user= Friends.objects.get(current_user=user)
     isFollower, isFollowing, isPending, follow_count, follower_count = None, None, None, 0, 0
     user_posts, saved_posts, user_posts_count = None, None, None
+    show_private_msg = None
         
     # True if request.user follows the user he/she is searching for
     # True if request.user is in pending list of 'username'
@@ -141,6 +142,7 @@ def view_profile(request, username=None):
             else:
                 # isFollowing -> False; User can see nothing! well, only followers,following & post count
                 user_posts, saved_posts = None, None
+                show_private_msg = "This account is private"
         else:   # account_settings of the user is set to Public
             user_posts = user.posts.values_list('post_id', 'status_caption', 'pic_thumbnail', 'likes_count', 'comment_count', named=True)
     else:
@@ -169,7 +171,7 @@ def view_profile(request, username=None):
     context = { 'profile':user, 'posts':user_posts, 'user_posts_count':user_posts_count, 
                 'saved_posts':saved_posts, 'editable':editable, 'isFollowing':isFollowing, 
                 'isFollower': isFollower, 'isPending':isPending, 'follow_count':follow_count, 
-                'follower_count':follower_count, }
+                'follower_count':follower_count, 'private_msg':show_private_msg }
 
     return render(request, 'profile.html', context=context)
 
