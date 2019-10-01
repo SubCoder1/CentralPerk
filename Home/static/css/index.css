@@ -94,6 +94,7 @@ input {
 h1 { font-size: 30px; }
 h3 { font-size: 19px; }
 h4 { font-size: 17px; }
+h5 { font-size: 15px; }
 h6 { font-size: 13px; }
 
 .container-fluid {
@@ -283,6 +284,8 @@ h6 { font-size: 13px; }
     opacity: 0.5;
     padding-left: 2px;
 }
+
+.nav-username { display: inline; }
 /* ----------------------------------------------- */
 
 /* -------------- That white border -------------- */
