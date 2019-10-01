@@ -47,6 +47,8 @@ def manage_relation(request, username, option=None):
         if user_acc_settings.private_acc:
             # To deny users to view posts of they just unfollowed.
             # Only if the user whom request.user unfollowed has a private account.
+            # This will remove follow_unfollow_user's posts from request.user's wall (if any)
+            request.user.connections.remove(*PostModel.objects.filter(user=follow_unfollow_user))
             result['prof_posts'] = render_to_string('prof_posts.html', {'posts':None})
             Friends.rm_from_pending(current_user, follow_unfollow_user)
         # Delete any follow requests sent to follow_unfollow_usrname
@@ -113,7 +115,7 @@ def view_profile(request, username=None):
 
     current_user= Friends.objects.get(current_user=user)
     isFollower, isFollowing, isPending, follow_count, follower_count = None, None, None, 0, 0
-    user_posts, saved_posts = None, None
+    user_posts, saved_posts, user_posts_count = None, None, None
         
     # True if request.user follows the user he/she is searching for
     # True if request.user is in pending list of 'username'
@@ -126,6 +128,7 @@ def view_profile(request, username=None):
         
     follow_count = current_user.following.count()
     follower_count = current_user.followers.count()
+    user_posts_count = user.posts.count()
 
     # Get user account settings
     user_acc_settings = Account_Settings.objects.get(user=user)
@@ -136,6 +139,7 @@ def view_profile(request, username=None):
             if isFollowing:
                 user_posts = user.posts.values_list('post_id', 'status_caption', 'pic_thumbnail', 'likes_count', 'comment_count', named=True)
             else:
+                # isFollowing -> False; User can see nothing! well, only followers,following & post count
                 user_posts, saved_posts = None, None
         else:   # account_settings of the user is set to Public
             user_posts = user.posts.values_list('post_id', 'status_caption', 'pic_thumbnail', 'likes_count', 'comment_count', named=True)
@@ -162,10 +166,10 @@ def view_profile(request, username=None):
             'activity_status': request.POST.get('activity_status'), }
             update_user_acc_settings.delay(username=username, data=data)
     
-    context = { 'profile':user, 'posts':user_posts, 'saved_posts':saved_posts, 'editable':editable, 
-                'isFollowing':isFollowing, 'isFollower': isFollower, 'isPending':isPending,
-                'follow_count':follow_count, 'follower_count':follower_count,
-             }
+    context = { 'profile':user, 'posts':user_posts, 'user_posts_count':user_posts_count, 
+                'saved_posts':saved_posts, 'editable':editable, 'isFollowing':isFollowing, 
+                'isFollower': isFollower, 'isPending':isPending, 'follow_count':follow_count, 
+                'follower_count':follower_count, }
 
     return render(request, 'profile.html', context=context)
 
@@ -181,6 +185,16 @@ def post_view(request, post_id):
     post_obj = PostModel.objects.get_post(post_id=post_id)
     if post_obj is None:
         return render(request, 'post_500.html', {})
+    else:
+        if post_obj.user != request.user:
+            post_user = post_obj.user
+            if post_user.user_setting.private_acc:
+                # User who posted this has a private account
+                post_user_friend_obj = Friends.objects.get(current_user=post_user)
+                if request.user not in post_user_friend_obj.followers.all():
+                    # User who posted this has a private account & request.user is not a follower of him/her
+                    # Tresspassing?
+                    return redirect(reverse('view_profile', kwargs={'username':post_user.username}))
 
     if request.is_ajax():
         try:
