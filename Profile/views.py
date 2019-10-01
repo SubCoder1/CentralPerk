@@ -13,7 +13,7 @@ from Profile.tasks import update_user_acc_settings
 from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications, del_notifications
 from Home.forms import CommentForm
-import json
+import json, os
 from PIL import Image
 from io import BytesIO
 # Create your views here.
@@ -311,10 +311,10 @@ class edit_profile(TemplateView):
             if edit_form.is_valid():
                 prof_edited = True
                 if request.FILES:
+                    old_prof_pic_path = None
                     user = User.get_user_obj(username=request.user.username)
-                    if 'default' not in str(user.profile_pic):
-                        user.profile_pic.delete(False)
-                    user.save()
+                    if 'default' not in str(user.profile_pic.path):
+                        old_prof_pic_path = str(user.profile_pic.path)
 
                     edit_form_model = edit_form.save(commit=False)
                     pic = Image.open(edit_form_model.profile_pic)
@@ -332,6 +332,10 @@ class edit_profile(TemplateView):
                     # create a django-friendly Files object
                     edit_form_model.profile_pic = File(im_io, name=f"thumb_{str(edit_form_model.user_id)}.jpg")
                     edit_form_model.save()
+
+                    # Now remove user's old profile pic if it's not default.jpg
+                    if old_prof_pic_path is not None:
+                        os.remove(old_prof_pic_path)
                 else:
                     edit_form.save()
 
@@ -365,6 +369,6 @@ class edit_profile(TemplateView):
                     result['new_password2'] = change_pass_form.errors['new_password2']
         
         if prof_edited:
-            updated_nav = render_to_string('navbar.html', {'user':request.user})
+            updated_nav = render_to_string('navbar.html', {'user': request.user})
             return HttpResponse(json.dumps({'result':result, 'updated_nav':updated_nav}), content_type='application/json')
         return HttpResponse(json.dumps({'result':result}), content_type='application/json')
