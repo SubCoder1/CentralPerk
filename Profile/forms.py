@@ -6,6 +6,7 @@ check_username_validity, check_email_validity,
 check_fullname_validity, check_pass_strength
 )
 from datetime import datetime
+from PIL import Image
 
 class UserAdminChangeForm(forms.ModelForm):
     """ A form for updating (Admin) users. Includes all the fields on
@@ -28,6 +29,17 @@ class NonAdminChangeForm(forms.ModelForm):
         fields = ('profile_pic', 'username', 'full_name', 'email', 'birthdate', 'gender', 'bio',)
 
     #--- for Validation ---
+
+    def clean_profile_pic(self):
+        profile_pic = self.cleaned_data.get('profile_pic', None)
+        if profile_pic is not None:
+            img = Image.open(profile_pic)
+            img_mime = Image.MIME[img.format]
+            #print(img_mime)
+            # Profile_pic cannot be a GIF or of any other type than those listed below
+            if str(img_mime) not in ['image/jpg', 'image/png', 'image/jpeg']:
+                self.add_error('profile_pic', 'Invalid image type')
+        return profile_pic
 
     def clean_username(self):
         username = self.cleaned_data['username']
