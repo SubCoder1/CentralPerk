@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
 from django.db import transaction
+from django.core.files import File
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Settings
@@ -13,6 +14,8 @@ from Home.models import PostModel, PostComments, PostLikes
 from Home.tasks import send_notifications, del_notifications
 from Home.forms import CommentForm
 import json
+from PIL import Image
+from io import BytesIO
 # Create your views here.
 
 def manage_relation(request, username, option=None):
@@ -305,7 +308,28 @@ class edit_profile(TemplateView):
         if activity == 'validate_profile_data':
             edit_form = NonAdminChangeForm(request.POST or None, request.FILES or None, instance=request.user)
             if edit_form.is_valid():
-                edit_form.save()
+                if request.FILES:
+                    user = User.get_user_obj(username=request.user.username)
+                    if 'default' not in str(user.profile_pic):
+                        user.profile_pic.delete(False)
+
+                    edit_form_model = edit_form.save(commit=False)
+                    pic = Image.open(edit_form_model.profile_pic)
+                    # create a BytesIO object
+                    im_io = BytesIO()
+                    # Compress image into thumbnail
+                    if pic.format is 'PNG':
+                        pic = pic.convert('RGB')
+                        
+                    size = (200, 200)
+                    pic.thumbnail(size, Image.ANTIALIAS)
+                    # save image to BytesIO object
+                    pic.save(im_io, format='JPEG', quality=95, optimize=True)
+                    # Now save the thumbnail into model's pic_thumbnail
+                    # create a django-friendly Files object
+                    edit_form_model.profile_pic = File(im_io, name=f"thumb_{str(edit_form_model.user_id)}.jpg")
+                edit_form_model.save()
+
                 result = 'valid edit_prof_form'
             else:
                 if edit_form.has_error('username'):
