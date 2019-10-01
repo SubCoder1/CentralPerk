@@ -372,4 +372,4 @@ class edit_profile(TemplateView):
             return HttpResponse(json.dumps({
                 'result':result, 'updated_username':request.user.username, 
                 'updated_prof_pic':'/media/' + str(request.user.profile_pic)}), content_type='application/json')
-        return HttpResponse(json.dumps({'result':result}), content_type='application/json')
+        return HttpResponse(json.dumps(result), content_type='application/json')
