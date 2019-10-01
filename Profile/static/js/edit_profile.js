@@ -61,8 +61,20 @@ $(document).ready(function() {
         $real_upload_btn.click();
     });
 
+    var $prof_pic_error = $('#form-error-prof-pic');
     $real_upload_btn.change(function() {
-        previewPIC(this);
+        var $upload_file = $(this).val();
+        if ($upload_file != '') {
+            var idxDot = $upload_file.lastIndexOf(".") + 1;
+            var extFile = $upload_file.substr(idxDot, $upload_file.length).toLowerCase();
+            if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+                $prof_pic_error.text("");
+                previewPIC(this);
+            }else{
+                $(this).val("");
+                $prof_pic_error.text("Only jpg/jpeg and png files are allowed!");
+            }
+        }
     });
 
     var $indicator = $('.indicator');
