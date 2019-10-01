@@ -50,9 +50,12 @@ def check_username_validity(username, logged_in_user=None):
     elif len(str(username)) > 20:
         # username exceeded max_limit of 20 characters
         return 'Username should be < 21 characters'
-    elif str(username).isspace() or re.findall('[^A-Za-z0-9]', str(username)):
-        # username consists of spaces or special characters
+    elif str(username).isspace():
+        # username consists of spaces
         return 'Username should consist only letters & numbers'
+    elif re.findall('[^A-Za-z0-9]', str(username)) and '_' not in re.findall('[^A-Za-z0-9]', str(username)):
+        # username consists of special characters (excluding '_')
+        return "Special characters allowed -> '_'"
     elif User.objects.filter(username=username).exists():
         # someone is using this username
         return 'This username is taken'
