@@ -62,7 +62,8 @@ option { background: darkslateblue; }
   padding: 10px;
 }
 
-.edit-prof-error { 
+.edit-prof-error {
+  margin-top: 2px;
   height: 10px; 
   font-size: 13px;
 }
