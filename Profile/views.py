@@ -369,6 +369,7 @@ class edit_profile(TemplateView):
                     result['new_password2'] = change_pass_form.errors['new_password2']
         
         if prof_edited:
-            updated_nav = render_to_string('navbar.html', {'user': request.user})
-            return HttpResponse(json.dumps({'result':result, 'updated_nav':updated_nav}), content_type='application/json')
+            return HttpResponse(json.dumps({
+                'result':result, 'updated_username':request.user.username, 
+                'updated_prof_pic':'/media/' + str(request.user.profile_pic)}), content_type='application/json')
         return HttpResponse(json.dumps({'result':result}), content_type='application/json')
