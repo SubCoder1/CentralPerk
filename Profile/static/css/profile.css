@@ -213,6 +213,12 @@
   text-align: center;
   margin-right: 14px;
 }
+
+.fa-ghost { font-size: 63px; }
+
+.empty-prof-posts-section {
+  margin-right: 15px;
+}
 /* ----------------------------------------- */
 
 /* ------------- Profile Pic --------------- */
