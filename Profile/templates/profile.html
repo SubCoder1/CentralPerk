@@ -232,7 +232,7 @@
     </ul>
     <div class="tab-content" id="cardtabContent">
         <div class="tab-pane fade show active" id="post" role="tabpanel" aria-labelledby="post-tab">
-            {% if private_msg %}
+            {% if private_msg or posts|length < 1 %}
             <div id="prof-posts" style="align-content: center">
             {% else %}
             <div id="prof-posts">
