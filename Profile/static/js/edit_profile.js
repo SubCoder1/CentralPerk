@@ -82,6 +82,7 @@ $(document).ready(function() {
     $('#edit-prof-form').on('submit', function(event) {
         event.preventDefault();
 
+        var $prof_pic_error = $('#form-error-prof-pic');
         var $edit_username = $('#edit-username');
         var $username_error = $('#form-error-username');
         var $edit_fullname = $('#edit-fullname');
@@ -156,6 +157,8 @@ $(document).ready(function() {
                     } if (status['bio']) {
                         $edit_bio.css('border-bottom', '2.5px solid #fc581b');
                         $bio_error.text(status['bio']);
+                    } if (status['profile_pic']) {
+                        $prof_pic_error.text(status['profile_pic']);
                     }
                 }
             }
