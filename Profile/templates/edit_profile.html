@@ -36,12 +36,15 @@
             <form method="POST" id="edit-prof-form" enctype="multipart/form-data" autocomplete="off">
                 {% csrf_token %}
                 <div class="custom-img-upload-container">
-                    <input type="file" id="real-file" name="profile_pic" hidden/>
+                    <input type="file" id="real-file" name="profile_pic" accept="image/x-png,image/gif,image/jpeg" hidden/>
                     <img src="/media/{{ user.profile_pic }}" id="custom-upload" class="edit-prof-pic-rounded"/>
                     <div class="custom-upload-hover-ico">
                         <i class="fas fa-camera-retro"></i>
                     </div>
                 </div>
+                <div class="text-center p-t-12 edit-prof-error">
+			        <span class="txt1" id="form-error-prof-pic" style="color:orange;"></span>
+		        </div>
                 <br/>
                 <input class="input100 edit-prof-input" type="text" id="edit-username" name="username" value="{{ user.username }}" placeholder="Username" maxlength="20"/>
 		        <div class="text-center p-t-12 edit-prof-error">
