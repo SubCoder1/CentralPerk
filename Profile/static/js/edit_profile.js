@@ -116,6 +116,7 @@ $(document).ready(function() {
                 if (status['result'] == 'valid edit_prof_form') {
                     if (status['updated_username']) {
                         $('.nav-username').text(status['updated_username']);
+                        $('.drop-nav-username').text(status['updated_username']);
                     }
                     if (status['updated_prof_pic']) {
                         $('.navbar-profile-pic').attr('src', status['updated_prof_pic']);

@@ -40,7 +40,7 @@
                   <i class="fas fa-chevron-right"></i>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navdrop">
-                  <a class="dropdown-item" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>
+                  <a class="dropdown-item drop-nav-username" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>
                   <a class="dropdown-item" href="{% url 'user_logout' %}">Log Out</a>
                 </div>
               </li>
