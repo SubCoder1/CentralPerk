@@ -74,6 +74,7 @@ class PostModel(models.Model):
 @receiver(post_delete, sender=PostModel)
 def submission_delete(sender, instance, **kwargs):
     instance.pic.delete(False)
+    instance.pic_thumbnail.delete(False)
 
 class PostLikes(models.Model):
     post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_like_obj')
