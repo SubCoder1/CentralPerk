@@ -303,11 +303,13 @@ class edit_profile(TemplateView):
 
     def post(self, request, username):
         result = {}
+        prof_edited = False
         activity = request.POST.get('activity')
         # ------------ profile-edit request handling ------------
         if activity == 'validate_profile_data':
             edit_form = NonAdminChangeForm(request.POST or None, request.FILES or None, instance=request.user)
             if edit_form.is_valid():
+                prof_edited = True
                 if request.FILES:
                     user = User.get_user_obj(username=request.user.username)
                     if 'default' not in str(user.profile_pic):
@@ -329,7 +331,9 @@ class edit_profile(TemplateView):
                     # Now save the thumbnail into model's pic_thumbnail
                     # create a django-friendly Files object
                     edit_form_model.profile_pic = File(im_io, name=f"thumb_{str(edit_form_model.user_id)}.jpg")
-                edit_form_model.save()
+                    edit_form_model.save()
+                else:
+                    edit_form.save()
 
                 result = 'valid edit_prof_form'
             else:
@@ -359,4 +363,8 @@ class edit_profile(TemplateView):
                     result['new_password1'] = change_pass_form.errors['new_password1']
                 if change_pass_form.has_error('new_password2'):
                     result['new_password2'] = change_pass_form.errors['new_password2']
-        return HttpResponse(json.dumps(result), content_type='application/json')
+        
+        if prof_edited:
+            updated_nav = render_to_string('navbar.html', {'user':request.user})
+            return HttpResponse(json.dumps({'result':result, 'updated_nav':updated_nav}), content_type='application/json')
+        return HttpResponse(json.dumps({'result':result}), content_type='application/json')
