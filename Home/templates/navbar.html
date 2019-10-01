@@ -1,0 +1,28 @@
+{% load static %}
+<nav class="navbar navbar-expand-sm bg-1 sticky-top" id="navbar">
+    <!-- Brand -->
+    <a class="navbar-brand" id="logo" href="{% url 'home_view' %}">
+      <img src="{% static 'login/img/favicon.png' %}" id="brand-ico" class="cp"/>
+      <span id="brand-name"> | CentralPerk</span>
+    </a>
+  
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <!-- dropdown -->
+    <div class="collapse navbar-collapse" id="collapsibleNavbar" data-target="collapsibleNavbar">
+      <ul class="navbar-nav ml-auto">    
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="#" id="navdrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="/media/{{ user.profile_pic }}" class="rounded-circle navbar-profile-pic"/> {{user.username }}
+            <i class="fas fa-chevron-right"></i>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navdrop">
+            <a class="dropdown-item" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>
+            <a class="dropdown-item" href="{% url 'user_logout' %}">Log Out</a>
+          </div>
+        </li>
+      </ul>
+    </div>
+</nav>
