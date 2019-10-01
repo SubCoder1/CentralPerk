@@ -312,6 +312,7 @@ class edit_profile(TemplateView):
                     user = User.get_user_obj(username=request.user.username)
                     if 'default' not in str(user.profile_pic):
                         user.profile_pic.delete(False)
+                    user.save()
 
                     edit_form_model = edit_form.save(commit=False)
                     pic = Image.open(edit_form_model.profile_pic)
