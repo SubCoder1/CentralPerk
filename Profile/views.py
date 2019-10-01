@@ -353,6 +353,8 @@ class edit_profile(TemplateView):
                     result['gender'] = edit_form.errors['gender']
                 if edit_form.has_error('bio'):
                     result['bio'] = edit_form.errors['bio']
+                if edit_form.has_error('profile_pic'):
+                    result['profile_pic'] = edit_form.errors['profile_pic']
         # ------------ change password request handling ------------
         elif activity == 'validate_new_password':
             change_pass_form = CustomPasswordChangeForm(data=request.POST or None, user=request.user) # For changing password only
