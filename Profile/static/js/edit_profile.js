@@ -17,6 +17,27 @@ function getCookie(name) {
 var csrftoken = getCookie('csrftoken');
 
 $(document).ready(function() {
+    // JS code for navbar on-scrolldown animation
+    window.onscroll = function() {scrollFunction()};
+    var navbar = document.getElementById("navbar");
+    var logo = document.getElementById("logo");
+    var $brand_name = $('#brand-name');
+    var $brand_ico = $('#brand-ico');
+
+    function scrollFunction() {
+        if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+            navbar.style.padding = "8px 68px 0px 68px";
+            logo.style.fontSize = "20px";
+            $brand_name.hide();
+            $brand_ico.css('height', '38px');
+        } else {
+            navbar.style.padding = "10px 68px 0px 68px";
+            logo.style.fontSize = "25px";
+            $brand_name.show();
+            $brand_ico.css('height', '32px');
+        }
+    }
+
     // Initialize datepicker for birthdate field
     $.fn.datepicker.defaults.format = "dd-mm-yyyy";
     $('.datepicker').datepicker({ format: 'dd-mm-yyyy' });
@@ -80,8 +101,11 @@ $(document).ready(function() {
                 $edit_profile_loading_gif.removeClass("loading-gif-active");
                 var status = response.responseJSON;
                 if (status['result'] == 'valid edit_prof_form') {
-                    if (status['updated_nav']) {
-                        $('#centralperk-navbar').html(status['updated_nav']);
+                    if (status['updated_username']) {
+                        $('.nav-username').text(status['updated_username']);
+                    }
+                    if (status['updated_prof_pic']) {
+                        $('.navbar-profile-pic').attr('src', status['updated_prof_pic']);
                     }
                     $username_error.text("");
                     $edit_username.css('border-bottom', '2.5px solid mediumturquoise');
