@@ -125,6 +125,7 @@ $(document).ready(function() {
   // JQuery code to preview uploaded image and clear it (if clicked on img)
   var $real_upload_btn = $('#real-file');
   var $custom_upload = $('#img-btn-custom');
+  var $preview_img_container = $('.preview-img-container');
   var $preview_img = $('#preview-img');
 
   function previewPIC(input) {
@@ -143,8 +144,18 @@ $(document).ready(function() {
   });
 
   $real_upload_btn.change(function() {
-    $custom_upload.css('display', 'none');
-    previewPIC(this);
+    var $upload_file = $(this).val();
+    if ($upload_file != '') {
+      var idxDot = $upload_file.lastIndexOf(".") + 1;
+      var extFile = $upload_file.substr(idxDot, $upload_file.length).toLowerCase();
+      if (extFile=="jpg" || extFile=="jpeg" || extFile=="png") {
+        $custom_upload.css('display', 'none');
+        $preview_img_container.css('border', '5px solid #161515');
+        previewPIC(this);
+      } else {
+        $preview_img_container.css('border', '5px solid orangered');
+      }
+    }
   });
 
   $preview_img.on('click', function() {
