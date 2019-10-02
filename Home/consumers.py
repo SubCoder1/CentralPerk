@@ -35,7 +35,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         run_task = asyncio.ensure_future(self.update_friends_list())
 
     async def disconnect(self, close_code):
-        pass
+        [t.cancel() for t in asyncio.all_tasks()]
 
     async def receive(self, text_data):
         if self.scope["user"].is_anonymous:
