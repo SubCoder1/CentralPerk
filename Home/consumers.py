@@ -8,6 +8,7 @@ from Profile.models import Friends
 from Home.tasks import send_notifications, del_notifications
 import json, asyncio
 from hashlib import sha256
+from datetime import datetime
 
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
@@ -22,6 +23,16 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 'following-list': render_to_string("u-following.html", {'following':following_list}),
             }))
 
+    @database_sync_to_async
+    def set_last_activity(self):
+        self.scope['session']['_session_security'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+        self.scope['session'].save()
+
+    async def update_last_activity(self):
+        while True:
+            await asyncio.sleep(2)
+            await self.set_last_activity()
+
     async def connect(self):
         if self.scope["user"].is_anonymous:
             # Reject the connection
@@ -33,6 +44,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
         # Send list of followers, following & online friends
         run_task = asyncio.ensure_future(self.update_friends_list())
+        # Keep on updating last_activity
+        run_another_task = asyncio.ensure_future(self.update_last_activity())
 
     async def disconnect(self, close_code):
         [t.cancel() for t in asyncio.all_tasks()]
