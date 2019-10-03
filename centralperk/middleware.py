@@ -1,5 +1,10 @@
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
+from django.contrib.auth import logout
+from session_security.middleware import SessionSecurityMiddleware
+from session_security.utils import set_last_activity, get_last_activity
+from datetime import datetime, timedelta
+from AUth.tasks import update_user_activity_on_logout
 
 class login_required_middleware:
     """ This middleware takes care of anonymous users trying to visit links that requires an user to be logged-in.
@@ -29,3 +34,25 @@ class login_required_middleware:
         else:    
             if path not in settings.LOGIN_EXEMPT_URL:
                 return redirect(settings.LOGIN_URL)
+
+class SessionActivityMiddleware(SessionSecurityMiddleware):
+    def process_request(self, request):
+        """ Update last activity time or logout. """
+        if not request.user.is_authenticated:
+            return
+        now = datetime.now()
+        if '_session_security' not in request.session:
+            set_last_activity(request.session, now)
+            return
+
+        delta = now - get_last_activity(request.session)
+        expire_seconds = self.get_expire_seconds(request)
+        if delta >= timedelta(seconds=expire_seconds):
+            # Log the user out
+            update_user_activity_on_logout.delay(request.user.username)
+            logout(request)
+        elif (request.path == reverse('session_security_ping') and
+                'idleFor' in request.GET):
+            self.update_last_activity(request, now)
+        elif not self.is_passive_request(request):
+            set_last_activity(request.session, now)
