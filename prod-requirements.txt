@@ -1,0 +1,11 @@
+django
+pytz
+Pillow
+argon2-cffi
+whitenoise
+django_redis
+redis
+channels
+channels_redis
+celery
+django-session-security
