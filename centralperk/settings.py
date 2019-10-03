@@ -4,10 +4,10 @@ import os
 #CSRF_COOKIE_SECURE = False
 #SESSION_COOKIE_SECURE = False
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True # If a logged-in user closes the browser, session gets expired
-SESSION_COOKIE_AGE = 10 * 60 # If an user is idle for more than 6 mins of inactivity, session gets expired
 SESSION_SAVE_EVERY_REQUEST = True # whenever you occur new request, It saves the session and updates timeout to expire
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = "default"
+SESSION_SECURITY_EXPIRE_AFTER = 100 # Time (in seconds) before the user should be logged out if inactive.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -30,8 +30,10 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'channels',
+
     #third party
     #'debug_toolbar',
+    'session_security',
     'django_extensions',
     
     #own
@@ -40,7 +42,7 @@ INSTALLED_APPS = [
     'Home',
 ]
 
-AUTH_USER_MODEL = 'Profile.User'
+AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -48,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'centralperk.middleware.SessionActivityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'centralperk.middleware.login_required_middleware',
@@ -80,7 +83,8 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],
+            "hosts": [os.environ.get('REDIS_URL', 
+            'redis://:yourredispassword@localhost:6379')],
         },
     },
 }
@@ -110,7 +114,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "LOCATION": "redis://:yourredispassword@127.0.0.1:6379/1",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -119,8 +123,8 @@ CACHES = {
 }
 
 # CELERY STUFF
-BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+BROKER_URL = 'redis://:yourredispassword@localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://:yourredispassword@localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
