@@ -14,6 +14,7 @@ AUth = [
     path('', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
     path('register/', register_user, name='register_user'),
+    path('session_security/', include('session_security.urls')),
 ]
 
 Home = [
