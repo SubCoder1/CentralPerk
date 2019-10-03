@@ -31,12 +31,15 @@ def update_user_activity_on_logout(username):
 
 @shared_task
 def erase_duplicate_sessions(username, session_key, cache_key):
-    user = User.get_user_obj(username=username)
-    previous_session = user.session_key
-    Session.objects.get(session_key=previous_session).delete()
-    cache.delete(f"django.contrib.sessions.cached_{cache_key}")
-    user.session_key = session_key
-    return "complete :)"
+    try:
+        user = User.get_user_obj(username=username)
+        previous_session = user.session_key
+        Session.objects.get(session_key=previous_session).delete()
+        cache.delete(f"django.contrib.sessions.cached_{cache_key}")
+        user.session_key = session_key
+        return "complete :)"
+    except:
+        return 'session not found :('
 
 @shared_task
 def check_username_validity(username, logged_in_user=None):
