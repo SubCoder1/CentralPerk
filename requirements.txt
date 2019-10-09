@@ -3,6 +3,7 @@ pytz
 Pillow
 argon2-cffi
 django-storages[dropbox]
+django-heroku
 django_redis
 redis
 channels
@@ -10,4 +11,4 @@ channels_redis
 gevent
 celery
 django-session-security
-django-cors-middleware
+django-cors-headers
