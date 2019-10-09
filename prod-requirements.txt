@@ -2,10 +2,11 @@ django
 pytz
 Pillow
 argon2-cffi
-whitenoise
+django-storages[dropbox]
 django_redis
 redis
 channels
 channels_redis
+gevent
 celery
 django-session-security
