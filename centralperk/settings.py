@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     #third party
     #'debug_toolbar',
     'session_security',
-    'django_extensions',
+    #'django_extensions',
     'storages',
     
     #own
@@ -167,7 +167,7 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-DROPBOX_OAUTH2_TOKEN = 'yourdropdoxtoken'
+DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAIElDHrL9VKWVUXnMMtcTSS3EezDycPJ2SGv3y255eG4t'
 
 # Example: "/home2/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
