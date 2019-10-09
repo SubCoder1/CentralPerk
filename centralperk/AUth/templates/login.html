@@ -1,0 +1,58 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Barriecito&display=swap" rel="stylesheet">
+	<link rel="icon" type="image/png" sizes="16x16" href="{% static 'login/img/favicon.png' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'login/css/main.css' %}">
+	{% block style %}
+	{% endblock %}
+	{% block title %}
+		<title>Login Page</title>
+	{% endblock %}
+  </head>
+  <body>
+    <div class="container-auth100">
+		<div class="wrap-auth">
+		{% block body %}
+			<h1 class="headline">CentralPerk</h1>
+			<form class="wrap-loginform" method="POST">
+				{% csrf_token %}
+				<input class="input100" type="text" id="login-username" name="username" placeholder="Username">
+				<br/>
+				<input class="input100 password-margin" id="login-pass" type="password" name="password" placeholder="Password">
+				<div class="text-center p-t-12 login-error">
+					<span class="txt1" id="form-error" style="color:orange;"></span>
+				</div>
+				<div class="container-login100-form-btn"> 
+					<button class="login100-form-btn" id="login-btn" type="submit">Login</button>
+					<img class="login-loading-gif" id="loading-gif" src="{% static 'login/img/loading.gif' %}">
+				</div>
+				<br/>
+				<div class="text-center p-t-12">
+					<span class="txt1">Forgot</span>
+					<a class="txt2" href="#">Username / Password?</a>
+				</div>
+				<div class="text-center p-t-136">
+					<a class="txt2" href="{% url 'register_user' %}">
+						Create your Account
+						<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+					</a>
+				</div>
+			</form>
+		{% endblock %}
+		</div>
+	</div>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	{% block script %}
+		<script src="{% static 'login/js/main.js' %}"></script>
+	{% endblock %}
+  </body>
+</html>
