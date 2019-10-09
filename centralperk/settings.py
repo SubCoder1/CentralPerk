@@ -20,6 +20,10 @@ DEBUG = True
 ALLOWED_HOSTS = ['localhost',]
 INTERNAL_IPS = ['127.0.0.1',]
 
+CORS_ORIGIN_WHITELIST = (
+    'dl.dropboxusercontent.com',
+)
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,6 +39,7 @@ INSTALLED_APPS = [
     'session_security',
     #'django_extensions',
     'storages',
+    'corsheaders',
     
     #own
     'AUth',
@@ -47,6 +52,8 @@ AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'centralperk.middleware.SessionActivityMiddleware',
