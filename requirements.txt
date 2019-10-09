@@ -10,3 +10,4 @@ channels_redis
 gevent
 celery
 django-session-security
+django-cors-middleware
