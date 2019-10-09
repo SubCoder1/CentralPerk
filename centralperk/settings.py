@@ -1,4 +1,4 @@
-import os
+import os, django_heroku
 
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
@@ -196,3 +196,5 @@ LOGIN_EXEMPT_URL = [
     '/register/',
     '/',
 ]
+
+django_heroku.settings(locals())
