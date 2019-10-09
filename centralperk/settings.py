@@ -20,9 +20,7 @@ DEBUG = False
 ALLOWED_HOSTS = ['central-perk.herokuapp.com',]
 INTERNAL_IPS = ['127.0.0.1',]
 
-CORS_ORIGIN_WHITELIST = (
-    'dl.dropboxusercontent.com',
-)
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 INSTALLED_APPS = [
