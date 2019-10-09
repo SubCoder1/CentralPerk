@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     #third party
     #'debug_toolbar',
     'session_security',
-    'django_extensions',
+    #'django_extensions',
     'storages',
     
     #own
