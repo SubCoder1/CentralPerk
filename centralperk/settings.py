@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'channels',
 
@@ -35,6 +34,7 @@ INSTALLED_APPS = [
     #'debug_toolbar',
     'session_security',
     'django_extensions',
+    'storages',
     
     #own
     'AUth',
@@ -46,7 +46,6 @@ AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -166,6 +165,10 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
+DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+DROPBOX_OAUTH2_TOKEN = 'yourdropdoxtoken'
+
 # Example: "/home2/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
@@ -181,8 +184,6 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_URL  = '/'
 
