@@ -17,7 +17,7 @@ SECRET_KEY = 'yoursecretkey'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost',]
+ALLOWED_HOSTS = ['central-perk.herokuapp.com',]
 INTERNAL_IPS = ['127.0.0.1',]
 
 CORS_ORIGIN_WHITELIST = (
