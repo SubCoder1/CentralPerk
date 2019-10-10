@@ -105,8 +105,12 @@ PASSWORD_HASHERS = (
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'centralperk',
+        'USER': 'postgres',
+        'PASSWORD': 'admin',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -165,8 +169,8 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+#DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+#STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAIElDHrL9VKWVUXnMMtcTSS3EezDycPJ2SGv3y255eG4t'
 
 # Example: "/home2/media/media.lawrence.com/media/"
