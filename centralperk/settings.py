@@ -1,4 +1,4 @@
-import os, django_heroku
+import os, django_heroku, dj_database_url
 
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
@@ -114,6 +114,9 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
 
 CACHES = {
     "default": {
