@@ -2,6 +2,7 @@ django
 pytz
 Pillow
 argon2-cffi
+django-redis-cache
 django-storages[dropbox]
 django-heroku
 django_redis
