@@ -87,8 +87,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL', 
-            'redis://:yourredispassword@localhost:6379')],
+            "hosts": [os.environ.get('REDIS_URL', 6379)],
         },
     },
 }
@@ -120,18 +119,14 @@ DATABASES['default'].update(db_from_env)
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:yourredispassword@127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
-        },
-        "KEY_PREFIX": "example"
+         "BACKEND": "redis_cache.RedisCache",
+         "LOCATION": os.environ.get('REDIS_URL'),
     }
 }
 
 # CELERY STUFF
-BROKER_URL = 'redis://:yourredispassword@localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://:yourredispassword@localhost:6379'
+BROKER_URL = os.environ['REDIS_URL']
+CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
