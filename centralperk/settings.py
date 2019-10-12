@@ -171,6 +171,7 @@ USE_TZ = True
 DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAIElDHrL9VKWVUXnMMtcTSS3EezDycPJ2SGv3y255eG4t'
+DROPBOX_ROOT_PATH = 'static-media'
 
 # Example: "/home2/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
