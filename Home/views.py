@@ -57,20 +57,12 @@ class home_view(TemplateView):
                     # create a django-friendly Files object
                     post.pic_thumbnail = File(im_io, name=f"thumb_{str(post.unique_id)}.jpg")
             post.save()
-
-            """if post.pic:
-                # Compress and save pic thumbnail
-                pic = Image.open(post.pic.path)
-            """
-
+            
             post.send_to.add(request.user)
             # Celery handling the task to share the post to user's followers
             share_posts.delay(request.user.username, post.post_id)
             messages.success(request, 'Post Successful!')
-            close_old_connections()
         else:
             messages.error(request, 'Post Unsuccessful!')
-            close_old_connections()
-            return redirect(reverse('home_view'))
         close_old_connections()
         return redirect(reverse('home_view'))
