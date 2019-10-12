@@ -175,10 +175,10 @@ DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAJ7HbFUH07ciSVubtZM92Nfckzd0UqRJb9wwZ
 DROPBOX_ROOT_PATH = 'media'
 
 # Example: "/home2/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = 'https://www.dropbox.com/home/app/media/'
 
 # URL that handles the media served from MEDIA_ROOT.
-MEDIA_URL = '/media/'
+MEDIA_URL = 'https://www.dropbox.com/home/app/media/'
 
 # Max size of post file upload
 DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
