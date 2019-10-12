@@ -4,7 +4,6 @@ Pillow
 argon2-cffi
 django-redis-cache
 django-storages[dropbox]
-whitenoise
 django-heroku
 django_redis
 redis
