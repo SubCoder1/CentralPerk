@@ -187,7 +187,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = 'tmp/build_bf98d1e3f65642744d4263b00ef248af/media'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGIN_URL  = '/'
 
