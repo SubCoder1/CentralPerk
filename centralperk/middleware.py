@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.shortcuts import redirect, render, reverse
 from django.contrib.auth import logout
+from django.db import close_old_connections
 from session_security.middleware import SessionSecurityMiddleware
 from session_security.utils import set_last_activity, get_last_activity
 from datetime import datetime, timedelta
@@ -37,6 +38,7 @@ class login_required_middleware:
 
 class SessionActivityMiddleware(SessionSecurityMiddleware):
     def process_request(self, request):
+        close_old_connections()
         """ Update last activity time or logout. """
         if not request.user.is_authenticated:
             return
@@ -56,3 +58,4 @@ class SessionActivityMiddleware(SessionSecurityMiddleware):
             self.update_last_activity(request, now)
         elif not self.is_passive_request(request):
             set_last_activity(request.session, now)
+        close_old_connections()
