@@ -170,7 +170,7 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAIElDHrL9VKWVUXnMMtcTSS3EezDycPJ2SGv3y255eG4t'
+DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAJ7HbFUH07ciSVubtZM92Nfckzd0UqRJb9wwZH3eb04Ho'
 DROPBOX_ROOT_PATH = 'static-media'
 
 # Example: "/home2/media/media.lawrence.com/media/"
