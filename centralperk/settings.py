@@ -49,6 +49,7 @@ AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -169,9 +170,9 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAJ7HbFUH07ciSVubtZM92Nfckzd0UqRJb9wwZH3eb04Ho'
-DROPBOX_ROOT_PATH = 'static-media'
+DROPBOX_ROOT_PATH = 'media'
 
 # Example: "/home2/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
