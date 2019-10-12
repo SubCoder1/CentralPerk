@@ -196,5 +196,3 @@ LOGIN_EXEMPT_URL = [
     '/register/',
     '/',
 ]
-
-django_heroku.settings(locals())

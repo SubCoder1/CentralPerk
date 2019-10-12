@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.db.models import F, Prefetch
+from django.db import close_old_connections
 from django.urls import reverse
 from django.contrib import messages
 from django.core.files import File
@@ -19,6 +20,7 @@ class home_view(TemplateView):
     template_name = 'index.html'
 
     def get(self, request):
+        close_old_connections()
         form = PostForm()
         posts = request.user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
         notifications = request.user.notifications.values_list('private_request', 'notif_id',
@@ -27,9 +29,11 @@ class home_view(TemplateView):
 
         args = { 'user':request.user, 'form':form, 'posts':posts, 'notifications':notifications,
                  'online_users':online_users, 'followers':followers, 'following':following }
+        close_old_connections()
         return render(request, self.template_name, context=args)
 
     def post(self, request):
+        close_old_connections()
         form = PostForm(request.POST, request.FILES or None)
         if form.is_valid():
             post = form.save(commit=False)
@@ -63,7 +67,10 @@ class home_view(TemplateView):
             # Celery handling the task to share the post to user's followers
             share_posts.delay(request.user.username, post.post_id)
             messages.success(request, 'Post Successful!')
+            close_old_connections()
         else:
             messages.error(request, 'Post Unsuccessful!')
+            close_old_connections()
             return redirect(reverse('home_view'))
+        close_old_connections()
         return redirect(reverse('home_view'))

@@ -2,6 +2,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
+from django.db import close_old_connections
 from Profile.models import User, Friends, Account_Settings
 from AUth.forms import Registerform
 from AUth.tasks import (
@@ -13,6 +14,7 @@ import json
 
 @csrf_protect
 def user_login(request):
+    close_old_connections()
     context = None
     logout(request)
     if request.POST:
@@ -28,19 +30,26 @@ def user_login(request):
             elif user.session_key != request.session.session_key:
                 # Celery handling the task to delete sessions of same user logged in from multiple devices
                 erase_duplicate_sessions.delay(username, request.session.session_key, request.session.cache_key)
+
+            close_old_connections()
             return HttpResponse(json.dumps("valid user"), content_type="application/json")
         else:
             context = "Username or Password is incorrect!"
+
+            close_old_connections()
             return HttpResponse(json.dumps(context), content_type="application/json")
     return render(request, 'login.html', context=context)
 
 def user_logout(request):
+    close_old_connections()
     update_user_activity_on_logout.delay(request.user.username)
     logout(request)
+    close_old_connections()
     return redirect(reverse('user_login'))
 
 @csrf_protect
 def register_user(request):
+    close_old_connections()
     context = {}
     if request.POST:
         activity = request.POST.get('activity')
@@ -80,5 +89,6 @@ def register_user(request):
                     result['email'] = form.errors['email']
                 if form.has_error('password'):
                     result['password'] = form.errors['password']
+        close_old_connections()
         return HttpResponse(json.dumps(result), content_type='application/json')
     return render(request, 'signup.html', context)

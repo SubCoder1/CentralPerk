@@ -2,6 +2,7 @@
 from __future__ import absolute_import, unicode_literals
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from django.db import close_old_connections
 from celery import shared_task
 from Profile.models import Friends, User, Account_Settings
 from Home.models import PostModel, UserNotification
@@ -10,6 +11,7 @@ from asgiref.sync import async_to_sync
 
 @shared_task
 def share_posts(username, post_id):
+    close_old_connections()
     try:
         post = PostModel.objects.get_post(post_id=post_id)
     except ObjectDoesNotExist:
@@ -25,14 +27,18 @@ def share_posts(username, post_id):
                 post.send_to.add(user)
                 if user.channel_name is not "":
                     async_to_sync(channel_layer.send)(user.channel_name, { "type" : "update.wall" })
+            close_old_connections()
             return "complete :)"
         else:
+            close_old_connections()
             return "user is lonely :("
     else:
+        close_old_connections()
         return "user is lonely :("
 
 @shared_task
 def send_notifications(username, reaction, send_to_username=None, post_id=None, private_request=None):
+    close_old_connections()
     # Check user account settings conditions before sending notifications
     send_to = User.get_user_obj(username=send_to_username)
     acc_settings = Account_Settings.objects.get(user=send_to)
@@ -41,17 +47,21 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
         
     if reaction == 'Liked' or reaction == 'Commented':
         if acc_settings.p_likes == 'Disable' and reaction == 'Liked' or reaction == 'Commented' and acc_settings.p_comments == 'Disable':
+            close_old_connections()
             return f'User disabled all incoming Post {reaction} Notifications'
         elif acc_settings.p_likes == 'From People I Follow' or acc_settings.p_comments == 'From People I Follow':
             relation_obj = Friends.objects.get(current_user=send_to)
             if not relation_obj.following.filter(username=username).exists():
+                close_old_connections()
                 return f'User has set Post {reaction} notifications to following only'
 
     if reaction == 'Sent Follow Request' or reaction == 'Accept Follow Request':
         if acc_settings.f_requests:
+            close_old_connections()
             return 'User has disabled all incoming Follow Requests'
 
     if reaction == 'Commented' and acc_settings.p_comments == 'Disable':
+        close_old_connections()
         return 'User disabled all incoming Post Comments Notifications'
     
     # There's no restrictions on notifications set by send_to_user
@@ -59,18 +69,22 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
     channel_layer = get_channel_layer()
     if reaction == 'Liked' or reaction == 'Commented' or reaction == 'Replied':
         if send_to_username == username and reaction == 'Replied':
+            close_old_connections()
             return "User replied to his/her own comment :|"
         try:
             post = PostModel.objects.get_post(post_id=post_id)
         except ObjectDoesNotExist:
+            close_old_connections()
             return "Task aborted, post not found(del?)"
         
         if send_to_username == username and reaction == 'Replied':
+            close_old_connections()
             return "User replied to his/her own comment :|"
         
         if reaction != "Replied":
             send_to = post.user
             if send_to.username == username:
+                close_old_connections()
                 return "User liked/commented on his/her own post :|"
         
         if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post, private_request=False):
@@ -78,10 +92,13 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
                 async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
 
         if reaction == 'Liked':
+            close_old_connections()
             return "like_notif sent successfully :)"
         elif reaction == 'Replied':
+            close_old_connections()
             return 'Reply_Notif sent successfully :)'
         else:
+            close_old_connections()
             return "comment_notif sent successfully :)"
 
     elif reaction == 'Sent Follow Request' or reaction == 'Accept Follow Request':
@@ -89,15 +106,17 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
 
         if send_to.channel_name is not "":
             async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
-
+        close_old_connections()
         return "follow_notif send/accept sent successfully :)"
 
 @shared_task
 def del_notifications(username, reaction, send_to_username=None, post_id=None):
+    close_old_connections()
     try:
         to_notify = User.objects.get(username=send_to_username)
         poked_by = User.objects.get(username=username)
     except ObjectDoesNotExist:
+        close_old_connections()
         return "task aborted! No users found."
     
     query = None
@@ -109,6 +128,7 @@ def del_notifications(username, reaction, send_to_username=None, post_id=None):
         try:
             post = PostModel.objects.get(post_id=post_id)
         except ObjectDoesNotExist:
+            close_old_connections()
             return "Task aborted! No posts found(del by user?)"
         query = Q(user_to_notify=to_notify)
         query.add(Q(poked_by=poked_by), Q.AND)
@@ -120,7 +140,9 @@ def del_notifications(username, reaction, send_to_username=None, post_id=None):
         channel_layer = get_channel_layer()
         if to_notify.channel_name is not "":
             async_to_sync(channel_layer.send)(to_notify.channel_name, { "type" : "send.updated.notif" })
+        close_old_connections()
         return 'notif deleted successfully :)'
     else:
+        close_old_connections()
         return "filtered query doesn't exist.(Maybe user cleared his/her notif?)"       
         

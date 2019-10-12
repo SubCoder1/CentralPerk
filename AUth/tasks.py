@@ -7,19 +7,23 @@ from django.core.cache import cache
 from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.db import close_old_connections
 from datetime import datetime
 import pytz, re
 
 @shared_task
 def update_user_activity_on_login(username, session_key=None):
+    close_old_connections()
     user = User.get_user_obj(username=username)
     user.active = True
     user.session_key = session_key
     user.save()
+    close_old_connections()
     return "complete :)"
 
 @shared_task
 def update_user_activity_on_logout(username):
+    close_old_connections()
     user = User.get_user_obj(username=username)
     user.active = False
     user.session_key = ''
@@ -27,16 +31,20 @@ def update_user_activity_on_logout(username):
     tz = pytz.timezone('Asia/Kolkata')
     user.last_login = datetime.now().astimezone(tz=tz)
     user.save()
+    close_old_connections()
     return "complete :)"
 
 @shared_task
 def erase_duplicate_sessions(username, session_key, cache_key):
     try:
+        close_old_connections()
         user = User.get_user_obj(username=username)
         previous_session = user.session_key
         Session.objects.get(session_key=previous_session).delete()
         cache.delete(f"django.contrib.sessions.cached_{cache_key}")
         user.session_key = session_key
+        user.save()
+        close_old_connections()
         return "complete :)"
     except:
         return 'session not found :('
@@ -67,11 +75,12 @@ def check_username_validity(username, logged_in_user=None):
 @shared_task
 def check_email_validity(email):
     try:
+        close_old_connections()
         validate_email(email)
         if len(str(email)) > 254:
             return 'Email should be < 255 characters'
         elif User.objects.filter(email=email).exists():
-            return 'This Email is being used by another user'
+            return 'This Email is being used by another user'  
         return 'valid email'
     except ValidationError:
         return 'invalid email'
@@ -91,6 +100,7 @@ def check_fullname_validity(full_name):
 @shared_task
 def check_pass_strength(password, username=None, email=None):
     try:
+        close_old_connections()
         if str(password).isspace():
             return 'invalid password'
         user = None
