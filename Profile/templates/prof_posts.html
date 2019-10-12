@@ -15,11 +15,11 @@
             </a>
         {% elif post.status_caption and post.pic_thumbnail %}
             <div class="card-body prof-img-post-card-body">
-                <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic_thumbnail }}" class="prof-card-body-img"></a>
+                <a href="{% url 'view_post' post.post_id %}"><img src="{{ post.pic_thumbnail.url }}" class="prof-card-body-img"></a>
             </div>
         {% else %}
             <div class="card-body prof-img-post-card-body">
-                <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic_thumbnail }}" class="prof-card-body-img"></a>
+                <a href="{% url 'view_post' post.post_id %}"><img src="{{ post.pic_thumbnail.url }}" class="prof-card-body-img"></a>
             </div>
         {% endif %}
             <div class="prof-post-actions">

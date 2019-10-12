@@ -27,13 +27,13 @@
     {% if post_data.pic.width >= post_data.pic.height %}
     <div class="post-view">
         <div class="wrap-img-view" id="post-img">
-            <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
+            <img src="{{ post_data.pic.url }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
         </div>
         <div class="card wrap-data-view" id="id_view-post-card">
     {% else %}
     <div class="potrait-view">
         <div class="wrap-potrait-view potrait-hw" id="post-img">
-            <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view potrait-height" alt="Responsive image">
+            <img src="{{ post_data.pic.url }}" class="img-fluid post-pic-enlarged-view potrait-height" alt="Responsive image">
         </div>
         <div class="card wrap-potrait-data-view" id="id_view-post-card">
     {% endif %}
@@ -79,7 +79,7 @@
                     <div class="card-body detail-view-card-body only-detail">
                 {% endif %}
                         <div class="post-user" id="id_view-post-details-body">
-                            <img src="/media/{{ post_data.user.profile_pic }}" class="rounded-circle post-user-profile-pic">
+                            <img src="{{ post_data.user.profile_pic.url }}" class="rounded-circle post-user-profile-pic">
                             <br/>
                             <div class="display-2">
                                 <a class="post-username" href="{% url 'view_profile' post_data.user.username %}">{{ post_data.user.username }}</a>
