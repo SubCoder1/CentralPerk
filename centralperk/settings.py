@@ -175,7 +175,7 @@ DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAJ7HbFUH07ciSVubtZM92Nfckzd0UqRJb9wwZ
 DROPBOX_ROOT_PATH = 'media'
 
 # Example: "/home2/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT.
 MEDIA_URL = '/media/'
