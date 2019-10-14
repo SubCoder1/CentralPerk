@@ -211,7 +211,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
             user.notifications.all().delete()
             notifications = user.notifications.all().values_list(
-                'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', named=True)
+                'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic__url', named=True)
             return notifications
         except:
             return None
@@ -219,14 +219,14 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def search_results(self, query=None):
         query_res = Friends.objects.filter(current_user__username__startswith=query).annotate(f_count=Count('followers'))\
-            .order_by('-f_count').values_list('current_user__username', 'current_user__full_name', 'current_user__profile_pic', named=True)
+            .order_by('-f_count').values_list('current_user__username', 'current_user__full_name', 'current_user__profile_pic__url', named=True)
         return query_res[:10]
 
     async def send_updated_notif(self, event=None):
         try:
             user = self.scope['user']
             notifications = user.notifications.values_list(
-                    'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic', named=True)
+                    'poked_by__username', 'date_time', 'reaction', 'poked_by__profile_pic__url', named=True)
             await self.send(text_data=json.dumps({
                 'type' : 'updated_notif',
                 'notif' : render_to_string("notifications.html", {'notifications':notifications}),
