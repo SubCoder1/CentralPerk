@@ -2,6 +2,8 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import login, logout, authenticate
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, reverse
+from django.core.files import File
+from django.conf import settings
 from Profile.models import User, Friends, Account_Settings
 from AUth.forms import Registerform
 from AUth.tasks import (
@@ -10,6 +12,8 @@ from AUth.tasks import (
     check_email_validity, check_pass_strength
     )
 import json
+from PIL import Image
+from io import BytesIO
 
 @csrf_protect
 def user_login(request):
@@ -68,6 +72,11 @@ def register_user(request):
                     login(request, user)
                     Account_Settings.objects.create(user=user)
                     Friends.objects.create(current_user=user)
+                    default_img = Image.open(settings.STATIC_ROOT + '/signup/img/default.png')
+                    im_io = BytesIO()
+                    default_img.save(im_io, format='PNG', quality=90, optimize=True)
+                    user.profile_pic = File(im_io, name=f"thumb_{str(user.user_id)}.png")
+                    user.save()
                     result = 'valid form'
             else:
                 if form.has_error('username'):
