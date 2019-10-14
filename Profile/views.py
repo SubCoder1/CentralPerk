@@ -350,8 +350,8 @@ class edit_profile(TemplateView):
                     edit_form_model.save()
 
                     # Now remove user's old profile pic if it's not default.jpg
-                    if old_prof_pic_path is not None:
-                        os.remove(old_prof_pic_path)
+                    """if old_prof_pic_path is not None:
+                        os.remove(old_prof_pic_path)"""
                 else:
                     edit_form.save()
 
