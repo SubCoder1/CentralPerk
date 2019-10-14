@@ -305,7 +305,7 @@ def del_user_post(request, post_id):
     return redirect(reverse('view_profile', kwargs={ 'username':request.user.username }))
 
 class edit_profile(TemplateView):
-    """ 
+    """
         Self Explanatory. 
     """
 
@@ -389,5 +389,5 @@ class edit_profile(TemplateView):
         if prof_edited:
             return HttpResponse(json.dumps({
                 'result':result, 'updated_username':request.user.username, 
-                'updated_prof_pic':'/media/' + str(request.user.profile_pic)}), content_type='application/json')
+                'updated_prof_pic': str(request.user.profile_pic.url)}), content_type='application/json')
         return HttpResponse(json.dumps(result), content_type='application/json')
