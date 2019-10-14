@@ -112,7 +112,11 @@ $(document).ready(function() {
             data : data,
             complete : function(response) {
                 $edit_profile_loading_gif.removeClass("loading-gif-active");
-                var status = response.responseJSON;
+                if (response.responseJSON) {
+                    var status = response.responseJSON;
+                } else {
+                    var status = response;
+                }
                 if (status['result'] == 'valid edit_prof_form') {
                     if (status['updated_username']) {
                         $('.nav-username').text(status['updated_username']);
