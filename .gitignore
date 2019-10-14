@@ -7,3 +7,4 @@ env/
 migrations/
 media/
 db.sqlite3
+staticfiles/
