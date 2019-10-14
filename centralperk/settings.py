@@ -7,7 +7,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True # If a logged-in user closes the browser,
 SESSION_SAVE_EVERY_REQUEST = True # whenever you occur new request, It saves the session and updates timeout to expire
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = "default"
-SESSION_SECURITY_EXPIRE_AFTER = 100 # Time (in seconds) before the user should be logged out if inactive.
+SESSION_SECURITY_EXPIRE_AFTER = 600 # Time (in seconds) before the user should be logged out if inactive.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
