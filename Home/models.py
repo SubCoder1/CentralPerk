@@ -56,7 +56,7 @@ class PostModel(models.Model):
     def save(self, *args, **kwargs):
         instance = super().save(*args, **kwargs)
         if self.pic:
-            pic = Image.open(self.pic.path)
+            pic = Image.open(self.pic)
 
             if pic.format is not 'GIF':
                 # Compress image
@@ -67,7 +67,7 @@ class PostModel(models.Model):
                 # Compress and save actual pic
                 size = (700, 700)
                 pic.thumbnail(size, Image.ANTIALIAS)
-                pic.save(self.pic.path, format='JPEG', quality=95, optimize=True)
+                pic.save(self.pic, format='JPEG', quality=95, optimize=True)
 
         return instance
 
