@@ -35,7 +35,7 @@
             <ul class="navbar-nav ml-auto">    
               <li class="nav-item dropdown">
                 <a class="nav-link" href="#" id="navdrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <img src="/media/{{ user.profile_pic }}" class="rounded-circle navbar-profile-pic"/> 
+                  <img src="{{ user.profile_pic.url }}" class="rounded-circle navbar-profile-pic"/> 
                   <h5 class="nav-username">{{user.username }}</h5>
                   <i class="fas fa-chevron-right"></i>
                 </a>
