@@ -4,7 +4,7 @@
         <div class="card-body notify-body">
             <div class="d-flex">
                 <div class="mr-1">
-                    <img src="{{ notification.poked_by__profile_pic.url }}" class="notify-pic-rounded"/>
+                    <img src="{{ notification.poked_by__profile_pic__url }}" class="notify-pic-rounded"/>
                 </div>
                 {% if notification.reaction == 'Liked' %}
                     <div class="ml-2 ml-2-align">
