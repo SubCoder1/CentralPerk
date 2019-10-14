@@ -1,14 +1,14 @@
 {% for result in results %}
     <div class="d-flex justify-content-between align-items-center">
         <div class="mr-0">
-            <img src="{{ result.current_user__profile_pic.url }}" class="rounded-circle post-profile-img">
+            <img src="{{ result.current_user.profile_pic.url }}" class="rounded-circle post-profile-img">
         </div>
         <div class="ml-2">
             <div class="h5 m-0 body">
-            <a class="body_link" href="{% url 'view_profile' result.current_user__username %}">{{ result.current_user__username }}</a>
+            <a class="body_link" href="{% url 'view_profile' result.current_user.username %}">{{ result.current_user.username }}</a>
             </div>
-            {% if result.current_user__full_name %}
-                <h6>{{ result.current_user__full_name }}</h6>
+            {% if result.current_user.full_name %}
+                <h6>{{ result.current_user.full_name }}</h6>
             {% endif %}
         </div>
     </div>
