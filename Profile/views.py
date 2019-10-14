@@ -329,8 +329,8 @@ class edit_profile(TemplateView):
                 if request.FILES:
                     old_prof_pic_path = None
                     user = User.get_user_obj(username=request.user.username)
-                    if 'default' not in str(user.profile_pic.path):
-                        old_prof_pic_path = str(user.profile_pic.path)
+                    if 'default' not in str(user.profile_pic):
+                        old_prof_pic_path = str(user.profile_pic)
 
                     edit_form_model = edit_form.save(commit=False)
                     pic = Image.open(edit_form_model.profile_pic)
