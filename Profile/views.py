@@ -138,17 +138,17 @@ def view_profile(request, username=None):
         # iff isFollowing is True
         if user_acc_settings.private_acc:
             if isFollowing:
-                user_posts = user.posts.all()
+                user_posts = user.posts.values_list('post_id', 'status_caption', 'pic_thumbnail', 'likes_count', 'comment_count', named=True)
             else:
                 # isFollowing -> False; User can see nothing! well, only followers,following & post count
                 user_posts, saved_posts = None, None
                 show_private_msg = "This account is private"
         else:   # account_settings of the user is set to Public
-            user_posts = user.posts.all()
+            user_posts = user.posts.values_list('post_id', 'status_caption', 'pic_thumbnail', 'likes_count', 'comment_count', named=True)
     else:
         # well, no restrictions for the user him/herself
-        user_posts = user.posts.all()
-        saved_posts = user.saved_by.all()
+        user_posts = user.posts.values_list('post_id', 'status_caption', 'pic_thumbnail', 'likes_count', 'comment_count', named=True)
+        saved_posts = user.saved_by.values_list('post_id', 'status_caption', 'pic_thumbnail', 'likes_count', 'comment_count', named=True)
 
     if request.is_ajax():
         ajax_request = request.POST.get("activity")
