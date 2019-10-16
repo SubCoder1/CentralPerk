@@ -170,7 +170,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-STATICFILES_STORAGE = 'centralperk.storage.WhiteNoiseStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DROPBOX_OAUTH2_TOKEN = os.environ['DROPBOX_OAUTH2_TOKEN']
 DROPBOX_ROOT_PATH = 'media'
 
