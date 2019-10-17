@@ -223,8 +223,6 @@ def post_view(request, post_id):
                 form = CommentForm(request.POST or None)
                 result = None
                 if form.is_valid():
-                    with transaction.atomic():
-                        post_obj = PostModel.objects.select_for_update().get_post(post_id=post_id)
                     reply = str(request.POST.get('reply'))
                     if "_" in reply:
                         index = reply.index("_")
@@ -235,16 +233,18 @@ def post_view(request, post_id):
 
                     if comment_id == '':
                         # request.user commented on a post with post_id=post_id
-                        post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
-                        post_obj=post_obj, comment=form.cleaned_data.get('comment')))
+                        with transaction.atomic():
+                            post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
+                            post_obj=post_obj, comment=form.cleaned_data.get('comment')))
                         send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=post_obj.user.username, post_id=post_id)
                     else:
                         # request.user replied to someone's comment on post with post_id=post_id
                         try:
-                            parent_comment = PostComments.objects.get(comment_id=comment_id)
-                            reply = form.cleaned_data.get('comment')
-                            parent_comment.replies.add(PostComments.objects.create(user=request.user,
-                            post_obj=post_obj, comment=reply, parent=False))
+                            with transaction.atomic():
+                                parent_comment = PostComments.objects.select_for_update().get(comment_id=comment_id)
+                                reply = form.cleaned_data.get('comment')
+                                parent_comment.replies.add(PostComments.objects.create(user=request.user,
+                                post_obj=post_obj, comment=reply, parent=False))
                             send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id, post_id=post_id)
                         except ObjectDoesNotExist:
                             pass
