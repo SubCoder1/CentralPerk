@@ -93,7 +93,8 @@ def manage_post_likes(request, post_id):
                     post.save()
                 # Notify the user whose post is being liked
                 send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-        except:
+        except Exception as e:
+            print(e)
             return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
 
         return HttpResponse(json.dumps({"status": "ready to update", "action":action}), content_type="application/json")
@@ -268,9 +269,11 @@ def post_view(request, post_id):
                     editable = True if post_obj.user == request.user else False
                     post_comments_html = render_to_string("post_comments.html", {'comments':post_comments, 'editable':editable})
                     return HttpResponse(json.dumps({"post_comments_html":post_comments_html, "comment_count":comment_count}), content_type="application/json")
-                except:
+                except Exception as f:
+                    print(f)
                     return HttpResponse(json.dumps("post_comment doesn't exist"), content_type="application/json")
-        except:
+        except Exception as e:
+            print(e)
             return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
 
     post_likes_list = post_obj.post_like_obj.select_related('user')

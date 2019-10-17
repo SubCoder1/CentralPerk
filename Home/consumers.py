@@ -154,8 +154,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 # Notify the user whose post is being liked
                 send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
             return post.likes_count
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     @database_sync_to_async
     def post_comment_from_wall(self, post_id, comment):
@@ -172,8 +172,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # Notify the user whose post you commented on
             send_notifications.delay(username=user.username, reaction='Commented', send_to_username=post_obj.user.username, post_id=post_id)
             return post_obj.comment_count
-        except:
-            pass
+        except Exception as e:
+            print(e)
     
     @database_sync_to_async
     def save_unsave_post(self, post_id):
@@ -186,8 +186,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             else:
                 post_obj.saved_by.add(user)
                 return 'saved'
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     @database_sync_to_async
     def accept_reject_private_request(self, notif_id, option):
@@ -212,7 +212,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             user.notifications.all().delete()
             notifications = user.notifications.all().select_related('poked_by')
             return notifications
-        except:
+        except Exception as e:
+            print(e)
             return None
 
     @database_sync_to_async
@@ -229,8 +230,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 'type' : 'updated_notif',
                 'notif' : render_to_string("notifications.html", {'notifications':notifications}),
             }))
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     async def update_wall(self, event=None):
         try:
@@ -240,5 +241,5 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 'type' : 'updated_wall',
                 'posts' : render_to_string("wall.html", {'posts':posts}),
             }))
-        except:
-            pass
+        except Exception as e:
+            print(e)
