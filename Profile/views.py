@@ -71,27 +71,26 @@ def manage_post_likes(request, post_id):
     if request.is_ajax():
         action = request.POST.get('action')
         try:
-            post = PostModel.objects.select_for_update().get(post_id=post_id)
+            with transaction.atomic():
+                post = PostModel.objects.select_for_update().get(post_id=post_id)
 
-            if action == 'liked':
-                action = "Liked the post!"
-            else:
-                action = "Disliked the post!"
+                if action == 'liked':
+                    action = "Liked the post!"
+                else:
+                    action = "Disliked the post!"
 
-            if post.post_like_obj.filter(user=request.user).exists():
-                # Dislike post
-                post.post_like_obj.filter(user=request.user).delete()
-                del_notifications.delay(username=request.user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
-                with transaction.atomic():
+                if post.post_like_obj.filter(user=request.user).exists():
+                    # Dislike post
+                    post.post_like_obj.filter(user=request.user).delete()
+                    del_notifications.delay(username=request.user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
                     post.likes_count -= 1
                     post.save()
-            else:
-                # Like post
-                post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
-                with transaction.atomic():
+                else:
+                    # Like post
+                    post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
                     post.likes_count += 1
                     post.save()
-                # Notify the user whose post is being liked
+                    # Notify the user whose post is being liked
                 send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
         except Exception as e:
             print(e)
@@ -208,7 +207,8 @@ def post_view(request, post_id):
             else:
                 # POST request, post_obj needs to be updated
                 # Lock the rows of this obj till update is completed
-                post_obj = PostModel.objects.select_for_update().get(post_id=post_id)
+                with transaction.atomic():
+                    post_obj = PostModel.objects.select_for_update().get(post_id=post_id)
 
             if request.GET.get('activity') == 'refresh comments':
                 post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
@@ -223,7 +223,8 @@ def post_view(request, post_id):
                 form = CommentForm(request.POST or None)
                 result = None
                 if form.is_valid():
-                    post_obj = PostModel.objects.get_post(post_id=post_id)
+                    with transaction.atomic():
+                        post_obj = PostModel.objects.select_for_update().get_post(post_id=post_id)
                     reply = str(request.POST.get('reply'))
                     if "_" in reply:
                         index = reply.index("_")
