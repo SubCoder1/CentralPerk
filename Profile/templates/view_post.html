@@ -27,13 +27,17 @@
     {% if post_data.pic.width >= post_data.pic.height %}
     <div class="post-view">
         <div class="wrap-img-view" id="post-img">
-            <img src="{{ post_data.pic.url }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
+            <a href="{{ post_data.pic.url }}" class="progressive replace" style="pointer-events: none;">
+                <img src="{{ post_data.pic_thumbnail.url }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
+            </a>
         </div>
         <div class="card wrap-data-view" id="id_view-post-card">
     {% else %}
     <div class="potrait-view">
         <div class="wrap-potrait-view potrait-hw" id="post-img">
-            <img src="{{ post_data.pic.url }}" class="img-fluid post-pic-enlarged-view potrait-height" alt="Responsive image">
+            <a href="{{ post_data.pic.url }}" class="progressive replace" style="pointer-events: none;">
+                <img src="{{ post_data.pic.url }}" class="img-fluid post-pic-enlarged-view potrait-height" alt="Responsive image">
+            </a>
         </div>
         <div class="card wrap-potrait-data-view" id="id_view-post-card">
     {% endif %}
