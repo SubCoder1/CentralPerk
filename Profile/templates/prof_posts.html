@@ -16,17 +16,13 @@
         {% elif post.status_caption and post.pic_thumbnail %}
             <div class="card-body prof-img-post-card-body">
                 <a href="{% url 'view_post' post.post_id %}">
-                    <a href="{{ post.pic_thumbnail.url }}" class="progressive replace" style="pointer-events: none;">
-                        <img src="{{ post.pic_thumbnail.url }}" class="preview prof-card-body-img"/>
-                    </a>
+                    <img src="{{ post.pic_thumbnail.url }}" class="preview prof-card-body-img"/>
                 </a>
             </div>
         {% else %}
             <div class="card-body prof-img-post-card-body">
                 <a href="{% url 'view_post' post.post_id %}">
-                    <a href="{{ post.pic_thumbnail.url }}" class="progressive replace" style="pointer-events: none;">
-                        <img src="{{ post.pic_thumbnail.url }}" class="preview prof-card-body-img"/>
-                    </a>
+                    <img src="{{ post.pic_thumbnail.url }}" class="preview prof-card-body-img"/>
                 </a>
             </div>
         {% endif %}
