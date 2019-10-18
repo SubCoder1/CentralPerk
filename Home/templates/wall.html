@@ -35,7 +35,9 @@
             </div>
         {% elif post.status_caption and post.pic %}
             <div class="card-body index-img-post-card-body">
-                <img src="{{ post.pic.url }}" class="post-card-body-img"/>
+                <a href="{{ post.pic.url }}" class="progressive replace">
+                    <img src="{{ post.pic.url }}" class="preview post-card-body-img"/>
+                </a>
             </div>
         {% else %}
             <div class="card-body index-img-post-card-body">
