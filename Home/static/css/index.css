@@ -512,6 +512,7 @@ h6 { font-size: 13px; }
     border-radius: 1.00rem;
     width: 100%;
     height: 220px;
+    margin-bottom: 25px;
 }
 /* ----------------------------------------------- */
 
@@ -867,12 +868,20 @@ h6 { font-size: 13px; }
 /* ----------------------------------------------- */
 
 /* -------------------- Search ------------------- */
+.search-modal-header {
+    display: flex;
+}
+
+.search-box-wrapper {
+    flex: 1;
+}
+
 .search-bar {
   font-size: 15px;
   line-height: 1.5;
   color: white;
   display: block;
-  width: 535px;
+  width: 100%;
   background: transparent;
   border-bottom: 2.5px solid mediumturquoise;
   height: 50px;
@@ -902,3 +911,29 @@ h6 { font-size: 13px; }
     border: 1px solid magenta!important;
 }
 /* ----------------------------------------------- */
+
+/* --------------- media-queries ----------------- */
+@media only screen and (max-width: 767px) {
+    .container-fluid { padding: 0; }
+
+    .post-card {
+        border-radius: 0rem;
+    }
+
+    .index-post-card {
+        width: 100%;
+    }
+
+    .stories-block {
+        height: 120px;
+    }
+
+    .comment-input {
+        width: 87%;
+    }
+
+    .card-header, .card-footer {
+        padding: 0.7rem;
+    }
+
+}
