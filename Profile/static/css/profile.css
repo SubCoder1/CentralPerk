@@ -269,6 +269,10 @@ a:hover span {
 
 /* ------------ Details counter ------------ */
 @media only screen and (max-width: 768px) {
+  .about-profile { display: block; }
+
+  .profile-post-container, #prof-posts, #saved-posts, .prof-post-card { width: 100%; }
+
   .post-counter {
     margin-right: 21px;
     float: left;
@@ -285,6 +289,8 @@ a:hover span {
 }
 
 @media only screen and (min-width: 768px) {
+  .about-profile { display: flex; }
+
   .post-counter {
     margin-right: 32px;
     float: left;
