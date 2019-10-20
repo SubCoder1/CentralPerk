@@ -1,23 +1,28 @@
 $(document).ready(function() {
   // JS code for navbar on-scrolldown animation
-  window.onscroll = function() {scrollFunction()};
   var navbar = document.getElementById("navbar");
+  var $navbar = $('#navbar');
+  window.onscroll = function() {
+    if ($navbar.css('padding') != '10px') {
+      scrollFunction();
+    }
+  };
   var logo = document.getElementById("logo");
   var $brand_name = $('#brand-name');
   var $brand_ico = $('#brand-ico');
 
   function scrollFunction() {
-    if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-      navbar.style.padding = "8px 68px 0px 68px";
-      logo.style.fontSize = "20px";
-      $brand_name.hide();
-      $brand_ico.css('height', '38px');
-    } else {
-      navbar.style.padding = "10px 68px 0px 68px";
-      logo.style.fontSize = "25px";
-      $brand_name.show();
-      $brand_ico.css('height', '32px');
-    }
+      if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+        navbar.style.padding = "8px 68px 0px 68px";
+        logo.style.fontSize = "20px";
+        $brand_name.hide();
+        $brand_ico.css('height', '38px');
+      } else {
+        navbar.style.padding = "10px 68px 0px 68px";
+        logo.style.fontSize = "25px";
+        $brand_name.show();
+        $brand_ico.css('height', '32px');
+      }
   }
 
   // Hide new-notification till new notifications pushes-in via socket
