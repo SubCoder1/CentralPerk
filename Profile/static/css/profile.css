@@ -273,6 +273,10 @@ a:hover span {
 
   .profile-post-container, #prof-posts, #saved-posts, .prof-post-card { width: 100%; }
 
+  .prof-post-card {
+    margin: 0;
+  }
+
   .prof-details-wrapper {
     padding-left: 2rem;
     padding-right: 2rem;
