@@ -928,8 +928,6 @@ h6 { font-size: 13px; }
 
 /* --------------- media-queries ----------------- */
 @media only screen and (max-width: 767px) {
-    .container-fluid { padding: 0; }
-
     .navbar {
         padding: 10px;
     }
@@ -953,5 +951,4 @@ h6 { font-size: 13px; }
     .card-header, .card-footer {
         padding: 0.7rem;
     }
-
 }
