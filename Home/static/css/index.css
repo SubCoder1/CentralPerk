@@ -354,7 +354,10 @@ h6 { font-size: 13px; }
     border-radius: 1.00rem;
 }
 
-.index-post-card { width: 614px; }
+.index-post-card {
+    width: 614px; 
+    margin-bottom: 10px;
+}
 
 .post-card-body-img {
     width: 100%;
@@ -929,6 +932,8 @@ h6 { font-size: 13px; }
 /* --------------- media-queries ----------------- */
 @media only screen and (max-width: 767px) {
     .container-fluid { padding: 0; }
+
+    .index-post-card { margin-bottom: 0; }
 
     .navbar {
         padding: 10px;
