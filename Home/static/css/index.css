@@ -72,6 +72,8 @@ input {
     font-size: 25px;
 }
 
+button:focus { outline: none; }
+
 .btn-dark {
     background: mediumslateblue;
     border-radius: 2.25rem;
@@ -195,6 +197,18 @@ h6 { font-size: 13px; }
 /*------------------------------------------------*/
 
 /* ----------------- nav links ------------------ */
+.lnr-menu {
+    height: 27px;
+    width: 40px;
+    fill: currentColor;
+    color: white;
+    transition: transform 0.3s;
+}
+
+.navbar-toggler:active .lnr-menu {
+    transform: rotate(90deg);
+}
+
 .navbar {
     padding: 10px 68px 0px 68px;
     display: flex;
@@ -915,6 +929,10 @@ h6 { font-size: 13px; }
 /* --------------- media-queries ----------------- */
 @media only screen and (max-width: 767px) {
     .container-fluid { padding: 0; }
+
+    .navbar {
+        padding: 10px;
+    }
 
     .post-card {
         border-radius: 0rem;
