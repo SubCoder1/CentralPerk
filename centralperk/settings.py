@@ -1,4 +1,4 @@
-import os, django_heroku, dj_database_url
+import os
 
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
@@ -12,15 +12,13 @@ SESSION_SECURITY_EXPIRE_AFTER = 600 # Time (in seconds) before the user should b
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+SECRET_KEY = 'yoursecretkey'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['central-perk.herokuapp.com',]
+ALLOWED_HOSTS = ['localhost',]
 INTERNAL_IPS = ['127.0.0.1',]
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -29,15 +27,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'channels',
 
     #third party
     #'debug_toolbar',
     'session_security',
-    #'django_extensions',
-    'storages',
-    'corsheaders',
+    'django_extensions',
     
     #own
     'AUth',
@@ -51,8 +48,6 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'centralperk.middleware.SessionActivityMiddleware',
@@ -88,7 +83,8 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL', 6379)],
+            "hosts": [os.environ.get('REDIS_URL', 
+            'redis://:yourredispassword@localhost:6379')],
         },
     },
 }
@@ -115,19 +111,20 @@ DATABASES = {
     }
 }
 
-db_from_env = dj_database_url.config()
-DATABASES['default'].update(db_from_env)
-
 CACHES = {
     "default": {
-         "BACKEND": "redis_cache.RedisCache",
-         "LOCATION": os.environ.get('REDIS_URL'),
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://:yourredispassword@127.0.0.1:6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": "example"
     }
 }
 
 # CELERY STUFF
-BROKER_URL = os.environ['REDIS_URL']
-CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
+BROKER_URL = 'redis://:yourredispassword@localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://:yourredispassword@localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
@@ -169,11 +166,6 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-STATICFILES_STORAGE = 'centralperk.storage.WhiteNoiseStaticFilesStorage'
-DROPBOX_OAUTH2_TOKEN = os.environ['DROPBOX_OAUTH2_TOKEN']
-DROPBOX_ROOT_PATH = 'media'
-
 # Example: "/home2/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
@@ -189,6 +181,8 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_URL  = '/'
 
