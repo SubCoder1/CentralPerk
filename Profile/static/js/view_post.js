@@ -53,6 +53,7 @@ $(document).ready(function() {
         length = reply_to.length;
         $comment_box.focus();
     });
+    
     // JS code that removes comment-reply-link if reply-to-username is removed from comment-box
     $comment_box.on('input', function() {
         if ($(this).val().length < length+1) {
@@ -62,18 +63,6 @@ $(document).ready(function() {
             $(".reply-to").val("");
         }
     });
-
-    // JS code to split status_caption with newlines (if any)
-    var post_status_container = document.getElementById("status_caption_container");
-    var status_caption = document.getElementById("post-status_caption");
-    var post = JSON.parse(status_caption.textContent);
-    var newline_count = (post.match(/\r\n/g) || '').length + 1;
-    if (newline_count) {
-        var lines = post.split("\r\n");
-        for (var j=0; j < lines.length; j++) {
-            post_status_container.innerHTML += lines[j] + '<br/>';
-        }
-    }
 
     // Refresh content on refresh-btn click
     var $post_likes_wrapper = $('#post-likes-wrapper');
