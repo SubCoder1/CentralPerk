@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var homeSocket = new ReconnectingWebSocket(
-        'wss://' + window.location.host + '/ws/home/');
+        'ws://' + window.location.host + '/ws/home/');
 
     homeSocket.onopen = function(event) {
         // console.log(event);

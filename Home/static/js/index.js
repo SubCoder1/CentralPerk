@@ -8,19 +8,14 @@ $(document).ready(function() {
     }
   };
   var logo = document.getElementById("logo");
-  var $brand_name = $('#brand-name');
   var $brand_ico = $('#brand-ico');
 
   function scrollFunction() {
       if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-        navbar.style.padding = "8px 68px 0px 68px";
         logo.style.fontSize = "20px";
-        $brand_name.hide();
         $brand_ico.css('height', '38px');
       } else {
-        navbar.style.padding = "10px 68px 0px 68px";
         logo.style.fontSize = "25px";
-        $brand_name.show();
         $brand_ico.css('height', '32px');
       }
   }

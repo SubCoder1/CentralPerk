@@ -116,7 +116,6 @@
   flex-direction: column;
   align-items: center;
   align-self: center;
-  width: 939px;
 }
 /* tab pane in profile.html containing user posts */
 #prof-posts, #saved-posts {
@@ -271,11 +270,10 @@ a:hover span {
 @media only screen and (max-width: 768px) {
   .about-profile { display: block; }
 
-  .profile-post-container, #prof-posts, #saved-posts, .prof-post-card { width: 100%; }
+  #prof-posts, #saved-posts, .prof-post-card { width: 100%; }
 
-  .prof-details-wrapper {
-    padding-left: 2rem;
-    padding-right: 2rem;
+  #prof-posts, #saved-posts { 
+    flex-wrap: nowrap;
   }
 
   .post-counter {
@@ -293,8 +291,36 @@ a:hover span {
   }
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
   .about-profile { display: flex; }
+
+  #prof-posts, #saved-posts { 
+    flex-wrap: wrap; 
+    width: 50em;
+  }
+
+  .post-counter {
+    margin-right: 32px;
+    float: left;
+  }
+  
+  .follow-counter {
+    margin-right: 32px;
+    float: left;
+  }
+  
+  .following-counter {
+    float: left;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .about-profile { display: flex; }
+
+  #prof-posts, #saved-posts { 
+    flex-wrap: column wrap; 
+    width: 58em;
+  }
 
   .post-counter {
     margin-right: 32px;

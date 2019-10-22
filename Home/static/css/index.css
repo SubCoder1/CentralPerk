@@ -933,7 +933,7 @@ p { margin-bottom: 0; }
 
 /* --------------- media-queries ----------------- */
 @media only screen and (max-width: 767px) {
-    .container-fluid { padding: 0; }
+    .landing-pg-container { padding: 0; }
 
     .index-post-card { margin-bottom: 0; }
 
@@ -943,6 +943,10 @@ p { margin-bottom: 0; }
 
     .post-card {
         border-radius: 0rem;
+    }
+
+    .post-container {
+        width: 100%;
     }
 
     .index-post-card {
