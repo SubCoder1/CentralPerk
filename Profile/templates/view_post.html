@@ -9,16 +9,17 @@
     <link href="{% static 'css/view_post.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block body %}
+{% block indicator %}
 <div class="container-fluid">
-    {% block indicator %}
-        <div class="indicator">
-            <div class="alert alert-success hidden" id="success-msg" role="alert">
-            </div>
-            <div class="alert alert-error hidden" id="error-msg" role="alert">
-            </div>
+    <div class="indicator">
+        <div class="alert alert-success hidden" id="success-msg" role="alert">
         </div>
-    {% endblock %}
+        <div class="alert alert-error hidden" id="error-msg" role="alert">
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
 <div class="post-view-container">
     <div class="refresh-btn-container">
         <a href="#" class="btn btn-dark refresh-btn" id="refresh-content">Refresh</a>
