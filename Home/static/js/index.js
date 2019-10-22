@@ -86,44 +86,7 @@ $(document).ready(function() {
 
   post_card_stack_up();
 
-  // JS code for post-card data overflow management
-  function manage_status_caption() {
-    var $post_container = $('.index-post-card-body, .prof-post-card-body');
-    var $elms = $post_container.children('#post-data');
-    $.each($post_container, function (index, value) {
-        var post = $elms[index].textContent.replace(/"/g, "");
-        var newline_count = (post.match(/\\r\\n/g) || '').length + 1;
-          if (newline_count) {
-            var lines = post.split("\\r\\n");
-            if (lines.length > 5) {
-              var read_less = lines.slice(0,5);
-              for (var j=0; j < 5; j++) {
-                $post_container[index].innerHTML += read_less[j] + '<br/>';
-              }
-              var read_more = $post_container[index].getElementsByTagName("a")[0];
-              if (read_more) {
-                $post_container[index].removeChild(read_more);
-                var read_more_link = '<a class="body_link read-more" href="' + read_more + '">Read more. . .</a>'
-                $post_container[index].innerHTML += read_more_link;
-              } else {
-                $post_container[index].innerHTML += ". . . .";
-              }
-            } else {
-              var read_less = lines.slice(0,lines.length);
-              for (var j=0; j < lines.length; j++) {
-                $post_container[index].innerHTML += read_less[j] + '<br/>';
-              }
-            }
-          } else {
-            $post_container[index].innerHTML += post;
-          }
-    });
-  }
-
-  manage_status_caption();
-
   $('.post-container').on('contentchanged', function() {
-    manage_status_caption();
     post_card_stack_up();
   })
 

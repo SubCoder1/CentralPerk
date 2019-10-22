@@ -404,6 +404,8 @@ h6 { font-size: 13px; }
 
 .bookmark-saved { color: greenyellow; }
 
+p { margin-bottom: 0; }
+
 .fa-fire-alt {
     font-size: 15px;
     vertical-align: middle;

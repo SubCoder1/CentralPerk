@@ -11,7 +11,7 @@
     {% endif %}
         {% if post.status_caption and not post.pic_thumbnail %}
             <a href="{% url 'view_post' post.post_id %}" class="card-body display-3 prof-post-card-body" id="status_caption-container">
-                {{ post.status_caption|json_script:"post-data" }}
+                {{ post.status_caption|linebreaks }}
             </a>
         {% elif post.status_caption and post.pic_thumbnail %}
             <div class="card-body prof-img-post-card-body">

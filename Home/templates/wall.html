@@ -30,7 +30,7 @@
         </div>
         {% if post.status_caption and not post.pic %}
             <div class="card-body text-align-left display-3 index-post-card-body" id="status_caption-container"> 
-                {{ post.status_caption|json_script:"post-data" }}
+                <div id="post-data">{{ post.status_caption|linebreaks }}</div>
                 <a href="{% url 'view_post' post.post_id %}" hidden=true>Read More..</a>
             </div>
         {% elif post.status_caption and post.pic %}
@@ -53,7 +53,7 @@
             <div class="lower-row">
                 {% if post.status_caption and post.pic %}
                     <div class="text-align-left display-3 index-post-card-body" id="status_caption-container">
-                        {{ post.status_caption|json_script:"post-data" }}
+                        <div id="post-data">{{ post.status_caption|linebreaks }}</div>
                         <a href="{% url 'view_post' post.post_id %}" hidden="true">Read More..</a>
                     </div>
                 {% endif %}
