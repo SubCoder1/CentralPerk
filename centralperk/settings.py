@@ -19,9 +19,6 @@ DEBUG = False
 ALLOWED_HOSTS = ['central-perk.herokuapp.com',]
 INTERNAL_IPS = ['127.0.0.1',]
 
-# Redirect from http->https
-SECURE_SSL_REDIRECT = True
-
 CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
