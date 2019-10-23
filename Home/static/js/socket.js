@@ -22,13 +22,7 @@ $(document).ready(function() {
         }
         // Update save/unsave post icon
         else if (data['type'] == 'save_unsave_post_response') {
-            var post_id = '#' + data['post_id'];
-            var $post_bookmark = $(post_id).children('.card-header').children('.d-flex').children('.wrap-save-post').children('.lnr-bookmark');
-            if (data['result'] == 'saved') {
-                $post_bookmark.toggleClass('bookmark-saved');
-            } else {
-                $post_bookmark.removeClass('bookmark-saved');
-            } 
+            // No need, already handled by css
         }
         // Update notifications wrapper
         else if (data['type'] == 'updated_notif') {
@@ -142,7 +136,7 @@ $(document).ready(function() {
             'notif_id' : $(this).attr('id'),
             'option' : 'accept_request',
         }));
-        $(this).parent().parent().parent().remove();
+        $(this).parent().parent().parent().fadeOut(300, function(){ $(this).remove();});;
     });
     var $reject_request = $('.reject-request');
     $reject_request.on('click', function(event) {
@@ -152,7 +146,7 @@ $(document).ready(function() {
             'notif_id' : $(this).attr('id'),
             'option' : 'reject_request',
         }));
-        $(this).parent().parent().parent().remove();
+        $(this).parent().parent().parent().fadeOut(300, function(){ $(this).remove();});;
     });
 
 });

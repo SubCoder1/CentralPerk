@@ -20,22 +20,18 @@ $(document).ready(function() {
       }
   }
 
+  var $close_btn = $('.close');
+  $close_btn.on('click', function() {
+    if ($(this).parent().parent().hasClass('welcome-card')) {
+      $(this).parent().parent().hide('slow', function(){ $(this).remove(); });
+    }
+  });
+
   // Hide new-notification till new notifications pushes-in via socket
   var $new_notif_indicator = $('.new-notif-indicator');
   var $notif_btn = $('.notif-btn');
   $notif_btn.on('click', function() {
     $new_notif_indicator.css('display', 'none');
-  });
-
-  // Bookmark posts on-click effect
-  var $post_bookmark = $('.lnr-bookmark');
-  var $post_container = $('.post-container');
-  $post_container.on('click', $post_bookmark, function(){
-    if ($(this).hasClass('bookmarked')) {
-      $(this).removeClass('bookmarked');
-    } else {
-      $(this).toggleClass('bookmarked');
-    }
   });
 
   // JS code for slide-in-as-you-scroll-down-post-cards
