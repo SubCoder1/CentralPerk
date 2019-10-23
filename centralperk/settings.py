@@ -1,4 +1,4 @@
-import os
+import os, django_heroku, dj_database_url
 
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
@@ -8,17 +8,18 @@ SESSION_SAVE_EVERY_REQUEST = True # whenever you occur new request, It saves the
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = "default"
 SESSION_SECURITY_EXPIRE_AFTER = 600 # Time (in seconds) before the user should be logged out if inactive.
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'yoursecretkey'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost',]
+ALLOWED_HOSTS = ['central-perk.herokuapp.com',]
 INTERNAL_IPS = ['127.0.0.1',]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Application definition
 INSTALLED_APPS = [
@@ -27,27 +28,28 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'channels',
 
     #third party
     #'debug_toolbar',
     'session_security',
-    'django_extensions',
-    
+    #'django_extensions',
+    'storages',
+    'corsheaders',
+
     #own
     'AUth',
     'Profile',
     'Home',
 ]
-
 AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'centralperk.middleware.SessionActivityMiddleware',
@@ -56,9 +58,7 @@ MIDDLEWARE = [
     'centralperk.middleware.login_required_middleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
-
 ROOT_URLCONF = 'centralperk.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,22 +74,17 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'centralperk.wsgi.application'
-
 # Channels
 ASGI_APPLICATION = "centralperk.routing.application"
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL', 
-            'redis://:yourredispassword@localhost:6379')],
+            "hosts": [os.environ.get('REDIS_URL', 6379)],
         },
     },
 }
-
-
 PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.Argon2PasswordHasher',
         'django.contrib.auth.hashers.PBKDF2PasswordHasher',
@@ -99,11 +94,8 @@ PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
         'django.contrib.auth.hashers.CryptPasswordHasher',
 )
-
-
 # Database
 # https://docs.djangoproject.com/en/2.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -111,8 +103,13 @@ DATABASES = {
     }
 }
 
+db_from_env = dj_database_url.config()
+DATABASES['default'].update(db_from_env)
+
 CACHES = {
     "default": {
+         "BACKEND": "redis_cache.RedisCache",
+         "LOCATION": os.environ.get('REDIS_URL'),
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://:yourredispassword@127.0.0.1:6379/1",
         "OPTIONS": {
@@ -123,16 +120,14 @@ CACHES = {
 }
 
 # CELERY STUFF
-BROKER_URL = 'redis://:yourredispassword@localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://:yourredispassword@localhost:6379'
+BROKER_URL = os.environ['REDIS_URL']
+CELERY_RESULT_BACKEND = os.environ['REDIS_URL']
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Asia/Kolkata'
-
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -150,39 +145,32 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'Asia/Kolkata'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
+DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+STATICFILES_STORAGE = 'centralperk.storage.WhiteNoiseStaticFilesStorage'
+DROPBOX_OAUTH2_TOKEN = os.environ['DROPBOX_OAUTH2_TOKEN']
+DROPBOX_ROOT_PATH = 'media'
+
 # Example: "/home2/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT.
 MEDIA_URL = '/media/'
-
 # Max size of post file upload
 DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
-
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_URL  = '/'
 
