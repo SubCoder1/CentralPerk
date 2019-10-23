@@ -2,7 +2,7 @@ import os, django_heroku, dj_database_url
 
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
-#SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True # If a logged-in user closes the browser, session gets expired
 SESSION_SAVE_EVERY_REQUEST = True # whenever you occur new request, It saves the session and updates timeout to expire
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
