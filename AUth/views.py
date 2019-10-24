@@ -81,7 +81,11 @@ def register_user(request):
                     login(request, user)
                     Account_Settings.objects.create(user=user)
                     Friends.objects.create(current_user=user)
-                    default_img = Image.open(settings.STATIC_ROOT + '/signup/img/default.jpeg')
+                    default_img = None
+                    if user.gender is 'Male':
+                        default_img = Image.open(settings.STATIC_ROOT + '/signup/img/default.jpeg')
+                    else:
+                        default_img = Image.open(settings.STATIC_ROOT + '/signup/img/default-female.jpeg')
                     im_io = BytesIO()
                     default_img.save(im_io, format='JPEG', quality=90, optimize=True)
                     user.profile_pic = File(im_io, name=f"thumb_{str(user.user_id)}.png")
