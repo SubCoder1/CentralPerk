@@ -258,7 +258,9 @@ def post_view(request, post_id):
             if request.POST.get('activity') == 'delete comment':
                 comment_id = str(request.POST.get('comment_id'))
                 try:
-                    PostComments.objects.get(comment_id=comment_id).delete()
+                    comment = PostComments.objects.get(comment_id=comment_id)
+                    if comment.user == request.user or comment.post_obj == post_obj:
+                        comment.delete()
                     # After comment_delete, send refreshed comments
                     post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
 
