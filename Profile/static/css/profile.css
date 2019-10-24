@@ -318,7 +318,7 @@ a:hover span {
   .about-profile { display: flex; }
 
   #prof-posts, #saved-posts { 
-    flex-wrap: column wrap; 
+    flex-wrap: wrap; 
     width: 58em;
   }
 

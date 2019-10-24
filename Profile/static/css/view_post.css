@@ -162,6 +162,13 @@
 .post-status-caption { font-size: 15px; }
 
 .fa-trash-alt { font-weight: 500; }
+
+.post-bookmark {
+    position: relative;
+    top: 9px;
+    margin-left: 10px;
+    float: right;
+}
 /* ---------------------------------------------- */
 
 /* ---------- post-data comment section --------- */

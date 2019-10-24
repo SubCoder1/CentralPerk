@@ -246,6 +246,48 @@ $(document).ready(function() {
         $post_comment_wrapper.css('pointer-events', 'all');
     });
 
+    // Bookmark post handler
+    // Bookmark posts on-click effect
+    var $post_bookmark = $('.lnr-bookmark');
+    $post_bookmark.on('click', function(){
+        if ($(this).hasClass('bookmark-saved')) {
+        $(this).removeClass('bookmark-saved');
+        } else {
+        $(this).toggleClass('bookmark-saved');
+        }
+    });
+
+    $(".post-bookmark").on('click', function(event) {
+        $.ajax({
+            url : "",
+            type : "POST",
+            data : {
+                csrfmiddlewaretoken : csrftoken,
+                activity: 'post bookmark'
+            },
+            complete : function(response) {
+                $indicator.toggleClass("notif-active");
+                $success.text(response.responseJSON);
+                $success.removeClass("hidden");
+                setTimeout(function(){
+                    $indicator.removeClass("notif-active");
+                    $success.text("");
+                    $success.toggleClass("hidden");
+                }, 2000);
+            },
+            error : function(response) {
+                $indicator.toggleClass("notif-active");
+                $error.text("Bookmark failed, Try again!");
+                $error.removeClass("hidden");
+                setTimeout(function(){
+                    $indicator.removeClass("notif-active");
+                    $error.text("");
+                    $error.toggleClass("hidden");
+                }, 3000);
+            }
+        });
+    });
+
     // handle likes send and update
     var $post_like_btn = $('#post_like_btn');
     var $liked_by_user = $('#post_like_btn').children('i');
