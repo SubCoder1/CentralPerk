@@ -70,6 +70,11 @@
                         </a>
                     </li>
                 </ul>
+                {% if user in post_data.saved_by.all %}
+                    <svg class="lnr lnr-bookmark post-bookmark bookmark-saved"><use xlink:href="#lnr-bookmark"></use></svg>
+                {% else %}
+                    <svg class="lnr lnr-bookmark post-bookmark"><use xlink:href="#lnr-bookmark"></use></svg>
+                {% endif %}
                 {% if editable %}
                     <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark del-post-btn"><i class="fas fa-trash-alt"></i></a>
                 {% endif %}

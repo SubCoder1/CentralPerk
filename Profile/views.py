@@ -275,6 +275,13 @@ def post_view(request, post_id):
                 except Exception as f:
                     print(f)
                     return HttpResponse(json.dumps("post_comment doesn't exist"), content_type="application/json")
+            if request.POST.get('activity') == 'post bookmark':
+                if request.user in post_obj.saved_by.all():
+                    post_obj.saved_by.remove(request.user)
+                    return HttpResponse(json.dumps('Bookmark Removed!'), content_type="application/json")
+                else:
+                    post_obj.saved_by.add(request.user)
+                    return HttpResponse(json.dumps('Post Bookmarked!'), content_type="application/json")
         except Exception as e:
             print(e)
             return HttpResponse(json.dumps("post doesn't exist"), content_type="application/json")
@@ -288,7 +295,7 @@ def post_view(request, post_id):
     if post_obj.post_like_obj.filter(user=request.user).exists():
         liked_by_user = True
     
-    context = { 'post_data':post_obj, 'post_id': post_id, 
+    context = { 'user':request.user, 'post_data':post_obj, 'post_id': post_id, 
     'liked_user_list':post_likes_list, 'editable':editable, 
     'comments':post_comments, 'comment_count':comment_count,
     'liked_by_user':liked_by_user }
