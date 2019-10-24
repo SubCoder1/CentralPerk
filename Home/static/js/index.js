@@ -20,10 +20,21 @@ $(document).ready(function() {
       }
   }
 
+  // Welcome msg close animation
   var $close_btn = $('.close');
   $close_btn.on('click', function() {
     if ($(this).parent().parent().hasClass('welcome-card')) {
       $(this).parent().parent().hide('slow', function(){ $(this).remove(); });
+    }
+  });
+
+  // Bookmark posts on-click effect
+  var $post_bookmark = $('.lnr-bookmark');
+  $post_bookmark.on('click', function(){
+    if ($(this).hasClass('bookmark-saved')) {
+      $(this).removeClass('bookmark-saved');
+    } else {
+      $(this).toggleClass('bookmark-saved');
     }
   });
 
