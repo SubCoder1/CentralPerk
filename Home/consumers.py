@@ -14,7 +14,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def update_friends_list(self):
         while True:
-            await asyncio.sleep(2)
             online_user_list, followers_list, following_list = await self.get_friends_list()
             await self.send(text_data=json.dumps({
                 'type' : 'update_friends_list',
