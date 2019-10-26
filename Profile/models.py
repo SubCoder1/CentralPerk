@@ -58,7 +58,7 @@ class User(AbstractBaseUser):
 
 @receiver(post_delete, sender=User)
 def submission_delete(sender, instance, **kwargs):
-    instance.pic.delete(False)
+    instance.profile_pic.delete(False)
 
 POST_NOTIF_CHOICES = (('Disable', 'Disable'), ('From People I Follow', 'From People I Follow'), ('From Everyone', 'From Everyone'))
 class Account_Settings(models.Model):
