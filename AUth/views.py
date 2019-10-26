@@ -76,13 +76,14 @@ def register_user(request):
                 form.save()
                 username = form.cleaned_data.get('username')
                 password = form.cleaned_data.get('password')
+                gender = form.cleaned_data.get('gender')
                 user = authenticate(username=username, password=password)
                 if user is not None and user.is_active:
                     login(request, user)
                     Account_Settings.objects.create(user=user)
                     Friends.objects.create(current_user=user)
                     default_img = None
-                    if user.gender is 'Male':
+                    if gender in ['Male', 'male', 'MALE']:
                         default_img = Image.open(settings.STATIC_ROOT + '/signup/img/default.jpeg')
                     else:
                         default_img = Image.open(settings.STATIC_ROOT + '/signup/img/default-female.jpeg')
