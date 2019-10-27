@@ -63,8 +63,8 @@
                 {% elif notification.reaction == 'Replied' %}
                     <div class="ml-2">
                         <div class="m-0">
-                            <a href="{% url 'view_profile' notification.poked_by__username %}">
-                                {{ notification.poked_by__username }}
+                            <a href="{% url 'view_profile' notification.poked_by.username %}">
+                                {{ notification.poked_by.username }}
                             </a> replied to your comment.
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>

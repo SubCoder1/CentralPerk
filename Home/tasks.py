@@ -7,12 +7,12 @@ from celery import shared_task
 from Profile.models import Friends, User, Account_Settings
 from Home.models import PostModel, UserNotification
 from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
+from asgiref.sync import AsyncToSync
 
 @shared_task
 def share_posts(username, post_id):
-    close_old_connections()
     try:
+        close_old_connections()
         post = PostModel.objects.get_post(post_id=post_id)
     except ObjectDoesNotExist:
         return "Task aborted, post not found(del?)"
@@ -26,7 +26,7 @@ def share_posts(username, post_id):
             for user in users:
                 post.send_to.add(user)
                 if user.channel_name is not "":
-                    async_to_sync(channel_layer.send)(user.channel_name, { "type" : "update.wall" })
+                    AsyncToSync(channel_layer.send)(user.channel_name, { "type" : "update.wall" })
             close_old_connections()
             return "complete :)"
         else:
@@ -38,8 +38,8 @@ def share_posts(username, post_id):
 
 @shared_task
 def send_notifications(username, reaction, send_to_username=None, post_id=None, private_request=None):
-    close_old_connections()
     # Check user account settings conditions before sending notifications
+    close_old_connections()
     send_to = User.get_user_obj(username=send_to_username)
     acc_settings = Account_Settings.objects.get(user=send_to)
     if acc_settings.disable_all:
@@ -89,7 +89,7 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
         
         if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post, private_request=False):
             if send_to.channel_name is not "":
-                async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
+                AsyncToSync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
 
         if reaction == 'Liked':
             close_old_connections()
@@ -105,14 +105,14 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
         UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, private_request=private_request)
 
         if send_to.channel_name is not "":
-            async_to_sync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
+            AsyncToSync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
         close_old_connections()
         return "follow_notif send/accept sent successfully :)"
 
 @shared_task
 def del_notifications(username, reaction, send_to_username=None, post_id=None):
-    close_old_connections()
     try:
+        close_old_connections()
         to_notify = User.objects.get(username=send_to_username)
         poked_by = User.objects.get(username=username)
     except ObjectDoesNotExist:
@@ -139,10 +139,9 @@ def del_notifications(username, reaction, send_to_username=None, post_id=None):
         UserNotification.objects.filter(query).first().delete()
         channel_layer = get_channel_layer()
         if to_notify.channel_name is not "":
-            async_to_sync(channel_layer.send)(to_notify.channel_name, { "type" : "send.updated.notif" })
+            AsyncToSync(channel_layer.send)(to_notify.channel_name, { "type" : "send.updated.notif" })
         close_old_connections()
         return 'notif deleted successfully :)'
     else:
         close_old_connections()
         return "filtered query doesn't exist.(Maybe user cleared his/her notif?)"       
-        
