@@ -1,13 +1,15 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
-from Profile.models import User
+from Profile.models import User, Friends
 from django.contrib.sessions.models import Session
 from django.core.cache import cache
 from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db import close_old_connections
+from channels.layers import get_channel_layer
+from asgiref.sync import AsyncToSync
 from datetime import datetime
 import pytz, re
 
@@ -25,10 +27,10 @@ def update_user_activity_on_login(username, session_key=None):
 def update_user_activity_on_logout(username):
     close_old_connections()
     user = User.get_user_obj(username=username)
-    user.active = False
     user.session_key = ''
     user.channel_name = ''
-    if user.just_created:
+    user.active = False
+    if user.just_created == True:
         user.just_created = False
     tz = pytz.timezone('Asia/Kolkata')
     user.last_login = datetime.now().astimezone(tz=tz)

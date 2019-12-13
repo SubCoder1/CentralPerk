@@ -12,17 +12,6 @@ from datetime import datetime
 
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
-    async def update_friends_list(self):
-        while True:
-            await asyncio.sleep(2)
-            online_user_list, followers_list, following_list = await self.get_friends_list()
-            await self.send(text_data=json.dumps({
-                'type' : 'update_friends_list',
-                'online-users-list': render_to_string("u-online.html", {'online_users':online_user_list}),
-                'followers-list': render_to_string("u-followers.html", {'followers':followers_list}),
-                'following-list': render_to_string("u-following.html", {'following':following_list}),
-            }))
-
     @database_sync_to_async
     def set_last_activity(self):
         self.scope['session']['_session_security'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
@@ -42,10 +31,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             await self.accept()
         await self.add_channel_name_to_user(channel_name=self.channel_name)
 
-        # Send list of followers, following & online friends
-        run_task = asyncio.ensure_future(self.update_friends_list())
         # Keep on updating last_activity
-        run_another_task = asyncio.ensure_future(self.update_last_activity())
+        run_task = asyncio.ensure_future(self.update_last_activity())
 
     async def disconnect(self, close_code):
         [t.cancel() for t in asyncio.all_tasks()]
@@ -127,12 +114,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         user.channel_name = channel_name
         user.save()
     
-    @database_sync_to_async
-    def get_friends_list(self):
-        user = self.scope['user']
-        online_users, followers, following = Friends.get_friends_list(current_user=user)
-        return [online_users, followers, following]
-
     @database_sync_to_async
     def like_post_from_wall(self, post_id):
         user = self.scope['user']
