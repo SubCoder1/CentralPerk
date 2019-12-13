@@ -146,12 +146,14 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return 'comment cannot be empty'
         try:
             post_obj = PostModel.objects.get_post(post_id=post_id)
-            post_obj.post_comment_obj.add(PostComments.objects.create(user=user, post_obj=post_obj, comment=comment))
+            c = PostComments.objects.create(user=user, post_obj=post_obj, comment=comment)
+            post_obj.post_comment_obj.add(c)
             post_obj.comment_count = F('comment_count') + 1
             post_obj.save()
             post_obj.refresh_from_db()
             # Notify the user whose post you commented on
-            send_notifications.delay(username=user.username, reaction='Commented', send_to_username=post_obj.user.username, post_id=post_id)
+            send_notifications.delay(username=user.username, reaction='Commented', 
+            send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
             return post_obj.comment_count
         except Exception as e:
             print(e)

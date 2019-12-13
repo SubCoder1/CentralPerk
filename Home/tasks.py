@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.db import close_old_connections
 from celery import shared_task
 from Profile.models import Friends, User, Account_Settings
-from Home.models import PostModel, UserNotification
+from Home.models import PostModel, UserNotification, PostComments
 from channels.layers import get_channel_layer
 from asgiref.sync import AsyncToSync
 
@@ -37,7 +37,7 @@ def share_posts(username, post_id):
         return "user is lonely :("
 
 @shared_task
-def send_notifications(username, reaction, send_to_username=None, post_id=None, private_request=None):
+def send_notifications(username, reaction, send_to_username=None, post_id=None, private_request=None, comment_id=None):
     # Check user account settings conditions before sending notifications
     close_old_connections()
     send_to = User.get_user_obj(username=send_to_username)
@@ -87,9 +87,16 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
                 close_old_connections()
                 return "User liked/commented on his/her own post :|"
         
-        if UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post, private_request=False):
+        Notif_obj = UserNotification.create_notify_obj(to_notify=send_to, by=username, reaction=reaction, post_obj=post, private_request=False)
+        if Notif_obj:
+            # Only for post-comments because it helps to delete notifications when any comment or reply is deleted
+            if reaction in ['Replied', 'Commented']:
+                comment = PostComments.objects.get(comment_id=comment_id)
+                comment.comment_notif_id = Notif_obj.notif_id
+                comment.save()
             if send_to.channel_name is not "":
                 AsyncToSync(channel_layer.send)(send_to.channel_name, { "type" : "send.updated.notif" })
+                print("should be gone by now!")
 
         if reaction == 'Liked':
             close_old_connections()
@@ -110,17 +117,20 @@ def send_notifications(username, reaction, send_to_username=None, post_id=None, 
         return "follow_notif send/accept sent successfully :)"
 
 @shared_task
-def del_notifications(username, reaction, send_to_username=None, post_id=None):
-    try:
-        close_old_connections()
-        to_notify = User.objects.get(username=send_to_username)
-        poked_by = User.objects.get(username=username)
-    except ObjectDoesNotExist:
-        close_old_connections()
-        return "task aborted! No users found."
+def del_notifications(reaction, username=None, send_to_username=None, post_id=None, notif_id=None):
+    if reaction is not 'Comment':
+        try:
+            close_old_connections()
+            to_notify = User.objects.get(username=send_to_username)
+            poked_by = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            close_old_connections()
+            return "task aborted! No users found."
     
     query = None
-    if reaction == 'Sent Follow Request':
+    if reaction == 'Comment':
+        query = Q(notif_id=notif_id)
+    elif reaction == 'Sent Follow Request':
         query = Q(user_to_notify=to_notify)
         query.add(Q(poked_by=poked_by), Q.AND)
         query.add(Q(reaction='Sent Follow Request'), Q.AND)
@@ -136,7 +146,7 @@ def del_notifications(username, reaction, send_to_username=None, post_id=None):
         query.add(Q(post=post), Q.AND)
 
     if UserNotification.objects.filter(query).exists():
-        UserNotification.objects.filter(query).first().delete()
+        UserNotification.objects.filter(query).delete()
         channel_layer = get_channel_layer()
         if to_notify.channel_name is not "":
             AsyncToSync(channel_layer.send)(to_notify.channel_name, { "type" : "send.updated.notif" })
@@ -144,4 +154,4 @@ def del_notifications(username, reaction, send_to_username=None, post_id=None):
         return 'notif deleted successfully :)'
     else:
         close_old_connections()
-        return "filtered query doesn't exist.(Maybe user cleared his/her notif?)"       
+        return "filtered query doesn't exist.(Maybe user cleared his/her notif?)"

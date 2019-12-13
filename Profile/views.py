@@ -234,20 +234,25 @@ def post_view(request, post_id):
                     if comment_id == '':
                         # request.user commented on a post with post_id=post_id
                         with transaction.atomic():
-                            post_obj.post_comment_obj.add(PostComments.objects.create(user=request.user, 
-                            post_obj=post_obj, comment=form.cleaned_data.get('comment')))
-                        send_notifications.delay(username=request.user.username, reaction='Commented', send_to_username=post_obj.user.username, post_id=post_id)
+                            c = PostComments.objects.create(user=request.user, 
+                            post_obj=post_obj, comment=form.cleaned_data.get('comment'))
+                            post_obj.post_comment_obj.add(c)
+                        send_notifications.delay(username=request.user.username, reaction='Commented', 
+                        send_to_username=post_obj.user.username, post_id=post_id, comment_id=comment_id)
                     else:
                         # request.user replied to someone's comment on post with post_id=post_id
                         try:
                             with transaction.atomic():
                                 parent_comment = PostComments.objects.select_for_update().get(comment_id=comment_id)
                                 reply = form.cleaned_data.get('comment')
-                                parent_comment.replies.add(PostComments.objects.create(user=request.user,
-                                post_obj=post_obj, comment=reply, parent=False))
-                            send_notifications.delay(username=request.user.username, reaction='Replied', send_to_username=reply_id, post_id=post_id)
-                        except ObjectDoesNotExist:
-                            pass
+                                c = PostComments.objects.create(user=request.user,
+                                post_obj=post_obj, comment=reply, parent=False)
+                                parent_comment.replies.add(c)
+                            send_notifications.delay(username=request.user.username, reaction='Replied', 
+                            send_to_username=reply_id, post_id=post_id, comment_id=c.comment_id)
+                        except Exception as e:
+                            print(e)
+                            return None
                     with transaction.atomic():
                         post_obj.comment_count += 1
                         post_obj.save()
@@ -260,6 +265,7 @@ def post_view(request, post_id):
                 try:
                     comment = PostComments.objects.get(comment_id=comment_id)
                     if comment.user == request.user or comment.post_obj == post_obj:
+                        del_notifications.delay(reaction='Comment', notif_id=comment.comment_notif_id)
                         comment.delete()
                     # After comment_delete, send refreshed comments
                     post_comments, comment_count = post_obj.post_comment_obj.get_comments(request.user.username, post_obj)
