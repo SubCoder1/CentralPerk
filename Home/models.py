@@ -144,6 +144,7 @@ class PostComments(models.Model):
     post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_comment_obj')
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comment_by')
     comment = models.TextField(blank=False)
+    comment_notif_id = models.CharField(max_length=200, editable=False, null=True)
     reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     date_time = models.DateTimeField(auto_now_add=True)
     parent = models.BooleanField(default=True)
