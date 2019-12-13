@@ -24,10 +24,12 @@ class home_view(TemplateView):
         form = PostForm()
         posts = request.user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
         notifications = request.user.notifications.select_related('poked_by', 'post')
-        online_users, followers, following = Friends.get_friends_list(current_user=request.user)
+        followers, following = Friends.get_friends_list(current_user=request.user)
 
-        args = { 'user':request.user, 'form':form, 'posts':posts, 'notifications':notifications,
-                 'online_users':online_users, 'followers':followers, 'following':following }
+        args = { 
+            'user':request.user, 'form':form, 'posts':posts, 'notifications':notifications,
+            'followers':followers, 'following':following 
+        }
         close_old_connections()
         return render(request, self.template_name, context=args)
 

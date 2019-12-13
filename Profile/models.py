@@ -125,10 +125,10 @@ class Friends(models.Model):
         friend_obj, created = cls.objects.get_or_create(current_user=current_user)
         online_friends, followers, following = None, None, None
         if not created:
-            online_friends = friend_obj.following.filter(active=True, user_setting__activity_status=True).only('username', 'full_name', 'profile_pic')
+            #online_friends = friend_obj.following.filter(active=True, user_setting__activity_status=True).only('username', 'full_name', 'profile_pic')
             followers = friend_obj.followers.only('username', 'full_name', 'profile_pic')
             following = friend_obj.following.filter(user_setting__activity_status=True).only('username', 'profile_pic', 'full_name', 'last_login', 'active')
-        return (online_friends, followers, following)
+        return (followers, following)
 
     class Meta:
         verbose_name = 'Relation'
