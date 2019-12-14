@@ -2,6 +2,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.template.loader import render_to_string
 from django.db.models import F, Count, Prefetch
+from django.db import close_old_connections
 from Profile.models import Friends
 from Home.models import PostModel, PostLikes, PostComments, UserNotification
 from Profile.models import Friends
@@ -14,12 +15,16 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def set_last_activity(self):
-        self.scope['session']['_session_security'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-        self.scope['session'].save()
+        try:
+            self.scope['session']['_session_security'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
+            self.scope['session'].save()
+        finally:
+            close_old_connections()
 
     async def update_last_activity(self):
         while True:
-            await asyncio.sleep(2)
+            print("will update last activity after 9 mins. . .")
+            await asyncio.sleep(540)
             await self.set_last_activity()
 
     async def connect(self):
@@ -110,105 +115,143 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     
     @database_sync_to_async
     def add_channel_name_to_user(self, channel_name):
-        user = self.scope['user']
-        user.channel_name = channel_name
-        user.save()
+        try:
+            user = self.scope['user']
+            user.channel_name = channel_name
+            user.save()
+        finally:
+            close_old_connections()
     
     @database_sync_to_async
-    def like_post_from_wall(self, post_id):
-        user = self.scope['user']
+    def get_wall_posts(self):
         try:
-            post = PostModel.objects.get_post(post_id=post_id)
-            if post.post_like_obj.filter(user=user).exists():
-                # Dislike post
-                post.post_like_obj.filter(user=user).delete()
-                del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
-                post.likes_count = F('likes_count') - 1
-                post.save()
-                post.refresh_from_db()
-            else:
-                # Like post
-                post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
-                post.likes_count = F('likes_count') + 1
-                post.save()
-                post.refresh_from_db()
-                # Notify the user whose post is being liked
-                send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-            return post.likes_count
-        except Exception as e:
-            print(e)
+            user = self.scope['user']
+            posts = user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
+            return posts
+        finally:
+            close_old_connections()
+
+    @database_sync_to_async
+    def like_post_from_wall(self, post_id):
+        try:
+            user = self.scope['user']
+            try:
+                post = PostModel.objects.get_post(post_id=post_id)
+                if post.post_like_obj.filter(user=user).exists():
+                    # Dislike post
+                    post.post_like_obj.filter(user=user).delete()
+                    del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
+                    post.likes_count = F('likes_count') - 1
+                    post.save()
+                    post.refresh_from_db()
+                else:
+                    # Like post
+                    post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
+                    post.likes_count = F('likes_count') + 1
+                    post.save()
+                    post.refresh_from_db()
+                    # Notify the user whose post is being liked
+                    send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
+                return post.likes_count
+            except Exception as e:
+                print(e)
+        finally:
+            close_old_connections()
 
     @database_sync_to_async
     def post_comment_from_wall(self, post_id, comment):
-        user = self.scope['user']
-        if comment.isspace() or not len(comment):
-            # Cannot accept blank comments or comments with only spaces or newlines
-            return 'comment cannot be empty'
         try:
-            post_obj = PostModel.objects.get_post(post_id=post_id)
-            c = PostComments.objects.create(user=user, post_obj=post_obj, comment=comment)
-            post_obj.post_comment_obj.add(c)
-            post_obj.comment_count = F('comment_count') + 1
-            post_obj.save()
-            post_obj.refresh_from_db()
-            # Notify the user whose post you commented on
-            send_notifications.delay(username=user.username, reaction='Commented', 
-            send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
-            return post_obj.comment_count
-        except Exception as e:
-            print(e)
+            user = self.scope['user']
+            if comment.isspace() or not len(comment):
+                # Cannot accept blank comments or comments with only spaces or newlines
+                return 'comment cannot be empty'
+            try:
+                post_obj = PostModel.objects.get_post(post_id=post_id)
+                c = PostComments.objects.create(user=user, post_obj=post_obj, comment=comment)
+                post_obj.post_comment_obj.add(c)
+                post_obj.comment_count = F('comment_count') + 1
+                post_obj.save()
+                post_obj.refresh_from_db()
+                # Notify the user whose post you commented on
+                send_notifications.delay(username=user.username, reaction='Commented', 
+                send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
+                return post_obj.comment_count
+            except Exception as e:
+                print(e)
+        finally:
+            close_old_connections()
     
     @database_sync_to_async
     def save_unsave_post(self, post_id):
         try:
-            user = self.scope['user']
-            post_obj = PostModel.objects.get_post(post_id=post_id)
-            if user in post_obj.saved_by.all():
-                post_obj.saved_by.remove(user)
-                return 'unsaved'
-            else:
-                post_obj.saved_by.add(user)
-                return 'saved'
-        except Exception as e:
-            print(e)
+            try:
+                user = self.scope['user']
+                post_obj = PostModel.objects.get_post(post_id=post_id)
+                if user in post_obj.saved_by.all():
+                    post_obj.saved_by.remove(user)
+                    return 'unsaved'
+                else:
+                    post_obj.saved_by.add(user)
+                    return 'saved'
+            except Exception as e:
+                print(e)
+        finally:
+            close_old_connections()
 
     @database_sync_to_async
     def accept_reject_private_request(self, notif_id, option):
-        user = self.scope['user']
-        private_request_id = str(user.user_id) + str(notif_id) 
-        private_request_hash = sha256(bytes(private_request_id, encoding='utf-8')).hexdigest()
-        #print(private_request_hash)
-        if UserNotification.objects.filter(private_request_id=private_request_hash).exists():
-            notification = UserNotification.objects.get(private_request_id=private_request_hash)
-            request_by = notification.poked_by
-            if option == 'accept_request':
-                Friends.follow(request_by, user)
-                send_notifications.delay(username=user.username, reaction="Accept Follow Request", 
-                send_to_username=request_by.username, private_request=False)
-            notification.delete()
-            Friends.rm_from_pending(user, request_by)
+        try:
+            user = self.scope['user']
+            private_request_id = str(user.user_id) + str(notif_id) 
+            private_request_hash = sha256(bytes(private_request_id, encoding='utf-8')).hexdigest()
+            #print(private_request_hash)
+            if UserNotification.objects.filter(private_request_id=private_request_hash).exists():
+                notification = UserNotification.objects.get(private_request_id=private_request_hash)
+                request_by = notification.poked_by
+                if option == 'accept_request':
+                    Friends.follow(request_by, user)
+                    send_notifications.delay(username=user.username, reaction="Accept Follow Request", 
+                    send_to_username=request_by.username, private_request=False)
+                notification.delete()
+                Friends.rm_from_pending(user, request_by)
+        finally:
+            close_old_connections()
 
     @database_sync_to_async
     def del_notifications_all(self):
         try:
-            user = self.scope['user']
-            user.notifications.all().delete()
-            notifications = user.notifications.all().select_related('poked_by')
-            return notifications
-        except Exception as e:
-            print(e)
-            return None
+            try:
+                user = self.scope['user']
+                user.notifications.all().delete()
+                notifications = user.notifications.all().select_related('poked_by')
+                return notifications
+            except Exception as e:
+                print(e)
+                return None
+        finally:
+            close_old_connections()
 
     @database_sync_to_async
     def search_results(self, query=None):
-        query_res = Friends.objects.filter(current_user__username__startswith=query).annotate(f_count=Count('followers'))\
-            .order_by('-f_count').select_related('current_user')
-        return query_res[:10]
+        try:
+            query_res = Friends.objects.filter(current_user__username__startswith=query).annotate(f_count=Count('followers'))\
+                .order_by('-f_count').select_related('current_user')
+            return query_res[:10]
+        finally:
+            close_old_connections()
 
-    async def send_updated_notif(self, event=None):
+    @database_sync_to_async
+    def get_notifications(self):
         try:
             user = self.scope['user']
             notifications = user.notifications.select_related('poked_by')
+            return notifications
+        finally:
+            close_old_connections()
+
+    async def send_updated_notif(self, event=None):
+        try:
+            notifications = await self.get_notifications()
             await self.send(text_data=json.dumps({
                 'type' : 'updated_notif',
                 'notif' : render_to_string("notifications.html", {'notifications':notifications}),
@@ -218,8 +261,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def update_wall(self, event=None):
         try:
-            user = self.scope['user']
-            posts = user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
+            posts = await self.get_wall_posts()
             await self.send(text_data=json.dumps({
                 'type' : 'updated_wall',
                 'posts' : render_to_string("wall.html", {'posts':posts}),

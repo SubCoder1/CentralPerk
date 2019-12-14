@@ -20,50 +20,52 @@ class home_view(TemplateView):
     template_name = 'index.html'
 
     def get(self, request):
-        close_old_connections()
-        form = PostForm()
-        posts = request.user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
-        notifications = request.user.notifications.select_related('poked_by', 'post')
-        followers, following = Friends.get_friends_list(current_user=request.user)
+        try:
+            form = PostForm()
+            posts = request.user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
+            notifications = request.user.notifications.select_related('poked_by', 'post')
+            followers, following = Friends.get_friends_list(current_user=request.user)
 
-        args = { 
-            'user':request.user, 'form':form, 'posts':posts, 'notifications':notifications,
-            'followers':followers, 'following':following 
-        }
-        close_old_connections()
-        return render(request, self.template_name, context=args)
+            args = { 
+                'user':request.user, 'form':form, 'posts':posts, 'notifications':notifications,
+                'followers':followers, 'following':following 
+            }
+            return render(request, self.template_name, context=args)
+        finally:
+            close_old_connections()
 
     def post(self, request):
-        close_old_connections()
-        form = PostForm(request.POST, request.FILES or None)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.user = request.user
-            post.post_id = str(post.unique_id)[:8]
-            if post.pic:
-                pic = Image.open(post.pic)
+        try:  
+            form = PostForm(request.POST, request.FILES or None)
+            if form.is_valid():
+                post = form.save(commit=False)
+                post.user = request.user
+                post.post_id = str(post.unique_id)[:8]
+                if post.pic:
+                    pic = Image.open(post.pic)
 
-                if pic.format is not 'GIF':
-                    # create a BytesIO object
-                    im_io = BytesIO()
-                    # Compress image into thumbnail
-                    if pic.format is 'PNG':
-                        pic = pic.convert('RGB')
-                    
-                    size = (300, 300)
-                    pic.thumbnail(size, Image.ANTIALIAS)
-                    # save image to BytesIO object
-                    pic.save(im_io, format='JPEG', quality=95, optimize=True)
-                    # Now save the thumbnail into model's pic_thumbnail
-                    # create a django-friendly Files object
-                    post.pic_thumbnail = File(im_io, name=f"thumb_{str(post.unique_id)}.jpg")
-            post.save()
-            
-            post.send_to.add(request.user)
-            # Celery handling the task to share the post to user's followers
-            share_posts.delay(request.user.username, post.post_id)
-            messages.success(request, 'Post Successful!')
-        else:
-            messages.error(request, 'Post Unsuccessful!')
-        close_old_connections()
-        return redirect(reverse('home_view'))
+                    if pic.format is not 'GIF':
+                        # create a BytesIO object
+                        im_io = BytesIO()
+                        # Compress image into thumbnail
+                        if pic.format is 'PNG':
+                            pic = pic.convert('RGB')
+                        
+                        size = (300, 300)
+                        pic.thumbnail(size, Image.ANTIALIAS)
+                        # save image to BytesIO object
+                        pic.save(im_io, format='JPEG', quality=95, optimize=True)
+                        # Now save the thumbnail into model's pic_thumbnail
+                        # create a django-friendly Files object
+                        post.pic_thumbnail = File(im_io, name=f"thumb_{str(post.unique_id)}.jpg")
+                post.save()
+                
+                post.send_to.add(request.user)
+                # Celery handling the task to share the post to user's followers
+                share_posts.delay(request.user.username, post.post_id)
+                messages.success(request, 'Post Successful!')
+            else:
+                messages.error(request, 'Post Unsuccessful!')
+            return redirect(reverse('home_view'))
+        finally:
+            close_old_connections()
