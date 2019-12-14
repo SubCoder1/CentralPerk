@@ -12,5 +12,7 @@ channels
 channels_redis
 gevent
 celery
+dj-database-url
+psycopg2-binary
 django-session-security
 django-cors-headers
