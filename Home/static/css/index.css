@@ -86,7 +86,7 @@ button:focus { outline: none; }
 .btn-dark:hover {
     color: white;
     background-color: darkslateblue;
-    border: 1px solid mediumslateblue;
+    border: none;
     outline: none;
 }
 
