@@ -240,7 +240,9 @@ a:hover span {
 }
 /* ----------------------------------------- */
 
-/* ----------- info alignment ------------ */
+/* ------------ info alignment ------------- */
+.follow_unfollow_user { border: 1px solid mediumslateblue; }
+
 .about-profile {
   display: flex;
   justify-content: space-between;

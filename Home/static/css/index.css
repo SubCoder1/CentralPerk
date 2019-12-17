@@ -12,7 +12,8 @@ html {
 
 body {
     height: 100vh;
-    background: linear-gradient(to right, blueviolet, #4158d0);
+    /* background: linear-gradient(to right, blueviolet, #4158d0); */
+    background: darkslateblue;
     font-family: Poppins, sans-serif;
     color: white;
 }
@@ -85,7 +86,7 @@ button:focus { outline: none; }
 .btn-dark:hover {
     color: white;
     background-color: darkslateblue;
-    border: none;
+    border: 1px solid mediumslateblue;
     outline: none;
 }
 
@@ -559,11 +560,11 @@ p { margin-bottom: 0; }
 }
 
 .notif-btn {
-    background: #4904d2;
+    background: #2c1a51;
     margin-left: 0px;
 }
 
-.notif-btn:hover { background: #2d19a9; }
+.notif-btn:hover { background: #17103f; }
 .options-link:hover .fa-bell { animation: ring 1s ease; }
 
 .new-notif-indicator {
@@ -586,9 +587,14 @@ p { margin-bottom: 0; }
 .options-link:hover .fa-user-alt { transform: scale3d(1.5, 1.5, 1.5); }
 
 .search-btn { background: darkturquoise; }
-.search-btn:hover { background: mediumturquoise; }
+.search-btn:hover { background: #14a8a3; }
 .fa-search { transition: transform 0.3s; }
 .options-link:hover .fa-search { transform: rotateZ(20deg); }
+
+.chat-btn { background: #e30b34; }
+.chat-btn:hover { background: #be0b2d; }
+.fa-comment-dots { transition: transform 0.3s; }
+
 
 @-webkit-keyframes ring {
     0% {
