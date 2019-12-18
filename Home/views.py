@@ -31,6 +31,9 @@ class home_view(TemplateView):
                 'followers':followers, 'following':following 
             }
             return render(request, self.template_name, context=args)
+        except Exception as e:
+            print(str(e))
+            return redirect(reverse('user_login'))
         finally:
             close_old_connections()
 
@@ -67,5 +70,8 @@ class home_view(TemplateView):
             else:
                 messages.error(request, 'Post Unsuccessful!')
             return redirect(reverse('home_view'))
+        except Exception as e:
+            print(str(e))
+            return redirect(reverse('user_login'))
         finally:
             close_old_connections()

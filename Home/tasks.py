@@ -3,11 +3,44 @@ from __future__ import absolute_import, unicode_literals
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.db import close_old_connections
+from django.contrib.sessions.models import Session
+from django.core.cache import cache
 from celery import shared_task
 from Profile.models import Friends, User, Account_Settings
 from Home.models import PostModel, UserNotification, PostComments
+from AUth.tasks import update_user_activity_on_logout
 from channels.layers import get_channel_layer
 from asgiref.sync import AsyncToSync
+from datetime import datetime
+import pytz
+
+@shared_task
+def monitor_user_status(username, session_key, cache_key):
+    try:
+        tz = pytz.timezone('Asia/Kolkata')
+        session_obj = Session.objects.filter(session_key=session_key).first()
+        session_exp_dt = session_obj.expire_date.astimezone(tz=tz)
+        now = datetime.now().astimezone(tz=tz)
+        
+        # Check if user's inactive for 10 mins straight.
+        if now >= session_exp_dt:
+            # This means there wasn't any activity between client & server in the time span of session_exp_dt <-> now.
+
+            session_obj.delete()
+            cache.delete(f"django.contrib.sessions.cached_{cache_key}")
+            # Make usual changes to the inactive user which are normally done during a proper logout.
+            update_user_activity_on_logout.delay(username=username)
+            return 'user inactive... logged user out successfully :)'
+        else:
+            # Check again after some time
+            user = User.objects.get(username=username)
+            user.monitor_task_id = str(monitor_user_status.apply_async((username, session_key, cache_key), eta=session_exp_dt).task_id)
+            user.save()
+            return f'checking {session_key} status on {session_exp_dt.strftime("%H:%M:%S %p")} :)'
+    except Exception as e:
+        return str(e)
+    finally:
+        close_old_connections()
 
 @shared_task
 def share_posts(username, post_id):
@@ -27,10 +60,8 @@ def share_posts(username, post_id):
                     post.send_to.add(user)
                     if user.channel_name is not "":
                         AsyncToSync(channel_layer.send)(user.channel_name, { "type" : "update.wall" })
-                close_old_connections()
                 return "complete :)"
             else:
-                close_old_connections()
                 return "user is lonely :("
         else:
             return "user is lonely :("

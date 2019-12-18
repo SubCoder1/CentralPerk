@@ -3,29 +3,35 @@ from channels.db import database_sync_to_async
 from django.template.loader import render_to_string
 from django.db.models import F, Count, Prefetch
 from django.db import close_old_connections
+from django.contrib.sessions.models import Session
 from Profile.models import Friends
 from Home.models import PostModel, PostLikes, PostComments, UserNotification
 from Profile.models import Friends
-from Home.tasks import send_notifications, del_notifications
-import json, asyncio
+from Home.tasks import send_notifications, del_notifications, monitor_user_status
+import json, asyncio, pytz
 from hashlib import sha256
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
+    async def force_close_ws_conn(self, event=None):
+        await self.close()
+
     @database_sync_to_async
-    def set_last_activity(self):
+    def update_session_exp_datetime(self):
         try:
-            self.scope['session']['_session_security'] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-            self.scope['session'].save()
+            tz = pytz.timezone('Asia/Kolkata')
+            user = self.scope['user']
+            session_key = self.scope['session'].session_key
+            cache_key = self.scope['session'].cache_key
+            session_obj = Session.objects.get(session_key=session_key)
+            session_obj.expire_date = datetime.now().astimezone(tz=tz) + timedelta(minutes=4)
+            session_obj.save()
+            user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=240).task_id)
+            user.save()
+            print(f"session expiry date after update -> {session_obj.expire_date}")
         finally:
             close_old_connections()
-
-    async def update_last_activity(self):
-        while True:
-            print("will update last activity after 9 mins. . .")
-            await asyncio.sleep(540)
-            await self.set_last_activity()
 
     async def connect(self):
         if self.scope["user"].is_anonymous:
@@ -34,10 +40,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         else:
             # Accept the connection
             await self.accept()
+            # fix session timeout of 10mins & schedule a monitoring task
+            await self.update_session_exp_datetime()
         await self.add_channel_name_to_user(channel_name=self.channel_name)
-
-        # Keep on updating last_activity
-        run_task = asyncio.ensure_future(self.update_last_activity())
 
     async def disconnect(self, close_code):
         [t.cancel() for t in asyncio.all_tasks()]
@@ -48,6 +53,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             await self.close()
         data_from_client = json.loads(text_data)
         if data_from_client.get('task') is not None:
+            # extend user's session time-out as he/she is clearly active!
+            await self.update_session_exp_datetime()
+
             # like/Dislike posts from wall-posts
             if data_from_client['task'] == 'post_like':
                 post_id = data_from_client.get('post_id', None)
@@ -154,7 +162,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
                 return post.likes_count
             except Exception as e:
-                print(e)
+                print(str(e))
         finally:
             close_old_connections()
 
@@ -177,7 +185,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
                 return post_obj.comment_count
             except Exception as e:
-                print(e)
+                print(str(e))
         finally:
             close_old_connections()
     
@@ -194,7 +202,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     post_obj.saved_by.add(user)
                     return 'saved'
             except Exception as e:
-                print(e)
+                print(str(e))
         finally:
             close_old_connections()
 
@@ -226,7 +234,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 notifications = user.notifications.all().select_related('poked_by')
                 return notifications
             except Exception as e:
-                print(e)
+                print(str(e))
                 return None
         finally:
             close_old_connections()
@@ -237,6 +245,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             query_res = Friends.objects.filter(current_user__username__startswith=query).annotate(f_count=Count('followers'))\
                 .order_by('-f_count').select_related('current_user')
             return query_res[:10]
+        except Exception as e:
+            print(str(e))
         finally:
             close_old_connections()
 
@@ -257,7 +267,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 'notif' : render_to_string("notifications.html", {'notifications':notifications}),
             }))
         except Exception as e:
-            print(e)
+            print(str(e))
 
     async def update_wall(self, event=None):
         try:
@@ -267,4 +277,4 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 'posts' : render_to_string("wall.html", {'posts':posts}),
             }))
         except Exception as e:
-            print(e)
+            print(str(e))

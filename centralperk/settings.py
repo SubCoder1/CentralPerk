@@ -3,11 +3,11 @@ import os
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
 #SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_AGE = 240
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True # If a logged-in user closes the browser, session gets expired
 SESSION_SAVE_EVERY_REQUEST = True # whenever you occur new request, It saves the session and updates timeout to expire
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = "default"
-SESSION_SECURITY_EXPIRE_AFTER = 600 # Time (in seconds) before the user should be logged out if inactive.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,7 +33,6 @@ INSTALLED_APPS = [
 
     #third party
     #'debug_toolbar',
-    'session_security',
     'django_extensions',
     
     #own
@@ -50,7 +49,6 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'centralperk.middleware.SessionActivityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'centralperk.middleware.login_required_middleware',
