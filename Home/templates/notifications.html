@@ -72,12 +72,6 @@
                     <a class="notif-link" href="{% url 'view_post' notification.post.post_id %}">
                         <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
                     </a>
-                {% else %}
-                    <div class="empty-notif">
-                        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                        <h5 style="position: relative; left: 2px;">No Notifications</h5>
-                    </div>
-                {% endif %}
             </div>
         </div>
     </div>
