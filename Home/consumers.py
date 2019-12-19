@@ -11,11 +11,9 @@ from Home.tasks import send_notifications, del_notifications, monitor_user_statu
 import json, asyncio, pytz
 from hashlib import sha256
 from datetime import datetime, timedelta
+from itertools import chain
 
 class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
-
-    async def force_close_ws_conn(self, event=None):
-        await self.close()
 
     @database_sync_to_async
     def update_session_exp_datetime(self):
@@ -27,8 +25,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             session_obj = Session.objects.get(session_key=session_key)
             session_obj.expire_date = datetime.now().astimezone(tz=tz) + timedelta(minutes=4)
             session_obj.save()
-            user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=240).task_id)
-            user.save()
+            if user.monitor_task_id == "":
+                user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=240).task_id)
+                user.save()
             print(f"session expiry date after update -> {session_obj.expire_date}")
         finally:
             close_old_connections()
@@ -116,6 +115,10 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                         'type' : 'search_results',
                         'results' : render_to_string("search.html", {'results':response}),
                     }))
+            # Get p_chat_cover
+            elif data_from_client['task'] == 'get_p_chat_cover':
+                await self.send_p_chat_cover()
+            # else do nothing :|
             else:
                 pass
     
@@ -256,6 +259,21 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         finally:
             close_old_connections()
 
+    @database_sync_to_async
+    def get_p_chat_cover(self):
+        try:
+            user = self.scope['user']
+            friend_obj = Friends.objects.get(current_user=user)
+            friends_list_q_a = friend_obj.following.filter(user_setting__activity_status=True).only('username',
+            'profile_pic','full_name','last_login','active')
+            friends_list_q_b = friend_obj.following.filter(user_setting__activity_status=False).only('username', 
+            'profile_pic', 'full_name')
+
+            friends_list = list(chain(friends_list_q_a, friends_list_q_b))
+            return friends_list
+        finally:
+            close_old_connections()
+    
     async def send_updated_notif(self, event=None):
         try:
             notifications = await self.get_notifications()
@@ -272,6 +290,16 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({
                 'type' : 'updated_wall',
                 'posts' : render_to_string("wall.html", {'posts':posts}),
+            }))
+        except Exception as e:
+            print(str(e))
+
+    async def send_p_chat_cover(self, event=None):
+        try:
+            friends_list = await self.get_p_chat_cover()
+            await self.send(text_data=json.dumps({
+                'type' : 'p_chat_cover_f_server',
+                'p-chat-cover' : render_to_string("p-chat-cover.html", {'friends':friends_list}),
             }))
         except Exception as e:
             print(str(e))
