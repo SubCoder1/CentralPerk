@@ -23,7 +23,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             session_key = self.scope['session'].session_key
             cache_key = self.scope['session'].cache_key
             session_obj = Session.objects.get(session_key=session_key)
-            session_obj.expire_date = datetime.now().astimezone(tz=tz) + timedelta(minutes=4)
+            session_obj.expire_date = datetime.now().astimezone(tz=tz) + timedelta(minutes=8)
             session_obj.save()
             if user.monitor_task_id == "":
                 user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=480).task_id)
