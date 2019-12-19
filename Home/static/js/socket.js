@@ -7,6 +7,11 @@ $(document).ready(function() {
     }
     
     var $wrap_search = $('.wrap-search-res');
+    var $notif_wrapper = $('.notif-wrapper');
+    var $new_notif_indicator = $('.new-notif-indicator');
+    var $post_container = $('.post-container');
+    var $wrap_update_posts = $('#update-posts');
+    var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
 
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
@@ -20,23 +25,14 @@ $(document).ready(function() {
             var post_id = '#' + data['post_id'];
             $(post_id).children('.card-footer').children('.upper-row').children('.comment-counter').text(data['count']);
         }
-        // Update save/unsave post icon
-        else if (data['type'] == 'save_unsave_post_response') {
-            // No need, already handled by css
-        }
         // Update notifications wrapper
         else if (data['type'] == 'updated_notif') {
-            var $new_notif_indicator = $('.new-notif-indicator');
             $new_notif_indicator.css('display', 'block');
-            var $notif_wrapper = $('.notif-wrapper');
             $notif_wrapper.html(data['notif']);
         }
         // Update wall
         else if (data['type'] == 'updated_wall') {
-            var $post_container = $('.post-container');
-            var $wrap_update_posts = $('#update-posts');
             $wrap_update_posts.css('display', 'flex');
-
             $wrap_update_posts.on('click', function() {
                 $("body").scrollTop(0);
                 if (data) {
@@ -51,6 +47,10 @@ $(document).ready(function() {
         // Display search result
         else if (data['type'] == 'search_results') {
             $wrap_search.html(data['results']);
+        }
+        // Display p_chat_cover
+        else if (data['type'] == 'p_chat_cover_f_server') {
+            $p_chat_cover_wrapper.html(data['p-chat-cover']);
         }
     };
 
@@ -146,4 +146,15 @@ $(document).ready(function() {
         $(this).parent().parent().parent().fadeOut(300, function(){ $(this).remove();});;
     });
 
+    // CHAT SECTION
+
+    // Send req to get p-chat-cover
+    var $chat_btn = $('.chat-btn');
+    $chat_btn.on('click', function(event) {
+        event.preventDefault();
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_p_chat_cover',
+        }));
+    });
+    
 });
