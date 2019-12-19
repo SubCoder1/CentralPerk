@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
                 ('user_id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
                 ('session_key', models.CharField(default='notyetaccquired', max_length=40)),
+                ('monitor_task_id', models.CharField(max_length=60, blank=True, null=True)),
                 ('channel_name', models.CharField(blank=True, default='', max_length=100, null=True)),
                 ('username', models.CharField(default='', max_length=20, unique=True)),
                 ('full_name', models.CharField(max_length=50)),

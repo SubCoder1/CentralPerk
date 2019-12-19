@@ -23,14 +23,17 @@ class home_view(TemplateView):
         try:
             form = PostForm()
             posts = request.user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
-            notifications = request.user.notifications.select_related('poked_by', 'post')
+            #notifications = request.user.notifications.select_related('poked_by', 'post')
             followers, following = Friends.get_friends_list(current_user=request.user)
 
             args = { 
-                'user':request.user, 'form':form, 'posts':posts, 'notifications':notifications,
+                'user':request.user, 'form':form, 'posts':posts,
                 'followers':followers, 'following':following 
             }
             return render(request, self.template_name, context=args)
+        except Exception as e:
+            print(str(e))
+            return redirect(reverse('user_login'))
         finally:
             close_old_connections()
 
@@ -67,5 +70,8 @@ class home_view(TemplateView):
             else:
                 messages.error(request, 'Post Unsuccessful!')
             return redirect(reverse('home_view'))
+        except Exception as e:
+            print(str(e))
+            return redirect(reverse('user_login'))
         finally:
             close_old_connections()

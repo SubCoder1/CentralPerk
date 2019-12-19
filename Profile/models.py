@@ -15,6 +15,7 @@ def user_directory_path(instance, filename):
 class User(AbstractBaseUser):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     session_key = models.CharField(max_length=40, default='notyetaccquired')
+    monitor_task_id = models.CharField(max_length=60, blank=True, null=True)
     channel_name = models.CharField(max_length=100, default="", blank=True, null=True)
     username = models.CharField(max_length=20, default='',unique=True)
     full_name = models.CharField(max_length=50)

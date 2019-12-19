@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.db import close_old_connections
 from channels.layers import get_channel_layer
 from asgiref.sync import AsyncToSync
+from centralperk.celery import app
 from datetime import datetime
 import pytz, re
 
@@ -35,6 +36,10 @@ def update_user_activity_on_logout(username):
             user.just_created = False
         tz = pytz.timezone('Asia/Kolkata')
         user.last_login = datetime.now().astimezone(tz=tz)
+        if user.monitor_task_id is not "":
+            # revoke any ongoing session monitoring task against this user.
+            app.control.revoke(str(user.monitor_task_id))
+            user.monitor_task_id = ""
         user.save()
         return "complete :)"
     finally:

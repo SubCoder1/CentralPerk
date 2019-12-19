@@ -1,0 +1,10 @@
+/* ------------ p-chat-cover-user-card ------------- */
+.msg-user-card {
+    cursor: pointer;
+}
+
+.msg-user-card:hover {
+    border-bottom: 1px solid mediumslateblue;
+    border-radius: 0;
+}
+

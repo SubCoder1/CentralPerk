@@ -18,6 +18,7 @@
     <link href="https://fonts.googleapis.com/css?family=Barriecito&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/progressive-image.js/dist/progressive-image.css">
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    <link href="{% static 'css/chat.css' %}" rel="stylesheet">
     {% block head %}
     {% endblock %}
     {% block title %}
@@ -109,7 +110,6 @@
                   <!-- Notification body -->
                   <div class="modal-body">
                     <div class="notif-wrapper">
-                      {% include "notifications.html" %}
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -243,6 +243,25 @@
                 </div>
               </div>
             </div>
+            <button class="btn btn-dark options-link chat-btn" data-toggle="modal" data-target="#p-chat">
+              <i class="fas fa-comment-dots"></i>
+            </button>
+            <div class="modal fade" id="p-chat" tabindex="-1" role="dialog" aria-labelledby="chat-title" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header chat-modal-header">
+                    <h5 class="modal-title headline">Messages</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </a>
+                  </div>
+                  <div class="modal-body">
+                    <div class="p-chat-cover-wrapper">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <br/><br/>
           <div class="stories-block">
@@ -257,8 +276,6 @@
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/progressive-image.js/dist/progressive-image.js"></script>
-    {% include 'session_security/all.html' %}
-    <script>sessionSecurity.confirmFormDiscard = undefined;</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.linearicons.com/free/1.0.0/svgembedder.min.js"></script>
