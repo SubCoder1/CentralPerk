@@ -96,15 +96,13 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                         'post_id' : post_id,
                         'result' : response,
                     }))
+            # Get notifications
+            elif data_from_client['task'] == 'get_notifications':
+                await self.send_updated_notif()
             # Clear all notifications
             elif data_from_client['task'] == 'clear_notif_all':
                 await self.del_notifications_all()
-                response = await self.send_updated_notif()
-                if response is not None:
-                    await self.send(text_data=json.dumps({
-                        'type' : 'updated_notif',
-                        'notif' : render_to_string("notifications.html", {'notifications':response}),
-                    }))
+                await self.send_updated_notif()
             #accept_reject_private_request
             elif data_from_client['task'] == 'accept_reject_p_request':
                 notif_id = data_from_client.get('notif_id', None)
@@ -231,8 +229,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             try:
                 user = self.scope['user']
                 user.notifications.all().delete()
-                notifications = user.notifications.all().select_related('poked_by')
-                return notifications
+                return 'cleared all notif :)'
             except Exception as e:
                 print(str(e))
                 return None

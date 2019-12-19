@@ -94,6 +94,14 @@ $(document).ready(function() {
         $(this).children('textarea').val("");
     });
 
+    // Get notifications
+    var $get_notif = $('.notif-btn');
+    $get_notif.on('click', function(event) {
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_notifications',
+        }));
+    });
+
     // Clear all notifications
     var $clear_notify = $('.clear-notify');
     $clear_notify.on('click', function(event) {
