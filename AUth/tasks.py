@@ -39,6 +39,7 @@ def update_user_activity_on_logout(username):
         if user.monitor_task_id is not "":
             # revoke any ongoing session monitoring task against this user.
             app.control.revoke(str(user.monitor_task_id))
+            user.monitor_task_id = ""
         user.save()
         return "complete :)"
     finally:
