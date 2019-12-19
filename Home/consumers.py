@@ -26,7 +26,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             session_obj.expire_date = datetime.now().astimezone(tz=tz) + timedelta(minutes=4)
             session_obj.save()
             if user.monitor_task_id == "":
-                user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=240).task_id)
+                user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=480).task_id)
                 user.save()
             print(f"session expiry date after update -> {session_obj.expire_date}")
         finally:
