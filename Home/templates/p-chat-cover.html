@@ -1,0 +1,36 @@
+<div class="wrap-msg-list-res">
+    {% if friends %}
+    {% for friend in friends %}
+        <div class="card msg-user-card">
+            <div class="card-body" style="padding: 0">
+                <div class="d-flex">
+                    <div class="mr-1">
+                        <img src="{{ friend.profile_pic.url }}" class="notify-pic-rounded"/>
+                    </div>
+                    <div class="ml-2 ml-2-align">
+                        <div class="m-0">
+                            <a href="{% url 'view_profile' friend.username %}">
+                                {{ friend.username }}
+                            </a>
+                            <h6>{{ friend.full_name }}</h6>
+                        </div>
+                    </div>
+                    {% if friend.active is not None %}
+                        {% if friend.active == 'True' %}
+                            <i class="material-icons online-green-ico">lens</i>
+                        {% else %}
+                            <h5 class="last_login_date_time">{{ friend.last_login|timesince }} ago</h5>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <br/>
+    {% endfor %}
+    {% else %}
+    <div class="empty-notif">
+        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+        <h5 style="position: relative; left: 2px;">No friends yet :(</h5>
+    </div>
+    {% endif %}
+</div>
