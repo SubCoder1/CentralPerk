@@ -7,11 +7,6 @@
             </div>
             <h6>{{ user.full_name }}</h6>
         </div>
-        {% if user.active == 'True' %}
-            <i class="material-icons online-green-ico">lens</i>
-        {% else %}
-            <h6 class="last_login_date_time">{{ user.last_login|timesince }} ago</h6>
-        {% endif %}
     </div>
     {% endfor %}
 {% else %}

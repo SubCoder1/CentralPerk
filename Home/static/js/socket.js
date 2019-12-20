@@ -12,6 +12,8 @@ $(document).ready(function() {
     var $post_container = $('.post-container');
     var $wrap_update_posts = $('#update-posts');
     var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
+    var $followers_wrapper = $('.followers-wrapper');
+    var $following_wrapper = $('.following-wrapper');
 
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
@@ -51,6 +53,11 @@ $(document).ready(function() {
         // Display p_chat_cover
         else if (data['type'] == 'p_chat_cover_f_server') {
             $p_chat_cover_wrapper.html(data['p-chat-cover']);
+        }
+        // Display friends list
+        else if (data['type'] == 'friends_list_f_server') {
+            $followers_wrapper.html(data['followers']);
+            $following_wrapper.html(data['following']);
         }
     };
 
@@ -144,6 +151,15 @@ $(document).ready(function() {
             'option' : 'reject_request',
         }));
         $(this).parent().parent().parent().fadeOut(300, function(){ $(this).remove();});;
+    });
+
+    // Get friends list
+    var $online_users_btn = $('.online-users-btn');
+    $online_users_btn.on('click', function(event) {
+        event.preventDefault();
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_friends_list',
+        }));
     });
 
     // CHAT SECTION

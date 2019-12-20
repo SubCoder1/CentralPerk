@@ -134,4 +134,27 @@ $(document).ready(function() {
     $preview_img.attr('src', '#');
     $real_upload_btn.val(null);
   });
+
+  // show loading.gif on modal close
+  
+  var $notif_modal = $('#notification');
+  var $notif_wrapper = $('.notif-wrapper');
+  $notif_modal.on('hidden.bs.modal', function (e) {
+    $notif_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+  });
+
+  var $p_chat_modal = $('#p-chat');
+  var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
+  $p_chat_modal.on('hidden.bs.modal', function (e) {
+    $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+  });
+
+  var $online_users_modal = $('#online-users');
+  var $followers_wrapper = $('.followers-wrapper');
+  var $following_wrapper = $('.following-wrapper');
+  $online_users_modal.on('hidden.bs.modal', function (e) {
+    $followers_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+    $following_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+  });
+  
 })
