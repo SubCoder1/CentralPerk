@@ -110,6 +110,7 @@
                   <!-- Notification body -->
                   <div class="modal-body">
                     <div class="notif-wrapper">
+                      <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -211,12 +212,12 @@
                     <div class="tab-content" id="cardtabContent">
                       <div class="tab-pane fade show active" id="followers" role="tabpanel" aria-labelledby="followers-tab">
                         <div class="followers-wrapper">
-                          {% include "u-followers.html" %}
+                          <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                         </div>
                       </div>
                       <div class="tab-pane fade" id="following" role="tabpanel" aria-labelledby="following-tab">
                         <div class="following-wrapper">
-                          {% include "u-following.html" %}
+                          <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                         </div>
                       </div>
                     </div>
@@ -237,7 +238,7 @@
                   </div>
                   <div class="modal-body">
                     <div class="wrap-search-res">
-                        {% include "search.html" %}
+                      <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                     </div>
                   </div>
                 </div>
@@ -257,6 +258,7 @@
                   </div>
                   <div class="modal-body">
                     <div class="p-chat-cover-wrapper">
+                      <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                     </div>
                   </div>
                 </div>

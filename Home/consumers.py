@@ -118,6 +118,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # Get p_chat_cover
             elif data_from_client['task'] == 'get_p_chat_cover':
                 await self.send_p_chat_cover()
+            # Get friends list
+            elif data_from_client['task'] == 'get_friends_list':
+                await self.send_friends_list()
             # else do nothing :|
             else:
                 pass
@@ -274,6 +277,20 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         finally:
             close_old_connections()
     
+    @database_sync_to_async
+    def get_friends_list(self):
+        user = self.scope['user']
+        followers, following = Friends.get_friends_list(current_user=user)
+        return (followers, following)
+
+    async def send_friends_list(self, event=None):
+        followers, following = await self.get_friends_list()
+        await self.send(text_data=json.dumps({
+                'type' : 'friends_list_f_server',
+                'following' : render_to_string("u-following.html", {'following':following}),
+                'followers' : render_to_string("u-followers.html", {'followers':followers}),
+            }))
+
     async def send_updated_notif(self, event=None):
         try:
             notifications = await self.get_notifications()
