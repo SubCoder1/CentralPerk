@@ -60,6 +60,13 @@ $(document).ready(function() {
         else if (data['type'] == 'p_chat_f_server') {
             $p_chat_cover_wrapper.html(data['p-chat']);
         }
+        // Display msg sent from server
+        else if (data['type'] == 'p_chat_msg_f_server') {
+            var new_txt = "<h5 class='p-chat-rec-txt'>" + data['msg'] + "</h5>" + "<br/><br/>";
+            var $data = $(new_txt);
+            $('.p-chat-modal-body').append($data);
+            $data.animate({'margin-top': '10px'}, 230);
+        }
         // Display friends list
         else if (data['type'] == 'friends_list_f_server') {
             $followers_wrapper.html(data['followers']);
@@ -174,9 +181,11 @@ $(document).ready(function() {
     var $chat_btn = $('.chat-btn');
     $chat_btn.on('click', function(event) {
         event.preventDefault();
-        homeSocket.send(JSON.stringify({
-            'task' : 'get_p_chat_cover',
-        }));
+        if ($p_chat_cover_wrapper.children().hasClass('p-chat-upper-card') == false) {
+            homeSocket.send(JSON.stringify({
+                'task' : 'get_p_chat_cover',
+            }));
+        }
     });
     // Same event on clicking the back btn on p-chat
     $p_chat_cover_wrapper.on('click', '.p-chat-cover-b-link', function(event) {
@@ -197,4 +206,17 @@ $(document).ready(function() {
         }));
     });
     
+    // Send msg in p-chat
+    $p_chat_cover_wrapper.on('click', '.p-chat-snd-btn', function(event) {
+        event.preventDefault();
+        var new_txt = "<h5 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h5>";
+        var $data = $(new_txt);
+        $('.p-chat-modal-body').append($data);
+        $data.animate({'margin-top': '10px'}, 230);
+        homeSocket.send(JSON.stringify({
+            'task' : 'p_chat_msg',
+            'msg' : $('.p-chat-txtbox').val(),
+        }));
+        $('.p-chat-txtbox').val("");
+    });
 });
