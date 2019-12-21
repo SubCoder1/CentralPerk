@@ -2,17 +2,20 @@
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 from Profile.models import User, Friends
+from Home.models import Conversations
 from django.contrib.sessions.models import Session
 from django.core.cache import cache
 from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.db import close_old_connections
+from django.db.models import Q
 from channels.layers import get_channel_layer
 from asgiref.sync import AsyncToSync
 from centralperk.celery import app
 from datetime import datetime
 import pytz, re
+from itertools import chain
 
 @shared_task
 def update_user_activity_on_login(username, session_key=None):
@@ -41,6 +44,24 @@ def update_user_activity_on_logout(username):
             app.control.revoke(str(user.monitor_task_id))
             user.monitor_task_id = ""
         user.save()
+
+        # Close any open conversations from this end
+        # Build query
+        query_a = Q(user_a=user)
+        query_a.add(Q(chat_active_from_a=True), Q.AND)
+        open_convo_list_a = Conversations.objects.filter(query_a)
+        query_b = Q(user_b=user)
+        query_b.add(Q(chat_active_from_b=True), Q.AND)
+        open_convo_list_b = Conversations.objects.filter(query_b)
+
+        open_convo_list = list(chain(open_convo_list_a, open_convo_list_b))
+        #print(open_convo_list)
+        for convo in open_convo_list:   # Theoretically this loop should run for at most 1 times
+            if convo.user_a == user:
+                convo.chat_active_from_a = False
+            else:
+                convo.chat_active_from_b = False
+            convo.save()
         return "complete :)"
     finally:
         close_old_connections()
