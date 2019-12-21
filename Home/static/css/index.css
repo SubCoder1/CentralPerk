@@ -980,4 +980,8 @@ p { margin-bottom: 0; }
     .card-header, .card-footer {
         padding: 0.7rem;
     }
+
+    .account-settings-loading-gif, .modal-loading-gif {
+        height: 200px;
+    }
 }
