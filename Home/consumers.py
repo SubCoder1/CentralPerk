@@ -4,9 +4,8 @@ from django.template.loader import render_to_string
 from django.db.models import F, Count, Prefetch
 from django.db import close_old_connections
 from django.contrib.sessions.models import Session
-from Profile.models import Friends
+from Profile.models import User, Friends
 from Home.models import PostModel, PostLikes, PostComments, UserNotification
-from Profile.models import Friends
 from Home.tasks import send_notifications, del_notifications, monitor_user_status
 import json, asyncio, pytz
 from hashlib import sha256
@@ -44,7 +43,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         await self.add_channel_name_to_user(channel_name=self.channel_name)
 
     async def disconnect(self, close_code):
-        [t.cancel() for t in asyncio.all_tasks()]
+        pass
 
     async def receive(self, text_data):
         if self.scope["user"].is_anonymous:
@@ -118,6 +117,13 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # Get p_chat_cover
             elif data_from_client['task'] == 'get_p_chat_cover':
                 await self.send_p_chat_cover()
+            # Get p_chat
+            elif data_from_client['task'] == 'get_p_chat':
+                username = data_from_client.get('user', None)
+                if username is not None:
+                    await self.send_p_chat(username=username)
+                else:
+                    pass
             # Get friends list
             elif data_from_client['task'] == 'get_friends_list':
                 await self.send_friends_list()
@@ -267,16 +273,35 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         try:
             user = self.scope['user']
             friend_obj = Friends.objects.get(current_user=user)
-            friends_list_q_a = friend_obj.following.filter(user_setting__activity_status=True).only('username',
-            'profile_pic','full_name','last_login','active')
-            friends_list_q_b = friend_obj.following.filter(user_setting__activity_status=False).only('username', 
-            'profile_pic', 'full_name')
+            friends_list_q_a = friend_obj.following.only('username','profile_pic','full_name','last_login','active')
+            friends_list_q_b = friend_obj.followers.only('username','profile_pic','full_name')
 
             friends_list = list(chain(friends_list_q_a, friends_list_q_b))
             return friends_list
         finally:
             close_old_connections()
     
+    @database_sync_to_async
+    def get_p_chat(self, username):
+        try:
+            # check if user exists
+            p_chat_user = User.objects.filter(username=username).first()
+            # If exists . . .
+            if p_chat_user is not None:
+                # check if user is request.user's friend (follower or following)
+                user = self.scope['user']
+                friend_obj = Friends.objects.get(current_user=user)
+                # If exists . . .
+                if friend_obj.followers.filter(username=username).count() or friend_obj.following.filter(username=username).count():
+                    # Return user obj
+                    return p_chat_user
+                else:
+                    return
+            # else return None
+            return
+        finally:
+            close_old_connections()
+
     @database_sync_to_async
     def get_friends_list(self):
         user = self.scope['user']
@@ -318,5 +343,18 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 'type' : 'p_chat_cover_f_server',
                 'p-chat-cover' : render_to_string("p-chat-cover.html", {'friends':friends_list}),
             }))
+        except Exception as e:
+            print(str(e))
+    
+    async def send_p_chat(self, username, event=None):
+        try:
+            friend = await self.get_p_chat(username=username)
+            if friend is not None:
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_f_server',
+                    'p-chat' : render_to_string("p-chat.html", {'friend':friend}),
+                }))
+            else:
+                pass
         except Exception as e:
             print(str(e))
