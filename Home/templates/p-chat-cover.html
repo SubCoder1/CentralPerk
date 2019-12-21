@@ -1,7 +1,7 @@
 <div class="wrap-msg-list-res">
     {% if friends %}
     {% for friend in friends %}
-        <div class="card msg-user-card">
+        <div class="card msg-user-card" id="{{ friend.username }}">
             <div class="card-body" style="padding: 0">
                 <div class="d-flex">
                     <div class="mr-1">
@@ -25,7 +25,6 @@
                 </div>
             </div>
         </div>
-        <br/>
     {% endfor %}
     {% else %}
     <div class="empty-notif">

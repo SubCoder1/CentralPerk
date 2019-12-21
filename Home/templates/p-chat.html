@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body" style="padding: 0">
+    <div class="card-body p-chat-upper-card-body">
         <div class="d-flex">
             <div class="mr-1">
                 <img src="{{ friend.profile_pic.url }}" class="notify-pic-rounded"/>
@@ -9,15 +9,20 @@
                     <a href="{% url 'view_profile' friend.username %}">
                         {{ friend.username }}
                     </a>
-                    {% if friend.active is not None %}
-                        {% if friend.active == 'True' %}
-                            <i class="material-icons online-green-ico">lens</i>
-                        {% else %}
-                            <h5 class="last_login_date_time">{{ friend.last_login|timesince }} ago</h5>
-                        {% endif %}
+                    {% if friend.active == 'True' %}
+                        <i class="material-icons online-green-ico">lens</i>
+                    {% else %}
+                        <h5 class="p-chat-last-login">{{ friend.last_login|timesince }} ago</h5>
                     {% endif %}
                 </div>
             </div>
+            <a class="p-chat-cover-b-link" href="#back"><i class="fas fa-chevron-left"></i></a>
         </div>
     </div>
 </div>
+<div class="modal-body p-chat-modal-body">
+    Here's where your texts will show up!
+</div>
+
+<textarea type="text" class="form-control p-chat-txtbox" id="comment" name="comment" placeholder="Post a comment" style="height: 42px;"></textarea>
+<button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
