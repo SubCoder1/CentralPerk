@@ -3,6 +3,7 @@
     cursor: pointer;
     border-bottom: 1.5px solid transparent;
     margin-bottom: 10px;
+    padding-bottom: 8px;
 }
 
 .msg-user-card:hover {
@@ -63,6 +64,31 @@
     background-color: #1d1d1d;
     box-shadow: none;
     color: white;
+}
+
+.p-chat-snd-btn {
+    border-radius: 50% !important;
+    height: 39px;
+    width: 40px;
+    background: mediumslateblue;
+    border-color: mediumslateblue;
+}
+
+.p-chat-snd-btn:hover {
+    background: darkslateblue;
+    border-color: darkslateblue;
+}
+
+.p-chat-sent-txt {
+    margin-top:20px;
+    width: 49%;
+}
+
+.p-chat-rec-txt {
+    margin-top: 10px;
+    float: right;
+    text-align: right;
+    width: 49%;
 }
 
 @media only screen and (max-width: 767px) {
