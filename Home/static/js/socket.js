@@ -62,9 +62,12 @@ $(document).ready(function() {
         }
         // Display msg sent from server
         else if (data['type'] == 'p_chat_msg_f_server') {
-            var new_txt = "<h5 class='p-chat-rec-txt'>" + data['msg'] + "</h5>" + "<br/><br/>";
+            var new_txt = "<div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>";
             var $data = $(new_txt);
             $('.p-chat-modal-body').append($data);
+            $('.p-chat-modal-body').animate({
+                scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+            }, 1500);
             $data.animate({'margin-top': '10px'}, 230);
         }
         // Display friends list
@@ -209,9 +212,12 @@ $(document).ready(function() {
     // Send msg in p-chat
     $p_chat_cover_wrapper.on('click', '.p-chat-snd-btn', function(event) {
         event.preventDefault();
-        var new_txt = "<h5 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h5>";
+        var new_txt = "<div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
         var $data = $(new_txt);
         $('.p-chat-modal-body').append($data);
+        $('.p-chat-modal-body').animate({
+            scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+        }, 1500);
         $data.animate({'margin-top': '10px'}, 230);
         homeSocket.send(JSON.stringify({
             'task' : 'p_chat_msg',
