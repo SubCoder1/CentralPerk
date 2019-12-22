@@ -421,7 +421,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     async def send_msg(self, message, event=None):
         channel_layer = get_channel_layer()
         convo_obj, send_to = await self.get_active_convo_send_to()    # This will get the user to which the msg is to be sent
-        print(send_to)
         if send_to.channel_name is not "":
             # First send the msg to user
             await channel_layer.send(send_to.channel_name, {
