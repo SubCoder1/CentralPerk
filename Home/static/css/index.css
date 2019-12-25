@@ -887,8 +887,7 @@ p { margin-bottom: 0; }
 .online-green-ico {
     color: #adff2f;
     font-size: 8px;
-    float: right;
-    line-height: 5;
+    line-height: 2;
 }
 
 .user-pic-margin { margin-right: 5px; }
@@ -979,5 +978,9 @@ p { margin-bottom: 0; }
 
     .card-header, .card-footer {
         padding: 0.7rem;
+    }
+
+    .account-settings-loading-gif, .modal-loading-gif {
+        height: 200px;
     }
 }

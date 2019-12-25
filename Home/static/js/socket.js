@@ -1,6 +1,8 @@
 $(document).ready(function() {
     var homeSocket = new ReconnectingWebSocket(
         'wss://' + window.location.host + '/ws/home/');
+    
+    homeSocket.maxReconnectAttempts = 5;
 
     homeSocket.onopen = function(event) {
         // console.log(event);
@@ -53,6 +55,20 @@ $(document).ready(function() {
         // Display p_chat_cover
         else if (data['type'] == 'p_chat_cover_f_server') {
             $p_chat_cover_wrapper.html(data['p-chat-cover']);
+        }
+        // Display p_chat
+        else if (data['type'] == 'p_chat_f_server') {
+            $p_chat_cover_wrapper.html(data['p-chat']);
+        }
+        // Display msg sent from server
+        else if (data['type'] == 'p_chat_msg_f_server') {
+            var new_txt = "<div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>";
+            var $data = $(new_txt);
+            $('.p-chat-modal-body').append($data);
+            $('.p-chat-modal-body').animate({
+                scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+            }, 1500);
+            $data.animate({'margin-top': '10px'}, 230);
         }
         // Display friends list
         else if (data['type'] == 'friends_list_f_server') {
@@ -168,9 +184,45 @@ $(document).ready(function() {
     var $chat_btn = $('.chat-btn');
     $chat_btn.on('click', function(event) {
         event.preventDefault();
+        if ($p_chat_cover_wrapper.children().hasClass('p-chat-upper-card') == false) {
+            homeSocket.send(JSON.stringify({
+                'task' : 'get_p_chat_cover',
+            }));
+        }
+    });
+    // Same event on clicking the back btn on p-chat
+    $p_chat_cover_wrapper.on('click', '.p-chat-cover-b-link', function(event) {
+        event.preventDefault();
+        $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
         homeSocket.send(JSON.stringify({
             'task' : 'get_p_chat_cover',
         }));
+    })
+    
+    // Send req to get p-chat
+    $p_chat_cover_wrapper.on('click', '.msg-user-card', function(event) {
+        var username = $(this).attr('id');
+        $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_p_chat',
+            'user' : username,
+        }));
     });
     
+    // Send msg in p-chat
+    $p_chat_cover_wrapper.on('click', '.p-chat-snd-btn', function(event) {
+        event.preventDefault();
+        var new_txt = "<div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
+        var $data = $(new_txt);
+        $('.p-chat-modal-body').append($data);
+        $('.p-chat-modal-body').animate({
+            scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+        }, 1500);
+        $data.animate({'margin-top': '10px'}, 230);
+        homeSocket.send(JSON.stringify({
+            'task' : 'p_chat_msg',
+            'msg' : $('.p-chat-txtbox').val(),
+        }));
+        $('.p-chat-txtbox').val("");
+    });
 });

@@ -13,7 +13,7 @@ from AUth.tasks import check_username_validity, check_email_validity, check_full
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Settings
 from Profile.tasks import update_user_acc_settings
-from Home.models import PostModel, PostComments, PostLikes
+from Home.models import PostModel, PostComments, PostLikes, Conversations
 from Home.tasks import send_notifications, del_notifications
 from Home.forms import CommentForm
 import json, os, pytz
@@ -43,6 +43,9 @@ def manage_relation(request, username, option=None):
                 Friends.add_to_pending(current_user, follow_unfollow_user)
                 result["option"] = 'Requested'
             else:
+                if option == 'follow':
+                    # Create a conversation model btw current_user & follow_unfollow_user
+                    Conversations.objects.create(user_a=current_user, user_b=follow_unfollow_user, convo={})
                 send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username, private_request=False)
                 Friends.follow(current_user, follow_unfollow_user)
                 result["option"] = 'Unfollow'

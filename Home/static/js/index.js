@@ -146,7 +146,9 @@ $(document).ready(function() {
   var $p_chat_modal = $('#p-chat');
   var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
   $p_chat_modal.on('hidden.bs.modal', function (e) {
-    $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+    if ($p_chat_cover_wrapper.children().hasClass('wrap-msg-list-res')) {
+      $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+    }
   });
 
   var $online_users_modal = $('#online-users');

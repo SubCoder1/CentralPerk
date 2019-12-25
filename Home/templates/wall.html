@@ -56,7 +56,7 @@
         {% elif post.status_caption and post.pic %}
             <div class="card-body index-img-post-card-body">
                 <a href="{{ post.pic.url }}" class="progressive replace" style="pointer-events: none;">
-                    <img src="{{ post.pic.url }}" class="preview post-card-body-img"/>
+                    <img src="{{ post.pic_thumbnail.url }}" class="preview post-card-body-img"/>
                 </a>
             </div>
         {% else %}

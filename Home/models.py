@@ -3,6 +3,7 @@ from django.db.models import Prefetch
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.core.files import File
+from django.contrib.postgres.fields import HStoreField
 import uuid, pytz
 from Profile.models import User
 from datetime import datetime
@@ -198,3 +199,20 @@ class UserNotification(models.Model):
             obj.private_request_id = request_id_hash.hexdigest()
         obj.save()
         return obj
+
+class Conversations(models.Model):
+    chat_active_from_a = models.BooleanField(default=False)
+    user_a = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_a')
+    sent_by_a_count = models.BigIntegerField(default=0, verbose_name='msg_sent_by_user_a')
+    chat_active_from_b = models.BooleanField(default=False)
+    user_b = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_b')
+    sent_by_b_count = models.BigIntegerField(default=0, verbose_name='msg_sent_by_user_b')
+    date_time = models.DateTimeField(auto_now_add=True, auto_now=False)
+    convo = HStoreField()
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ('-date_time',)
+
+    def __str__(self):
+        return f"{str(self.user_a)} <convo> {str(self.user_b)}"
