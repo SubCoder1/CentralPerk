@@ -10,7 +10,9 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Poppins:300&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Barriecito&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/progressive-image.js/dist/progressive-image.css">
     <link href="{% static 'css/index.css' %}" rel="stylesheet">
+    <link href="{% static 'css/chat.css' %}" rel="stylesheet">
     {% block head %}
     {% endblock %}
     {% block title %}
@@ -23,11 +25,12 @@
           <!-- Brand -->
           <a class="navbar-brand" id="logo" href="{% url 'home_view' %}">
             <img src="{% static 'login/img/favicon.png' %}" id="brand-ico" class="cp"/>
-            <span id="brand-name"> | CentralPerk</span>
           </a>
         
           <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
-            <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon">   
+              <svg class="lnr lnr-menu"><use xlink:href="#lnr-menu"></use></svg>
+            </span>
           </button>
         
           <!-- dropdown -->
@@ -35,7 +38,7 @@
             <ul class="navbar-nav ml-auto">    
               <li class="nav-item dropdown">
                 <a class="nav-link" href="#" id="navdrop" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <img src="/media/{{ user.profile_pic }}" class="rounded-circle navbar-profile-pic"/> 
+                  <img src="{{ user.profile_pic.url }}" class="rounded-circle navbar-profile-pic"/> 
                   <h5 class="nav-username">{{user.username }}</h5>
                   <i class="fas fa-chevron-right"></i>
                 </a>
@@ -48,9 +51,9 @@
           </div>
         </nav>
     </div>
-    <div class="container-fluid">
+    {% block indicator %}
+    <div class="landing-pg-container container-fluid">
       <br/><br/><br/>
-      {% block indicator %}
       <div id="update-posts" style="cursor: pointer">
         <div class='indicator notif-active'>
           <div class='alert alert-success' id='success-msg' role='alert'>
@@ -101,7 +104,7 @@
                   <!-- Notification body -->
                   <div class="modal-body">
                     <div class="notif-wrapper">
-                      {% include "notifications.html" %}
+                      <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -190,12 +193,7 @@
                   <div class="modal-body" style="padding: 0rem 1rem 1rem 1rem;">
                     <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
                       <li class="nav-item">
-                        <a class="nav-link link active" id="online-tab" data-toggle="tab" href="#online" role="tab" aria-controls="online-usr">
-                          <h4>Online</h4>
-                        </a>
-                      </li>
-                      <li class="nav-item px-1">
-                        <a class="nav-link link" id="followers-tab" data-toggle="tab" href="#followers" role="tab" aria-controls="followers">
+                        <a class="nav-link link active" id="followers-tab" data-toggle="tab" href="#followers" role="tab" aria-controls="followers">
                           <h4>Followers</h4>
                         </a>
                       </li>
@@ -206,19 +204,14 @@
                       </li>
                     </ul>
                     <div class="tab-content" id="cardtabContent">
-                      <div class="tab-pane fade show active" id="online" role="tabpanel" aria-labelledby="online-tab">
-                        <div class="online-wrapper">
-                          {% include "u-online.html" %}
-                        </div>
-                      </div>
-                      <div class="tab-pane fade" id="followers" role="tabpanel" aria-labelledby="followers-tab">
+                      <div class="tab-pane fade show active" id="followers" role="tabpanel" aria-labelledby="followers-tab">
                         <div class="followers-wrapper">
-                          {% include "u-followers.html" %}
+                          <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                         </div>
                       </div>
                       <div class="tab-pane fade" id="following" role="tabpanel" aria-labelledby="following-tab">
                         <div class="following-wrapper">
-                          {% include "u-following.html" %}
+                          <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                         </div>
                       </div>
                     </div>
@@ -232,14 +225,34 @@
             <div class="modal fade" id="search-users" tabindex="-1" role="dialog" aria-labelledby="search-title" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title headline">
+                  <div class="modal-header search-modal-header">
+                    <h5 class="modal-title headline search-box-wrapper">
                       <input class="search-bar" type="text" id="search" name="search" placeholder="Search" autocomplete="off">
                     </h5>
                   </div>
                   <div class="modal-body">
                     <div class="wrap-search-res">
-                        {% include "search.html" %}
+                      <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-dark options-link chat-btn" data-toggle="modal" data-target="#p-chat">
+              <i class="fas fa-comment-dots"></i>
+            </button>
+            <div class="modal fade" id="p-chat" tabindex="-1" role="dialog" aria-labelledby="chat-title" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header chat-modal-header">
+                    <h5 class="modal-title headline">Messages</h5>
+                    <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </a>
+                  </div>
+                  <div class="modal-body">
+                    <div class="p-chat-cover-wrapper">
+                      <img class="modal-loading-gif loading-gif-active" src="{% static 'img/loading.gif' %}"/>
                     </div>
                   </div>
                 </div>
@@ -254,12 +267,11 @@
           </div>
         </div>
       </div>
-      {% endblock %}
     </div>
-
+    {% endblock %}
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    {% include 'session_security/all.html' %}
-    <script>sessionSecurity.confirmFormDiscard = undefined;</script>
+    <script src="https://cdn.jsdelivr.net/npm/progressive-image.js/dist/progressive-image.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script src="https://cdn.linearicons.com/free/1.0.0/svgembedder.min.js"></script>

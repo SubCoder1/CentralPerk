@@ -10,6 +10,7 @@
 {% endblock %}
 
 {% block indicator %}
+<div class="container-fluid">
     {% if editable %}
         <div class="indicator">
             <div class="alert alert-success" id="success-msg" role="alert">
@@ -20,12 +21,13 @@
 {% endblock %}
 
 {% block body %}
+<br/><br/>
 <div class="row">
     <div class="col-lg-3"></div>
-    <div class="col-lg-6">
+    <div class="col-lg-6 prof-details-wrapper">
         <br/>
         <div class="profile-pic">
-            <img src="/media/{{ profile.profile_pic }}" class="profile-pic-rounded">
+            <img src="{{ profile.profile_pic.url }}" class="profile-pic-rounded">
         </div>
         <div class="edit-prof-link">
         {% if editable %}
@@ -58,7 +60,7 @@
                                 <form id="user_acc_settings_form" method="post">
                                     {% csrf_token %}
                                     <div class="tab-pane fade show active" id="notif" role="tabpanel" aria-labelledby="notif-tab">
-                                        <img class="account-settings-loading-gif" src="{% static 'login/img/loading.gif' %}"/>
+                                        <img class="account-settings-loading-gif" src="{% static 'img/loading.gif' %}"/>
                                         <div class="custom-control custom-switch">
                                             <input type="checkbox" class="custom-control-input" id="disable-all-switch">
                                             <label class="custom-control-label" for="disable-all-switch">Disable all</label>
@@ -247,15 +249,15 @@
                         <div class="card prof-post-card">
                             {% if post.status_caption and not post.pic_thumbnail %}
                                 <a href="{% url 'view_post' post.post_id %}" class="card-body display-3 prof-post-card-body" id="status_caption-container">
-                                    {{ post.status_caption|json_script:"post-data" }}
+                                    {{ post.status_caption|linebreaks }}
                                 </a>
                             {% elif post.status_caption and post.pic_thumbnail %}
                                 <div class="card-body prof-img-post-card-body">
-                                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic_thumbnail }}" class="prof-card-body-img"></a>
+                                    <a href="{% url 'view_post' post.post_id %}"><img src="{{ post.pic_thumbnail.url }}" class="prof-card-body-img"></a>
                                 </div>
                             {% else %}
                                 <div class="card-body prof-img-post-card-body">
-                                    <a href="{% url 'view_post' post.post_id %}"><img src="/media/{{ post.pic_thumbnail }}" class="prof-card-body-img"></a>
+                                    <a href="{% url 'view_post' post.post_id %}"><img src="{{ post.pic_thumbnail.url }}" class="prof-card-body-img"></a>
                                 </div>
                             {% endif %}
                                 <div class="prof-post-actions">
@@ -270,6 +272,7 @@
             </div>
         {% endif %}
     </div>
+</div>
 </div>
 {% endblock %}
 

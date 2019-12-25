@@ -9,37 +9,40 @@
     <link href="{% static 'css/view_post.css' %}" rel="stylesheet">
 {% endblock %}
 
-{% block body %}
-    {% block indicator %}
-        <div class="indicator">
-            <div class="alert alert-success hidden" id="success-msg" role="alert">
-            </div>
-            <div class="alert alert-error hidden" id="error-msg" role="alert">
-            </div>
+{% block indicator %}
+<div class="container-fluid">
+    <div class="indicator">
+        <div class="alert alert-success hidden" id="success-msg" role="alert">
         </div>
-    {% endblock %}
+        <div class="alert alert-error hidden" id="error-msg" role="alert">
+        </div>
+    </div>
+{% endblock %}
+
+{% block body %}
+<br/><br/>
 <div class="post-view-container">
     <div class="refresh-btn-container">
         <a href="#" class="btn btn-dark refresh-btn" id="refresh-content">Refresh</a>
-        <img class="refresh-loading-gif hidden" id="loading-gif" src="{% static '/login/img/loading.gif' %}">
+        <img class="refresh-loading-gif hidden" id="loading-gif" src="{% static 'img/loading.gif' %}">
     </div>
     {% if post_data.pic %}
     {% if post_data.pic.width >= post_data.pic.height %}
     <div class="post-view">
         <div class="wrap-img-view" id="post-img">
-            <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
+            <img src="{{ post_data.pic.url }}" class="img-fluid post-pic-enlarged-view" alt="Responsive image">
         </div>
         <div class="card wrap-data-view" id="id_view-post-card">
     {% else %}
     <div class="potrait-view">
         <div class="wrap-potrait-view potrait-hw" id="post-img">
-            <img src="/media/{{ post_data.pic }}" class="img-fluid post-pic-enlarged-view potrait-height" alt="Responsive image">
+            <img src="{{ post_data.pic.url }}" class="img-fluid post-pic-enlarged-view potrait-height" alt="Responsive image">
         </div>
         <div class="card wrap-potrait-data-view" id="id_view-post-card">
     {% endif %}
     {% else %}
     <div class="post-view status-view">
-        <div class="card wrap-data-view data-view-enlarged" style="border-radius: 1rem">
+        <div class="card wrap-data-view data-view-enlarged">
     {% endif %}
             <div class="card-header" id='id_view-post-card-header'>
                 <ul class="nav nav-pills" id="cardtab" role="tablist">
@@ -67,6 +70,11 @@
                         </a>
                     </li>
                 </ul>
+                {% if user in post_data.saved_by.all %}
+                    <svg class="lnr lnr-bookmark post-bookmark bookmark-saved"><use xlink:href="#lnr-bookmark"></use></svg>
+                {% else %}
+                    <svg class="lnr lnr-bookmark post-bookmark"><use xlink:href="#lnr-bookmark"></use></svg>
+                {% endif %}
                 {% if editable %}
                     <a href="{% url 'del_user_post' post_id %}" class="btn btn-dark del-post-btn"><i class="fas fa-trash-alt"></i></a>
                 {% endif %}
@@ -79,7 +87,7 @@
                     <div class="card-body detail-view-card-body only-detail">
                 {% endif %}
                         <div class="post-user" id="id_view-post-details-body">
-                            <img src="/media/{{ post_data.user.profile_pic }}" class="rounded-circle post-user-profile-pic">
+                            <img src="{{ post_data.user.profile_pic.url }}" class="rounded-circle post-user-profile-pic">
                             <br/>
                             <div class="display-2">
                                 <a class="post-username" href="{% url 'view_profile' post_data.user.username %}">{{ post_data.user.username }}</a>
@@ -91,7 +99,7 @@
                             </div>
                             <br/><br/>
                             <div class="post-status-caption" id="status_caption_container">
-                            {{ post_data.status_caption|json_script:"post-status_caption" }}
+                                {{ post_data.status_caption|linebreaks }}
                             </div>
                         </div>
                     </div>
@@ -138,6 +146,7 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 {% block script %}

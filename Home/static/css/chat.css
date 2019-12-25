@@ -1,0 +1,107 @@
+/* ------------ p-chat-cover-user-card ------------- */
+.msg-user-card {
+    cursor: pointer;
+    border-bottom: 1.5px solid transparent;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+}
+
+.msg-user-card:hover {
+    border-bottom: 1.5px solid mediumslateblue;
+    border-radius: 0;
+}
+
+/* ------------ p-chat-user-card-(top) ------------- */
+.p-chat-upper-card-body {
+    padding: 0;
+}
+
+.p-chat-last-login {
+    line-height: 1.5;
+    font-size: 11px;
+}
+
+.p-chat-cover-b-link {
+    height: 0;
+    position: relative;
+    top: 13px;
+    transform: all 0.3s;
+}
+
+.fa-chevron-left {
+    font-size: 17px;
+    color: mediumpurple;
+    position: relative;
+    transform: all 0.3s;
+}
+
+.p-chat-cover-b-link:hover .fa-chevron-left { color: mediumslateblue; }
+
+/* ----------------- .p-chat-body ------------------ */
+.p-chat-modal-body {
+    height: 284px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+}
+
+.p-chat-txtbox {
+    position: relative;
+    bottom: 4px;
+    margin-right: 5px;
+    padding: 0.9rem 0.1rem;
+    background-color: #1d1d1d;
+    color: white;
+    font-size: 13px;
+    overflow-x: auto;
+    resize: none;
+    border-radius: 0rem;
+    height: 45px;
+    float: left;
+    width: 91%;
+}
+
+.p-chat-txtbox::-webkit-scrollbar { width: 0 !important; }
+
+.p-chat-txtbox:focus {
+    background-color: #1d1d1d;
+    box-shadow: none;
+    color: white;
+}
+
+.p-chat-snd-btn {
+    border-radius: 50% !important;
+    height: 39px;
+    width: 40px;
+    background: mediumslateblue;
+    border-color: mediumslateblue;
+}
+
+.p-chat-snd-btn:hover {
+    background: darkslateblue;
+    border-color: darkslateblue;
+}
+
+.wrap-p-chat-txt {
+    margin-top: 20px;
+    max-width: 49%;
+    width: fit-content;
+    background: mediumslateblue;     /* Default for sent msg */
+    border-radius: 2rem;
+}
+
+.rec-txt-wrapper { 
+    align-self: flex-end; 
+    background: mediumpurple;   /* Default for received msg */
+}
+
+.p-chat-sent-txt, .p-chat-rec-txt {
+    padding: 0.9rem;
+    margin-bottom: 0;
+}
+
+@media only screen and (max-width: 767px) {
+    .p-chat-txtbox {
+        width: 85%;
+    }
+}

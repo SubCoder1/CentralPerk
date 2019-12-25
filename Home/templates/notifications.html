@@ -4,25 +4,25 @@
         <div class="card-body notify-body">
             <div class="d-flex">
                 <div class="mr-1">
-                    <img src="/media/{{ notification.poked_by__profile_pic }}" class="notify-pic-rounded"/>
+                    <img src="{{ notification.poked_by.profile_pic.url }}" class="notify-pic-rounded"/>
                 </div>
                 {% if notification.reaction == 'Liked' %}
                     <div class="ml-2 ml-2-align">
                         <div class="m-0">
-                            <a href="{% url 'view_profile' notification.poked_by__username %}">
-                                {{ notification.poked_by__username }}
+                            <a href="{% url 'view_profile' notification.poked_by.username %}">
+                                {{ notification.poked_by.username }}
                             </a> Liked your status.
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
-                    <a class="notif-link" href="{% url 'view_post' notification.post__post_id %}">
+                    <a class="notif-link" href="{% url 'view_post' notification.post.post_id %}">
                         <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
                     </a>
                 {% elif notification.reaction == 'Sent Follow Request' %}
                     <div class="ml-2 ml-2-align">
                         <div class="m-0">
-                            <a href="{% url 'view_profile' notification.poked_by__username %}">
-                                {{ notification.poked_by__username }}
+                            <a href="{% url 'view_profile' notification.poked_by.username %}">
+                                {{ notification.poked_by.username }}
                             {% if notification.private_request %}
                             </a> requested to follow you.
                             {% else %}
@@ -42,8 +42,8 @@
                 {% elif notification.reaction == 'Accept Follow Request' %}
                     <div class="ml-2 ml-2-align">
                         <div class="m-0">
-                            <a href="{% url 'view_profile' notification.poked_by__username %}">
-                                {{ notification.poked_by__username }}
+                            <a href="{% url 'view_profile' notification.poked_by.username %}">
+                                {{ notification.poked_by.username }}
                             </a> accepted your follow request.
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
@@ -51,32 +51,27 @@
                 {% elif notification.reaction == 'Commented' %}
                     <div class="ml-2">
                         <div class="m-0">
-                            <a href="{% url 'view_profile' notification.poked_by__username %}">
-                                {{ notification.poked_by__username }}
+                            <a href="{% url 'view_profile' notification.poked_by.username %}">
+                                {{ notification.poked_by.username }}
                             </a> commented on your post.
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
-                    <a class="notif-link" href="{% url 'view_post' notification.post__post_id %}">
+                    <a class="notif-link" href="{% url 'view_post' notification.post.post_id %}">
                         <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
                     </a>
                 {% elif notification.reaction == 'Replied' %}
                     <div class="ml-2">
                         <div class="m-0">
-                            <a href="{% url 'view_profile' notification.poked_by__username %}">
-                                {{ notification.poked_by__username }}
+                            <a href="{% url 'view_profile' notification.poked_by.username %}">
+                                {{ notification.poked_by.username }}
                             </a> replied to your comment.
                         </div>
                         <h4 class="notify-date-time">{{ notification.date_time|timesince }} ago</h4>
                     </div>
-                    <a class="notif-link" href="{% url 'view_post' notification.post__post_id %}">
+                    <a class="notif-link" href="{% url 'view_post' notification.post.post_id %}">
                         <svg class="lnr lnr-arrow-right"><use xlink:href="#lnr-arrow-right"></use></svg>
                     </a>
-                {% else %}
-                    <div class="empty-notif">
-                        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
-                        <h5 style="position: relative; left: 2px;">No Notifications</h5>
-                    </div>
                 {% endif %}
             </div>
         </div>

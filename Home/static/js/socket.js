@@ -1,12 +1,21 @@
 $(document).ready(function() {
     var homeSocket = new ReconnectingWebSocket(
         'ws://' + window.location.host + '/ws/home/');
+    
+    homeSocket.maxReconnectAttempts = 5;
 
     homeSocket.onopen = function(event) {
         // console.log(event);
     }
     
     var $wrap_search = $('.wrap-search-res');
+    var $notif_wrapper = $('.notif-wrapper');
+    var $new_notif_indicator = $('.new-notif-indicator');
+    var $post_container = $('.post-container');
+    var $wrap_update_posts = $('#update-posts');
+    var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
+    var $followers_wrapper = $('.followers-wrapper');
+    var $following_wrapper = $('.following-wrapper');
 
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
@@ -20,40 +29,14 @@ $(document).ready(function() {
             var post_id = '#' + data['post_id'];
             $(post_id).children('.card-footer').children('.upper-row').children('.comment-counter').text(data['count']);
         }
-        // Update save/unsave post icon
-        else if (data['type'] == 'save_unsave_post_response') {
-            var post_id = '#' + data['post_id'];
-            var $post_bookmark = $(post_id).children('.card-header').children('.d-flex').children('.wrap-save-post').children('.lnr-bookmark');
-            if (data['result'] == 'saved') {
-                $post_bookmark.toggleClass('bookmark-saved');
-            } else {
-                $post_bookmark.removeClass('bookmark-saved');
-            } 
-        }
         // Update notifications wrapper
         else if (data['type'] == 'updated_notif') {
-            var $new_notif_indicator = $('.new-notif-indicator');
             $new_notif_indicator.css('display', 'block');
-            var $notif_wrapper = $('.notif-wrapper');
             $notif_wrapper.html(data['notif']);
-        }
-        // Update friends list
-        else if (data['type'] == 'update_friends_list') {
-            // console.log("friend_list_updated");
-            var $online_wrapper = $('.online-wrapper');
-            var $followers_wrapper = $('.followers-wrapper');
-            var $following_wrapper = $('.following-wrapper');
-
-            $online_wrapper.html(data['online-users-list']);
-            $followers_wrapper.html(data['followers-list']);
-            $following_wrapper.html(data['following-list']);
         }
         // Update wall
         else if (data['type'] == 'updated_wall') {
-            var $post_container = $('.post-container');
-            var $wrap_update_posts = $('#update-posts');
-            $wrap_update_posts.css('display', 'block');
-
+            $wrap_update_posts.css('display', 'flex');
             $wrap_update_posts.on('click', function() {
                 $("body").scrollTop(0);
                 if (data) {
@@ -68,6 +51,29 @@ $(document).ready(function() {
         // Display search result
         else if (data['type'] == 'search_results') {
             $wrap_search.html(data['results']);
+        }
+        // Display p_chat_cover
+        else if (data['type'] == 'p_chat_cover_f_server') {
+            $p_chat_cover_wrapper.html(data['p-chat-cover']);
+        }
+        // Display p_chat
+        else if (data['type'] == 'p_chat_f_server') {
+            $p_chat_cover_wrapper.html(data['p-chat']);
+        }
+        // Display msg sent from server
+        else if (data['type'] == 'p_chat_msg_f_server') {
+            var new_txt = "<div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>";
+            var $data = $(new_txt);
+            $('.p-chat-modal-body').append($data);
+            $('.p-chat-modal-body').animate({
+                scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+            }, 1500);
+            $data.animate({'margin-top': '10px'}, 230);
+        }
+        // Display friends list
+        else if (data['type'] == 'friends_list_f_server') {
+            $followers_wrapper.html(data['followers']);
+            $following_wrapper.html(data['following']);
         }
     };
 
@@ -111,6 +117,14 @@ $(document).ready(function() {
         $(this).children('textarea').val("");
     });
 
+    // Get notifications
+    var $get_notif = $('.notif-btn');
+    $get_notif.on('click', function(event) {
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_notifications',
+        }));
+    });
+
     // Clear all notifications
     var $clear_notify = $('.clear-notify');
     $clear_notify.on('click', function(event) {
@@ -142,7 +156,7 @@ $(document).ready(function() {
             'notif_id' : $(this).attr('id'),
             'option' : 'accept_request',
         }));
-        $(this).parent().parent().parent().remove();
+        $(this).parent().parent().parent().fadeOut(300, function(){ $(this).remove();});;
     });
     var $reject_request = $('.reject-request');
     $reject_request.on('click', function(event) {
@@ -152,7 +166,63 @@ $(document).ready(function() {
             'notif_id' : $(this).attr('id'),
             'option' : 'reject_request',
         }));
-        $(this).parent().parent().parent().remove();
+        $(this).parent().parent().parent().fadeOut(300, function(){ $(this).remove();});;
     });
 
+    // Get friends list
+    var $online_users_btn = $('.online-users-btn');
+    $online_users_btn.on('click', function(event) {
+        event.preventDefault();
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_friends_list',
+        }));
+    });
+
+    // CHAT SECTION
+
+    // Send req to get p-chat-cover
+    var $chat_btn = $('.chat-btn');
+    $chat_btn.on('click', function(event) {
+        event.preventDefault();
+        if ($p_chat_cover_wrapper.children().hasClass('p-chat-upper-card') == false) {
+            homeSocket.send(JSON.stringify({
+                'task' : 'get_p_chat_cover',
+            }));
+        }
+    });
+    // Same event on clicking the back btn on p-chat
+    $p_chat_cover_wrapper.on('click', '.p-chat-cover-b-link', function(event) {
+        event.preventDefault();
+        $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_p_chat_cover',
+        }));
+    })
+    
+    // Send req to get p-chat
+    $p_chat_cover_wrapper.on('click', '.msg-user-card', function(event) {
+        var username = $(this).attr('id');
+        $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+        homeSocket.send(JSON.stringify({
+            'task' : 'get_p_chat',
+            'user' : username,
+        }));
+    });
+    
+    // Send msg in p-chat
+    $p_chat_cover_wrapper.on('click', '.p-chat-snd-btn', function(event) {
+        event.preventDefault();
+        var new_txt = "<div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
+        var $data = $(new_txt);
+        $('.p-chat-modal-body').append($data);
+        $('.p-chat-modal-body').animate({
+            scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+        }, 1500);
+        $data.animate({'margin-top': '10px'}, 230);
+        homeSocket.send(JSON.stringify({
+            'task' : 'p_chat_msg',
+            'msg' : $('.p-chat-txtbox').val(),
+        }));
+        $('.p-chat-txtbox').val("");
+    });
 });

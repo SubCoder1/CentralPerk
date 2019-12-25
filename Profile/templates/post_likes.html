@@ -3,7 +3,7 @@
         {% for liked_user in liked_user_list %}
             <div class="liked-user">
                 <a href="{% url 'view_profile' liked_user.user.username %}">
-                    <img src="/media/{{ liked_user.user.profile_pic }}" class="rounded-circle post-profile-img like-prof-margin">
+                    <img src="{{ liked_user.user.profile_pic.url }}" class="rounded-circle post-profile-img like-prof-margin">
                     {{ liked_user.user.username }}
                 </a>
                 <span class="like-date-time">{{ liked_user.date_time|timesince }} ago</span>

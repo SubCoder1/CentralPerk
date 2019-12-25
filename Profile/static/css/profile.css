@@ -41,16 +41,6 @@
 .fade { display: none; }
 .show { display: block; }
 
-.account-settings-loading-gif {
-  max-width: 100%;
-  height: 335px;
-  display: none;
-}
-
-.loading-gif-active {
-  display: block;
-}
-
 .fa-bell { color: mediumorchid; }
 
 .modal-body::-webkit-scrollbar { width: 0 !important; }
@@ -116,7 +106,6 @@
   flex-direction: column;
   align-items: center;
   align-self: center;
-  width: 939px;
 }
 /* tab pane in profile.html containing user posts */
 #prof-posts, #saved-posts {
@@ -241,7 +230,9 @@ a:hover span {
 }
 /* ----------------------------------------- */
 
-/* ----------- info alignment ------------ */
+/* ------------ info alignment ------------- */
+.follow_unfollow_user, .follow_unfollow_user:hover { border: 1px solid mediumslateblue; }
+
 .about-profile {
   display: flex;
   justify-content: space-between;
@@ -269,6 +260,14 @@ a:hover span {
 
 /* ------------ Details counter ------------ */
 @media only screen and (max-width: 768px) {
+  .about-profile { display: block; }
+
+  #prof-posts, #saved-posts, .prof-post-card { width: 100%; }
+
+  #prof-posts, #saved-posts { 
+    flex-wrap: nowrap;
+  }
+
   .post-counter {
     margin-right: 21px;
     float: left;
@@ -284,7 +283,37 @@ a:hover span {
   }
 }
 
-@media only screen and (min-width: 768px) {
+@media only screen and (min-width: 768px) and (max-width: 1023px) {
+  .about-profile { display: flex; }
+
+  #prof-posts, #saved-posts { 
+    flex-wrap: wrap; 
+    width: 50em;
+  }
+
+  .post-counter {
+    margin-right: 32px;
+    float: left;
+  }
+  
+  .follow-counter {
+    margin-right: 32px;
+    float: left;
+  }
+  
+  .following-counter {
+    float: left;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  .about-profile { display: flex; }
+
+  #prof-posts, #saved-posts { 
+    flex-wrap: wrap; 
+    width: 58em;
+  }
+
   .post-counter {
     margin-right: 32px;
     float: left;

@@ -12,7 +12,8 @@ html {
 
 body {
     height: 100vh;
-    background: linear-gradient(to right, blueviolet, #4158d0);
+    /* background: linear-gradient(to right, blueviolet, #4158d0); */
+    background: darkslateblue;
     font-family: Poppins, sans-serif;
     color: white;
 }
@@ -71,6 +72,8 @@ input {
 .display-2 {
     font-size: 25px;
 }
+
+button:focus { outline: none; }
 
 .btn-dark {
     background: mediumslateblue;
@@ -195,6 +198,18 @@ h6 { font-size: 13px; }
 /*------------------------------------------------*/
 
 /* ----------------- nav links ------------------ */
+.lnr-menu {
+    height: 27px;
+    width: 40px;
+    fill: currentColor;
+    color: white;
+    transition: transform 0.3s;
+}
+
+.navbar-toggler:active .lnr-menu {
+    transform: rotate(90deg);
+}
+
 .navbar {
     padding: 10px 68px 0px 68px;
     display: flex;
@@ -340,7 +355,10 @@ h6 { font-size: 13px; }
     border-radius: 1.00rem;
 }
 
-.index-post-card { width: 614px; }
+.index-post-card {
+    width: 614px; 
+    margin-bottom: 10px;
+}
 
 .post-card-body-img {
     width: 100%;
@@ -389,6 +407,8 @@ h6 { font-size: 13px; }
 .lnr-bookmark:hover { color: darkorange; }
 
 .bookmark-saved { color: greenyellow; }
+
+p { margin-bottom: 0; }
 
 .fa-fire-alt {
     font-size: 15px;
@@ -512,6 +532,7 @@ h6 { font-size: 13px; }
     border-radius: 1.00rem;
     width: 100%;
     height: 220px;
+    margin-bottom: 25px;
 }
 /* ----------------------------------------------- */
 
@@ -539,11 +560,11 @@ h6 { font-size: 13px; }
 }
 
 .notif-btn {
-    background: #4904d2;
+    background: #2c1a51;
     margin-left: 0px;
 }
 
-.notif-btn:hover { background: #2d19a9; }
+.notif-btn:hover { background: #17103f; }
 .options-link:hover .fa-bell { animation: ring 1s ease; }
 
 .new-notif-indicator {
@@ -566,9 +587,14 @@ h6 { font-size: 13px; }
 .options-link:hover .fa-user-alt { transform: scale3d(1.5, 1.5, 1.5); }
 
 .search-btn { background: darkturquoise; }
-.search-btn:hover { background: mediumturquoise; }
+.search-btn:hover { background: #14a8a3; }
 .fa-search { transition: transform 0.3s; }
 .options-link:hover .fa-search { transform: rotateZ(20deg); }
+
+.chat-btn { background: #e30b34; }
+.chat-btn:hover { background: #be0b2d; }
+.fa-comment-dots { transition: transform 0.3s; }
+
 
 @-webkit-keyframes ring {
     0% {
@@ -663,6 +689,16 @@ h6 { font-size: 13px; }
 .headline {
     font-size: 22px;
     float: left;
+}
+
+.account-settings-loading-gif, .modal-loading-gif {
+    max-width: 100%;
+    height: 335px;
+    display: none;
+}
+
+.loading-gif-active {
+    display: block;
 }
 /* ----------------------------------------------- */
 
@@ -851,8 +887,7 @@ h6 { font-size: 13px; }
 .online-green-ico {
     color: #adff2f;
     font-size: 8px;
-    float: right;
-    line-height: 5;
+    line-height: 2;
 }
 
 .user-pic-margin { margin-right: 5px; }
@@ -867,12 +902,20 @@ h6 { font-size: 13px; }
 /* ----------------------------------------------- */
 
 /* -------------------- Search ------------------- */
+.search-modal-header {
+    display: flex;
+}
+
+.search-box-wrapper {
+    flex: 1;
+}
+
 .search-bar {
   font-size: 15px;
   line-height: 1.5;
   color: white;
   display: block;
-  width: 535px;
+  width: 100%;
   background: transparent;
   border-bottom: 2.5px solid mediumturquoise;
   height: 50px;
@@ -902,3 +945,42 @@ h6 { font-size: 13px; }
     border: 1px solid magenta!important;
 }
 /* ----------------------------------------------- */
+
+/* --------------- media-queries ----------------- */
+@media only screen and (max-width: 767px) {
+    .landing-pg-container { padding: 0; }
+
+    .index-post-card { margin-bottom: 0; }
+
+    .navbar {
+        padding: 10px;
+    }
+
+    .post-card {
+        border-radius: 0rem;
+    }
+
+    .post-container {
+        width: 100%;
+    }
+
+    .index-post-card {
+        width: 100%;
+    }
+
+    .stories-block {
+        height: 120px;
+    }
+
+    .comment-input {
+        width: 87%;
+    }
+
+    .card-header, .card-footer {
+        padding: 0.7rem;
+    }
+
+    .account-settings-loading-gif, .modal-loading-gif {
+        height: 200px;
+    }
+}

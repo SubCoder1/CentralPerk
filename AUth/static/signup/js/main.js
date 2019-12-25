@@ -23,11 +23,7 @@ $('document').ready(function() {
     var register_username = $('#register-username');
     register_username.change(function(event) {
         event.preventDefault();
-        if(/^[a-zA-Z0-9- ]*$/.test(register_username.val()) == false) {
-            register_username.css('border-bottom', '2.5px solid #fc581b');
-            username_error.text("Username should only contain letters & numbers");
-        }
-        else if (register_username.val().length < 5) {
+        if (register_username.val().length < 5) {
             register_username.css('border-bottom', '2.5px solid #fc581b');
             username_error.text("Username should be > 6 characters");
         } else if (register_username.val().length > 20) {

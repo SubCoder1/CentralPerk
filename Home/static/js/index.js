@@ -1,41 +1,48 @@
 $(document).ready(function() {
   // JS code for navbar on-scrolldown animation
-  window.onscroll = function() {scrollFunction()};
   var navbar = document.getElementById("navbar");
+  var $navbar = $('#navbar');
+  window.onscroll = function() {
+    if ($navbar.css('padding') != '10px') {
+      scrollFunction();
+    }
+  };
   var logo = document.getElementById("logo");
-  var $brand_name = $('#brand-name');
   var $brand_ico = $('#brand-ico');
 
   function scrollFunction() {
-    if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
-      navbar.style.padding = "8px 68px 0px 68px";
-      logo.style.fontSize = "20px";
-      $brand_name.hide();
-      $brand_ico.css('height', '38px');
-    } else {
-      navbar.style.padding = "10px 68px 0px 68px";
-      logo.style.fontSize = "25px";
-      $brand_name.show();
-      $brand_ico.css('height', '32px');
-    }
+      if (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30) {
+        logo.style.fontSize = "20px";
+        $brand_ico.css('height', '38px');
+      } else {
+        logo.style.fontSize = "25px";
+        $brand_ico.css('height', '32px');
+      }
   }
+
+  // Welcome msg close animation
+  var $close_btn = $('.close');
+  $close_btn.on('click', function() {
+    if ($(this).parent().parent().hasClass('welcome-card')) {
+      $(this).parent().parent().hide('slow', function(){ $(this).remove(); });
+    }
+  });
+
+  // Bookmark posts on-click effect
+  var $post_bookmark = $('.lnr-bookmark');
+  $post_bookmark.on('click', function(){
+    if ($(this).hasClass('bookmark-saved')) {
+      $(this).removeClass('bookmark-saved');
+    } else {
+      $(this).toggleClass('bookmark-saved');
+    }
+  });
 
   // Hide new-notification till new notifications pushes-in via socket
   var $new_notif_indicator = $('.new-notif-indicator');
   var $notif_btn = $('.notif-btn');
   $notif_btn.on('click', function() {
     $new_notif_indicator.css('display', 'none');
-  });
-
-  // Bookmark posts on-click effect
-  var $post_bookmark = $('.lnr-bookmark');
-  var $post_container = $('.post-container');
-  $post_container.on('click', $post_bookmark, function(){
-    if ($(this).hasClass('bookmarked')) {
-      $(this).removeClass('bookmarked');
-    } else {
-      $(this).toggleClass('bookmarked');
-    }
   });
 
   // JS code for slide-in-as-you-scroll-down-post-cards
@@ -81,44 +88,7 @@ $(document).ready(function() {
 
   post_card_stack_up();
 
-  // JS code for post-card data overflow management
-  function manage_status_caption() {
-    var $post_container = $('.index-post-card-body, .prof-post-card-body');
-    var $elms = $post_container.children('#post-data');
-    $.each($post_container, function (index, value) {
-        var post = $elms[index].textContent.replace(/"/g, "");
-        var newline_count = (post.match(/\\r\\n/g) || '').length + 1;
-          if (newline_count) {
-            var lines = post.split("\\r\\n");
-            if (lines.length > 5) {
-              var read_less = lines.slice(0,5);
-              for (var j=0; j < 5; j++) {
-                $post_container[index].innerHTML += read_less[j] + '<br/>';
-              }
-              var read_more = $post_container[index].getElementsByTagName("a")[0];
-              if (read_more) {
-                $post_container[index].removeChild(read_more);
-                var read_more_link = '<a class="body_link read-more" href="' + read_more + '">Read more. . .</a>'
-                $post_container[index].innerHTML += read_more_link;
-              } else {
-                $post_container[index].innerHTML += ". . . .";
-              }
-            } else {
-              var read_less = lines.slice(0,lines.length);
-              for (var j=0; j < lines.length; j++) {
-                $post_container[index].innerHTML += read_less[j] + '<br/>';
-              }
-            }
-          } else {
-            $post_container[index].innerHTML += post;
-          }
-    });
-  }
-
-  manage_status_caption();
-
   $('.post-container').on('contentchanged', function() {
-    manage_status_caption();
     post_card_stack_up();
   })
 
@@ -164,4 +134,29 @@ $(document).ready(function() {
     $preview_img.attr('src', '#');
     $real_upload_btn.val(null);
   });
+
+  // show loading.gif on modal close
+  
+  var $notif_modal = $('#notification');
+  var $notif_wrapper = $('.notif-wrapper');
+  $notif_modal.on('hidden.bs.modal', function (e) {
+    $notif_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+  });
+
+  var $p_chat_modal = $('#p-chat');
+  var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
+  $p_chat_modal.on('hidden.bs.modal', function (e) {
+    if ($p_chat_cover_wrapper.children().hasClass('wrap-msg-list-res')) {
+      $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+    }
+  });
+
+  var $online_users_modal = $('#online-users');
+  var $followers_wrapper = $('.followers-wrapper');
+  var $following_wrapper = $('.following-wrapper');
+  $online_users_modal.on('hidden.bs.modal', function (e) {
+    $followers_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+    $following_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+  });
+  
 })

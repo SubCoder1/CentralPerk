@@ -1,33 +1,70 @@
 # Create your tasks here
 from __future__ import absolute_import, unicode_literals
 from celery import shared_task
-from Profile.models import User
+from Profile.models import User, Friends
+from Home.models import Conversations
 from django.contrib.sessions.models import Session
 from django.core.cache import cache
 from django.core.validators import validate_email
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
+from django.db import close_old_connections
+from django.db.models import Q
+from channels.layers import get_channel_layer
+from asgiref.sync import AsyncToSync
+from centralperk.celery import app
 from datetime import datetime
 import pytz, re
+from itertools import chain
 
 @shared_task
 def update_user_activity_on_login(username, session_key=None):
-    user = User.get_user_obj(username=username)
-    user.active = True
-    user.session_key = session_key
-    user.save()
-    return "complete :)"
+    try:
+        user = User.get_user_obj(username=username)
+        user.active = True
+        user.session_key = session_key
+        user.save()
+        return "complete :)"
+    finally:
+        close_old_connections()
 
 @shared_task
 def update_user_activity_on_logout(username):
-    user = User.get_user_obj(username=username)
-    user.active = False
-    user.session_key = ''
-    user.channel_name = ''
-    tz = pytz.timezone('Asia/Kolkata')
-    user.last_login = datetime.now().astimezone(tz=tz)
-    user.save()
-    return "complete :)"
+    try:
+        user = User.get_user_obj(username=username)
+        user.session_key = ''
+        user.channel_name = ''
+        user.active = False
+        if user.just_created == True:
+            user.just_created = False
+        tz = pytz.timezone('Asia/Kolkata')
+        user.last_login = datetime.now().astimezone(tz=tz)
+        if user.monitor_task_id is not "":
+            # revoke any ongoing session monitoring task against this user.
+            app.control.revoke(str(user.monitor_task_id))
+            user.monitor_task_id = ""
+        user.save()
+
+        # Close any open conversations from this end
+        # Build query
+        query_a = Q(user_a=user)
+        query_a.add(Q(chat_active_from_a=True), Q.AND)
+        open_convo_list_a = Conversations.objects.filter(query_a)
+        query_b = Q(user_b=user)
+        query_b.add(Q(chat_active_from_b=True), Q.AND)
+        open_convo_list_b = Conversations.objects.filter(query_b)
+
+        open_convo_list = list(chain(open_convo_list_a, open_convo_list_b))
+        #print(open_convo_list)
+        for convo in open_convo_list:   # Theoretically this loop should run for at most 1 times
+            if convo.user_a == user:
+                convo.chat_active_from_a = False
+            else:
+                convo.chat_active_from_b = False
+            convo.save()
+        return "complete :)"
+    finally:
+        close_old_connections()
 
 @shared_task
 def erase_duplicate_sessions(username, session_key, cache_key):
@@ -37,9 +74,12 @@ def erase_duplicate_sessions(username, session_key, cache_key):
         Session.objects.get(session_key=previous_session).delete()
         cache.delete(f"django.contrib.sessions.cached_{cache_key}")
         user.session_key = session_key
+        user.save()
         return "complete :)"
     except:
         return 'session not found :('
+    finally:
+        close_old_connections()
 
 @shared_task
 def check_username_validity(username, logged_in_user=None):
@@ -71,10 +111,12 @@ def check_email_validity(email):
         if len(str(email)) > 254:
             return 'Email should be < 255 characters'
         elif User.objects.filter(email=email).exists():
-            return 'This Email is being used by another user'
+            return 'This Email is being used by another user'  
         return 'valid email'
     except ValidationError:
         return 'invalid email'
+    finally:
+        close_old_connections()
 
 @shared_task
 def check_fullname_validity(full_name):
@@ -116,3 +158,5 @@ def check_pass_strength(password, username=None, email=None):
             return 'strength:medium, too similar to email'
         else:
             return 'strength:bad'
+    finally:
+        close_old_connections()

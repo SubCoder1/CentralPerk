@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block body %}
+<div class="container-fluid">
 <div class="wrap-edit-profile">
     <div class="indicator">
         <div class="alert alert-success" id="success-msg" role="alert">
@@ -37,7 +38,7 @@
                 {% csrf_token %}
                 <div class="custom-img-upload-container">
                     <input type="file" id="real-file" name="profile_pic" accept="image/x-png,image/jpeg" hidden/>
-                    <img src="/media/{{ user.profile_pic }}" id="custom-upload" class="edit-prof-pic-rounded"/>
+                    <img src="{{ user.profile_pic.url }}" id="custom-upload" class="edit-prof-pic-rounded"/>
                     <div class="custom-upload-hover-ico">
                         <i class="fas fa-camera-retro"></i>
                     </div>
@@ -128,6 +129,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 {% endblock %}
 

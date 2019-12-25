@@ -1,9 +1,6 @@
 {% if followers %}
     {% for user in followers %}
     <div class="d-flex justify-content-between align-items-center">
-        <div class="mr-0">
-            <img src="/media/{{ user.profile_pic }}" class="rounded-circle post-profile-img">
-        </div>
         <div class="ml-2">
             <div class="h5 m-0 body">
                 <a class="body_link" href="{% url 'view_profile' user.username %}">{{ user.username }}</a>

@@ -20,7 +20,7 @@
                 <a href="#" class="comment-reply" id="{{ comment.comment_id }}">
                     <i class="fas fa-reply"></i>
                 </a>
-                {% if editable or canDelete %}
+                {% if editable or comment.canDelete %}
                     <a href="#" class="comment-dlt" id="{{ comment.comment_id }}">
                         <i class="fas fa-trash-alt"></i>
                     </a>
@@ -52,7 +52,7 @@
                                 <a href="#" class="comment-reply" id="{{ comment.comment_id }}">
                                     <i class="fas fa-reply"></i>
                                 </a>
-                            {% if editable or canDelete %}
+                            {% if editable or reply.canDelete %}
                                 <a href="#" class="comment-dlt" id="{{ reply.comment_id }}">
                                     <i class="fas fa-trash-alt"></i>
                                 </a>

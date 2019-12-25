@@ -1,0 +1,48 @@
+<div class="wrap-msg-list-res">
+    {% if friends %}
+    {% for friend in friends %}
+        {% if friend.user_a == user %}
+            <div class="card msg-user-card" id="{{ friend.user_b.username }}">
+                <div class="card-body" style="padding: 0">
+                    <div class="d-flex">
+                        <div class="mr-1">
+                            <img src="{{ friend.user_b.profile_pic.url }}" class="notify-pic-rounded"/>
+                        </div>
+                        <div class="ml-2 ml-2-align">
+                            <div class="m-0">
+                                <a href="{% url 'view_profile' friend.user_b.username %}">
+                                    {{ friend.user_b.username }}
+                                </a>
+                                <h6>{{ friend.user_b.full_name }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card msg-user-card" id="{{ friend.user_a.username }}">
+                <div class="card-body" style="padding: 0">
+                    <div class="d-flex">
+                        <div class="mr-1">
+                            <img src="{{ friend.user_a.profile_pic.url }}" class="notify-pic-rounded"/>
+                        </div>
+                        <div class="ml-2 ml-2-align">
+                            <div class="m-0">
+                                <a href="{% url 'view_profile' friend.user_a.username %}">
+                                    {{ friend.user_a.username }}
+                                </a>
+                                <h6>{{ friend.user_a.full_name }}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% else %}
+    <div class="empty-notif">
+        <div class="empty-notif-ghost"><i class="fas fa-ghost"></i></div>
+        <h5 style="position: relative; left: 2px;">No friends yet :(</h5>
+    </div>
+    {% endif %}
+</div>

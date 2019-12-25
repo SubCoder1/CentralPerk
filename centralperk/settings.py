@@ -3,11 +3,11 @@ import os
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
 #SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_AGE = 480
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True # If a logged-in user closes the browser, session gets expired
 SESSION_SAVE_EVERY_REQUEST = True # whenever you occur new request, It saves the session and updates timeout to expire
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = "default"
-SESSION_SECURITY_EXPIRE_AFTER = 100 # Time (in seconds) before the user should be logged out if inactive.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,14 +27,14 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'channels',
 
     #third party
     #'debug_toolbar',
-    'session_security',
-    #'django_extensions',
-    'storages',
+    'django_extensions',
     
     #own
     'AUth',
@@ -46,10 +46,10 @@ AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'centralperk.middleware.SessionActivityMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'centralperk.middleware.login_required_middleware',
@@ -105,12 +105,12 @@ PASSWORD_HASHERS = (
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'centralperk',
-        'USER': 'postgres',
-        'PASSWORD': 'admin',
-        'HOST': 'localhost',
-        'PORT': '',
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    'NAME': 'centralperk',
+    "USER": 'postgres',
+    "PASSWORD": 'admin',
+    "HOST": 'localhost',
+    "PORT": '5432',
     }
 }
 
@@ -169,12 +169,8 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
-#DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-#STATICFILES_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-DROPBOX_OAUTH2_TOKEN = 'UvB0BLZ6EFAAAAAAAAAAIElDHrL9VKWVUXnMMtcTSS3EezDycPJ2SGv3y255eG4t'
-
 # Example: "/home2/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT.
 MEDIA_URL = '/media/'
@@ -188,6 +184,8 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_URL  = '/'
 

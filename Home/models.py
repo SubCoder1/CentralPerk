@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import Prefetch
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
+from django.core.files import File
+from django.contrib.postgres.fields import HStoreField
 import uuid, pytz
 from Profile.models import User
 from datetime import datetime
@@ -9,6 +11,7 @@ from collections import namedtuple
 from hashlib import sha256
 from random import getrandbits
 from PIL import Image
+from io import BytesIO
 
 # Create your models here.
 class PostModelManager(models.Manager):
@@ -54,22 +57,27 @@ class PostModel(models.Model):
             return 'caption_pic ' + self.post_id
 
     def save(self, *args, **kwargs):
-        instance = super().save(*args, **kwargs)
         if self.pic:
-            pic = Image.open(self.pic.path)
-
-            if pic.format is not 'GIF':
+            # Opening the uploaded image
+            im = Image.open(self.pic)
+            if im.format is not 'GIF':
                 # Compress image
+                if im.format is 'PNG':
+                    im = im.convert('RGB')
 
-                if pic.format is 'PNG':
-                    pic = pic.convert('RGB')
+                output = BytesIO()
 
-                # Compress and save actual pic
+                # Resize/modify the image
                 size = (700, 700)
-                pic.thumbnail(size, Image.ANTIALIAS)
-                pic.save(self.pic.path, format='JPEG', quality=95, optimize=True)
+                im.thumbnail(size, Image.ANTIALIAS)
 
-        return instance
+                # after modifications, save it to the output
+                im.save(output, format='JPEG', quality=90)
+                output.seek(0)
+
+                self.pic = File(output, name=f"{str(self.unique_id)}.jpg")
+
+        super().save()
 
 @receiver(post_delete, sender=PostModel)
 def submission_delete(sender, instance, **kwargs):
@@ -137,6 +145,7 @@ class PostComments(models.Model):
     post_obj = models.ForeignKey(PostModel, on_delete=models.CASCADE, default=1, related_name='post_comment_obj')
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING, related_name='comment_by')
     comment = models.TextField(blank=False)
+    comment_notif_id = models.CharField(max_length=200, editable=False, null=True)
     reply = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
     date_time = models.DateTimeField(auto_now_add=True)
     parent = models.BooleanField(default=True)
@@ -190,3 +199,20 @@ class UserNotification(models.Model):
             obj.private_request_id = request_id_hash.hexdigest()
         obj.save()
         return obj
+
+class Conversations(models.Model):
+    chat_active_from_a = models.BooleanField(default=False)
+    user_a = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_a')
+    sent_by_a_count = models.BigIntegerField(default=0, verbose_name='msg_sent_by_user_a')
+    chat_active_from_b = models.BooleanField(default=False)
+    user_b = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_b')
+    sent_by_b_count = models.BigIntegerField(default=0, verbose_name='msg_sent_by_user_b')
+    date_time = models.DateTimeField(auto_now_add=True, auto_now=False)
+    convo = HStoreField()
+    objects = models.Manager()
+
+    class Meta:
+        ordering = ('-date_time',)
+
+    def __str__(self):
+        return f"{str(self.user_a)} <convo> {str(self.user_b)}"

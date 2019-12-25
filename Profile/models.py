@@ -15,15 +15,17 @@ def user_directory_path(instance, filename):
 class User(AbstractBaseUser):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     session_key = models.CharField(max_length=40, default='notyetaccquired')
+    monitor_task_id = models.CharField(max_length=60, blank=True, null=True)
     channel_name = models.CharField(max_length=100, default="", blank=True, null=True)
-    username = models.CharField(max_length=20, unique=True)
+    username = models.CharField(max_length=20, default='',unique=True)
     full_name = models.CharField(max_length=50)
     birthdate = models.CharField(max_length=10)
     bio = models.TextField(max_length=160,  default="I am breathtaking!", blank=True)
     gender = models.CharField(max_length=20, choices=GENDER)
     email = models.EmailField(max_length=255, unique=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    profile_pic = models.ImageField(blank=True, upload_to=user_directory_path, default='/profile_pics/default.png')
+    just_created = models.BooleanField(default=True)
+    profile_pic = models.ImageField(blank=True, upload_to=user_directory_path)
     admin = models.BooleanField(default=False) # a superuser
     staff = models.BooleanField(default=False) # a admin user; non super-user
     active = models.BooleanField(default=True)
@@ -57,7 +59,7 @@ class User(AbstractBaseUser):
 
 @receiver(post_delete, sender=User)
 def submission_delete(sender, instance, **kwargs):
-    instance.pic.delete(False)
+    instance.profile_pic.delete(False)
 
 POST_NOTIF_CHOICES = (('Disable', 'Disable'), ('From People I Follow', 'From People I Follow'), ('From Everyone', 'From Everyone'))
 class Account_Settings(models.Model):
@@ -124,10 +126,10 @@ class Friends(models.Model):
         friend_obj, created = cls.objects.get_or_create(current_user=current_user)
         online_friends, followers, following = None, None, None
         if not created:
-            online_friends = friend_obj.following.filter(active=True, user_setting__activity_status=True).values_list('username', 'full_name', 'profile_pic', named=True)
-            followers = friend_obj.followers.values_list('username', 'full_name', 'profile_pic', named=True)
-            following = friend_obj.following.filter(user_setting__activity_status=True).values_list('username', 'profile_pic', 'full_name', 'last_login', 'active', named=True)
-        return (online_friends, followers, following)
+            #online_friends = friend_obj.following.filter(active=True, user_setting__activity_status=True).only('username', 'full_name', 'profile_pic')
+            followers = friend_obj.followers.only('username', 'full_name', 'profile_pic')
+            following = friend_obj.following.filter(user_setting__activity_status=True).only('username', 'profile_pic', 'full_name', 'last_login', 'active')
+        return (followers, following)
 
     class Meta:
         verbose_name = 'Relation'
