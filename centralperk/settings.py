@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'Profile',
     'Home',
 ]
+
 AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
