@@ -179,7 +179,7 @@ class UserNotification(models.Model):
     poked_by = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1, blank=False, verbose_name="reacting_user")
     post = models.ForeignKey(PostModel, on_delete=models.CASCADE, related_name="post", null=True, blank=True)
     date_time = models.DateTimeField(auto_now_add=True)
-    reaction = models.CharField(max_length=20, choices=REACTION)
+    reaction = models.CharField(max_length=50, choices=REACTION)
     objects = models.Manager()
 
     class Meta:
