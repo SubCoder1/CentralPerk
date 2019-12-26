@@ -1,4 +1,8 @@
 import os
+from configparser import RawConfigParser
+
+config = RawConfigParser()
+config.read('/etc/centralperk/settings.ini')
 
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
@@ -12,12 +16,12 @@ SESSION_CACHE_ALIAS = "default"
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'yoursecretkey'
+SECRET_KEY = config.get('section', 'SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost',]
+ALLOWED_HOSTS = ['localhost', str(config.get('section', 'IP'))]
 INTERNAL_IPS = ['127.0.0.1',]
 
 # Application definition
@@ -82,8 +86,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [os.environ.get('REDIS_URL', 
-            'redis://:yourredispassword@localhost:6379')],
+            "hosts": [config.get('section', 'REDIS_URL')],
         },
     },
 }
@@ -117,7 +120,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://:yourredispassword@127.0.0.1:6379/1",
+        "LOCATION": str(config.get('section', 'REDIS_URL') + "/1"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
@@ -126,8 +129,8 @@ CACHES = {
 }
 
 # CELERY STUFF
-BROKER_URL = 'redis://:yourredispassword@localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://:yourredispassword@localhost:6379'
+BROKER_URL = config.get('section', 'REDIS_URL')
+CELERY_RESULT_BACKEND = config.get('section', 'REDIS_URL')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
