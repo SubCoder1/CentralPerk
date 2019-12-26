@@ -174,7 +174,7 @@ USE_TZ = True
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
 
-DROPBOX_OAUTH2_TOKEN = os.environ['DROPBOX_OAUTH2_TOKEN']
+DROPBOX_OAUTH2_TOKEN = config.get('section', 'DROPBOX_OAUTH2_TOKEN')
 
 DROPBOX_ROOT_PATH = 'media'
 
