@@ -14,3 +14,4 @@ gevent
 celery
 django-session-security
 django-cors-headers
+django-extensions
