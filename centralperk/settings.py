@@ -21,7 +21,7 @@ SECRET_KEY = config.get('section', 'SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', str(config.get('section', 'IP'))]
+ALLOWED_HOSTS = ['localhost', str(config.get('section', 'IP')), 'centralperk.social']
 INTERNAL_IPS = ['127.0.0.1',]
 
 # Application definition
