@@ -1,6 +1,6 @@
 $(document).ready(function() {
     var homeSocket = new ReconnectingWebSocket(
-        'ws://' + window.location.host + '/ws/home/');
+        'wss://' + window.location.host + '/ws/home/');
     
     homeSocket.maxReconnectAttempts = 5;
 
