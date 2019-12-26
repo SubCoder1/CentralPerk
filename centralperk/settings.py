@@ -172,6 +172,13 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
+DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
+
+DROPBOX_OAUTH2_TOKEN = os.environ['DROPBOX_OAUTH2_TOKEN']
+
+DROPBOX_ROOT_PATH = 'media'
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home2/media/media.lawrence.com/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
@@ -183,6 +190,8 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
+
+STATICFILES_STORAGE = 'centralperk.storage.WhiteNoiseStaticFilesStorage'
 
 STATIC_URL = '/static/'
 
