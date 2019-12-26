@@ -110,8 +110,8 @@ DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.postgresql_psycopg2',
     'NAME': 'centralperk',
-    "USER": 'centralperk_admin',
-    "PASSWORD": 'admin',
+    "USER": str(config.get('section', 'DB_USER')),
+    "PASSWORD": str(config.get('section', 'DB_PASS')),
     "HOST": 'localhost',
     "PORT": '5432',
     }
