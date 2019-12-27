@@ -4,6 +4,8 @@ from configparser import RawConfigParser
 config = RawConfigParser()
 config.read('/etc/centralperk/settings.ini')
 
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
 #SESSION_COOKIE_SECURE = False
