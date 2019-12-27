@@ -2,7 +2,7 @@
 {% for post in posts %}
     {% if posts|length < 2 %}
         {% if post.status_caption and not post.pic_thumbnail %}
-        <div class="card prof-post-card" style="width: 100%">
+        <div class="card prof-post-card">
         {% else %}
         <div class="card prof-post-card">
         {% endif %}
