@@ -383,7 +383,7 @@ class edit_profile(TemplateView):
                         # create a BytesIO object
                         im_io = BytesIO()
                         # Compress image into thumbnail
-                        size = (200, 200)
+                        size = (150, 150)
                         pic.thumbnail(size, Image.ANTIALIAS)
         
                         # save image to BytesIO object
