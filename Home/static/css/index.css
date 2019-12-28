@@ -239,7 +239,7 @@ h6 { font-size: 13px; }
 }
 
 .navbar-profile-pic {
-    height: 35px;
+    height: 32px;
     margin-right: 3px;
     transition: 0.3s;
 }
@@ -366,7 +366,7 @@ h6 { font-size: 13px; }
 }
 
 .post-profile-img {
-    height: 40px;
+    height: 32px;
     position: relative;
     bottom: 3px;
 }
@@ -712,7 +712,6 @@ p { margin-bottom: 0; }
 
 .ml-2-align {
     position: relative;
-    top: 4px;
 }
 
 .clear-notify {
@@ -755,7 +754,7 @@ p { margin-bottom: 0; }
 .notify-pic-rounded {
     border-radius: 50%!important;
     overflow: hidden;
-    height: 42px;
+    height: 32px;
 }
 
 .notify-date-time {

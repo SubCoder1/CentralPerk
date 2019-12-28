@@ -258,7 +258,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def search_results(self, query=None):
         try:
-            query_res = Friends.objects.filter(current_user__username__startswith=query).annotate(f_count=Count('followers'))\
+            q = Q(current_user__username__startswith=query)
+            q.add(Q(current_user__admin=False), Q.AND)
+            query_res = Friends.objects.filter(q).annotate(f_count=Count('followers'))\
                 .order_by('-f_count').select_related('current_user')
             return query_res[:10]
         except Exception as e:
