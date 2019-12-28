@@ -448,5 +448,4 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             'type' : 'update_p_chat',
             'unique_id' : event['convo_unique_id'],
             'activity' : event['activity'],
-            'last_login' : event['last_login'],
         }))

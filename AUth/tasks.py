@@ -31,8 +31,7 @@ def update_open_convo(username, activity):
             for open_convo in open_convo_list_a:
                 convo_id = sha256(bytes(str(open_convo.id), encoding='utf-8')).hexdigest()
                 context = { 
-                    "type":"update.p.chat", "convo_unique_id":convo_id, 
-                    "activity":activity, "last_login":str(user.last_login) if activity == "logout" else "online",
+                    "type":"update.p.chat", "convo_unique_id":convo_id, "activity":activity,
                 }
                 AsyncToSync(channel_layer.send)(open_convo.user_b.channel_name, context)
 
@@ -43,8 +42,7 @@ def update_open_convo(username, activity):
             for open_convo in open_convo_list_b:
                 convo_id = sha256(bytes(str(open_convo.id), encoding='utf-8')).hexdigest()
                 context = { 
-                    "type":"update.p.chat", "convo_unique_id":convo_id, 
-                    "activity":activity, "last_login":str(user.last_login) if activity == "logout" else "online",
+                    "type":"update.p.chat", "convo_unique_id":convo_id, "activity":activity,
                 }
                 AsyncToSync(channel_layer.send)(open_convo.user_a.channel_name, context)
     finally:
