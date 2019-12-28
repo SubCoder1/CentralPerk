@@ -16,16 +16,18 @@
     padding: 0;
 }
 
+.user-a-activity, .user-b-activity {
+    height: 20px;
+}
+
 .p-chat-last-login {
-    line-height: 1.5;
     font-size: 11px;
 }
 
 .p-chat-cover-b-link {
     height: 0;
     position: relative;
-    top: 13px;
-    transform: all 0.3s;
+    top: 10px;
 }
 
 .fa-chevron-left {
@@ -43,6 +45,8 @@
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    padding-top: 0%;
+    margin-bottom: 0.5rem;
 }
 
 .p-chat-txtbox {
