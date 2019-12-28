@@ -6,8 +6,6 @@ from django.db import close_old_connections
 from django.core.files import File
 from django.conf import settings
 from Profile.models import Friends
-from channels.layers import get_channel_layer
-from asgiref.sync import AsyncToSync
 from Profile.models import User, Friends, Account_Settings
 from AUth.forms import Registerform
 from AUth.tasks import (

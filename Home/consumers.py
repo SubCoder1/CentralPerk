@@ -287,7 +287,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return convo_list
         finally:
             # Close any open conversations from this end
-            # Close any open conversations from this end
             # Build query
             query_a = Q(user_a=user)
             query_a.add(Q(chat_active_from_a=True), Q.AND)
@@ -309,7 +308,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     def get_p_chat(self, username):
         try:
             # check if user exists
-            p_chat_user = User.objects.filter(username=username).first()
+            p_chat_user = User.objects.filter(username=username).select_related('user_setting').first()
             # If exists . . .
             if p_chat_user is not None:
                 # p_chat_user exists, now check if convo obj exists btw these two
@@ -332,8 +331,11 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     else:
                         convo.chat_active_from_b = True
                         convo.save()
+                    
+                    # create convo_unique_id
+                    convo_id = sha256(bytes(str(convo.id), encoding='utf-8')).hexdigest()
                     # Return convo obj
-                    return convo
+                    return (convo, p_chat_user.user_setting.activity_status and user.user_setting.activity_status, convo_id)
             # else return None
             return
         except Exception as e:
@@ -409,11 +411,15 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     
     async def send_p_chat(self, username, event=None):
         try:
-            friend = await self.get_p_chat(username=username)
+            friend, f_activity_status, convo_unique_id = await self.get_p_chat(username=username)
             if friend is not None:
+                context = {
+                    'friend':friend, 'user':self.scope['user'], 'activity_status':f_activity_status,
+                    'unique_id':convo_unique_id,
+                }
                 await self.send(text_data=json.dumps({
                     'type' : 'p_chat_f_server',
-                    'p-chat' : render_to_string("p-chat.html", {'friend':friend, 'user':self.scope['user']}),
+                    'p-chat' : render_to_string("p-chat.html", context),
                 }))
             else:
                 pass
@@ -435,4 +441,12 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type' : 'p_chat_msg_f_server',
             'msg' : event['msg']
+        }))
+    
+    async def update_p_chat(self, event=None):
+       await self.send(text_data=json.dumps({
+            'type' : 'update_p_chat',
+            'unique_id' : event['convo_unique_id'],
+            'activity' : event['activity'],
+            'last_login' : event['last_login'],
         }))

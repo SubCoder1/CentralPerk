@@ -12,20 +12,22 @@
                 <div class="m-0">
                     {% if friend.user_a == user %}
                         <a href="{% url 'view_profile' friend.user_b.username %}">{{ friend.user_b.username }}</a>
-                        {% if friend.user_b.active == True %}
-                            <br/>
-                            <i class="material-icons online-green-ico">lens</i>
-                        {% else %}
-                            <h5 class="p-chat-last-login">{{ friend.user_b.last_login|timesince }} ago</h5>
-                        {% endif %}
+                        <div class="user-b-activity" id="{{ unique_id }}">
+                            {% if friend.user_b.active == True %}
+                                <i class="material-icons online-green-ico">lens</i>
+                            {% elif activity_status %}
+                                <h5 class="p-chat-last-login">{{ friend.user_b.last_login|timesince }} ago</h5>
+                            {% endif %}
+                        </div>
                     {% else %}
                         <a href="{% url 'view_profile' friend.user_a.username %}">{{ friend.user_a.username }}</a>
-                        {% if friend.user_a.active == True %}
-                            <br/>
-                            <i class="material-icons online-green-ico">lens</i>
-                        {% else %}
-                            <h5 class="p-chat-last-login">{{ friend.user_a.last_login|timesince }} ago</h5>
-                        {% endif %}
+                        <div class="user-a-activity" id="{{ unique_id }}">
+                            {% if friend.user_a.active == True %}
+                                <i class="material-icons online-green-ico">lens</i>
+                            {% elif activity_status %}
+                                <h5 class="p-chat-last-login">{{ friend.user_a.last_login|timesince }} ago</h5>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
             </div>
