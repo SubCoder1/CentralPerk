@@ -77,10 +77,7 @@ $(document).ready(function() {
                 if (data['activity'] == 'login') {
                     $p_chat_activity_div.html("<i class='material-icons online-green-ico'>lens</i>");
                 } else {
-                    if (data['last_login'] != 'online') {
-                        var fromNow = moment(data['last_login']).fromNow();
-                        $p_chat_activity_div.html("<h5 class='p-chat-last-login'>" + fromNow + "</h5>");
-                    }
+                    $p_chat_activity_div.html("<h5 class='p-chat-last-login'>a few seconds ago</h5>");
                 }
             }
         }

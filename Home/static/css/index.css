@@ -886,7 +886,8 @@ p { margin-bottom: 0; }
 .online-green-ico {
     color: #adff2f;
     font-size: 8px;
-    line-height: 2;
+    position: relative;
+    top: -3px;
 }
 
 .user-pic-margin { margin-right: 5px; }
