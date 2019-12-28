@@ -84,7 +84,7 @@
 
 .wrap-p-chat-txt {
     margin-top: 20px;
-    max-width: 49%;
+    max-width: 50%;
     width: fit-content;
     background: mediumslateblue;     /* Default for sent msg */
     border-radius: 2rem;
