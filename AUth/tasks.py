@@ -14,8 +14,65 @@ from channels.layers import get_channel_layer
 from asgiref.sync import AsyncToSync
 from centralperk.celery import app
 from datetime import datetime
+from hashlib import sha256
 import pytz, re
 from itertools import chain
+
+@shared_task
+def update_open_convo(username, activity):
+    try:
+        user = User.get_user_obj(username=username)
+        channel_layer = get_channel_layer()
+
+        query_a = Q(user_a=user)
+        query_a.add(Q(chat_active_from_b=True), Q.AND)
+        open_convo_list_a = Conversations.objects.filter(query_a).select_related('user_b')
+        if len(open_convo_list_a):
+            for open_convo in open_convo_list_a:
+                convo_id = sha256(bytes(str(open_convo.id), encoding='utf-8')).hexdigest()
+                context = { 
+                    "type":"update.p.chat", "convo_unique_id":convo_id, 
+                    "activity":activity, "last_login":str(user.last_login) if activity == "logout" else "online",
+                }
+                AsyncToSync(channel_layer.send)(open_convo.user_b.channel_name, context)
+
+        query_b = Q(user_b=user)
+        query_b.add(Q(chat_active_from_a=True), Q.AND)
+        open_convo_list_b = Conversations.objects.filter(query_b).select_related('user_a')
+        if len(open_convo_list_b):
+            for open_convo in open_convo_list_b:
+                convo_id = sha256(bytes(str(open_convo.id), encoding='utf-8')).hexdigest()
+                context = { 
+                    "type":"update.p.chat", "convo_unique_id":convo_id, 
+                    "activity":activity, "last_login":str(user.last_login) if activity == "logout" else "online",
+                }
+                AsyncToSync(channel_layer.send)(open_convo.user_a.channel_name, context)
+    finally:
+        close_old_connections()
+
+@shared_task
+def close_open_convo(username):
+    try:
+        user = User.get_user_obj(username=username)
+        # Build query
+        query_a = Q(user_a=user)
+        query_a.add(Q(chat_active_from_a=True), Q.AND)
+        open_convo_list_a = Conversations.objects.filter(query_a)
+        query_b = Q(user_b=user)
+        query_b.add(Q(chat_active_from_b=True), Q.AND)
+        open_convo_list_b = Conversations.objects.filter(query_b)
+
+        open_convo_list = list(chain(open_convo_list_a, open_convo_list_b))
+        #print(open_convo_list)
+        for convo in open_convo_list:   # Theoretically this loop should run for at most 1 times
+            if convo.user_a == user:
+                convo.chat_active_from_a = False
+            else:
+                convo.chat_active_from_b = False
+            convo.save()
+        return "closed open conversations :)"
+    finally:
+        close_old_connections()
 
 @shared_task
 def update_user_activity_on_login(username, session_key=None):
@@ -24,6 +81,9 @@ def update_user_activity_on_login(username, session_key=None):
         user.active = True
         user.session_key = session_key
         user.save()
+        # show any friend of request.user that he/she's online
+        # i.e., change activity in any open conversation from other end
+        update_open_convo.delay(username=username, activity='login')
         return "complete :)"
     finally:
         close_old_connections()
@@ -44,24 +104,9 @@ def update_user_activity_on_logout(username):
             app.control.revoke(str(user.monitor_task_id))
             user.monitor_task_id = ""
         user.save()
-
         # Close any open conversations from this end
-        # Build query
-        query_a = Q(user_a=user)
-        query_a.add(Q(chat_active_from_a=True), Q.AND)
-        open_convo_list_a = Conversations.objects.filter(query_a)
-        query_b = Q(user_b=user)
-        query_b.add(Q(chat_active_from_b=True), Q.AND)
-        open_convo_list_b = Conversations.objects.filter(query_b)
-
-        open_convo_list = list(chain(open_convo_list_a, open_convo_list_b))
-        #print(open_convo_list)
-        for convo in open_convo_list:   # Theoretically this loop should run for at most 1 times
-            if convo.user_a == user:
-                convo.chat_active_from_a = False
-            else:
-                convo.chat_active_from_b = False
-            convo.save()
+        close_open_convo.delay(username=username)
+        update_open_convo.delay(username=username, activity='logout')
         return "complete :)"
     finally:
         close_old_connections()
