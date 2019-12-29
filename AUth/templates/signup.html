@@ -13,23 +13,23 @@
 	<h1 class="headline">Say Hello!</h1>
 	<form method="POST" autocomplete="off">
 		{% csrf_token %}
-		<input class="input100 register-input" type="text" id="register-username" name="username" placeholder="Username" maxlength="20"/>
+		<input class="input100 register-input" type="text" id="register-username" name="username" aria-label="username" placeholder="Username" maxlength="20"/>
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-username" style="color:orange;"></span>
 		</div>
 		<br/>
-		<input class="input100 register-input" type="text" id="register-fullname" name="full_name" placeholder="Full Name" maxlength="50"/>
+		<input class="input100 register-input" type="text" id="register-fullname" name="full_name" aria-label="full name" placeholder="Full Name" maxlength="50"/>
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-fullname" style="color:orange;"></span>
 		</div>
 		<br/>
-		<input class="input100 register-input" type="email" id="register-email" name="email" placeholder="Email" maxlength="254"/>
+		<input class="input100 register-input" type="email" id="register-email" name="email" aria-label="email" placeholder="Email" maxlength="254"/>
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-email" style="color:orange;"></span>
 		</div>
 		<br/>
 		<div class="input100 register-input gender-select-container" id="register-gender">
-			<select class="gender-selection-dropdown" name="gender" id="choice">
+			<select class="gender-selection-dropdown" name="gender" aria-label="gender" id="choice">
 				<option selected disabled>Gender</option>
 				<option>Male</option>
 				<option>Female</option>
@@ -40,7 +40,7 @@
 			<span class="txt1" id="form-error-gender" style="color:orange;"></span>
 		</div>
 		<br/>
-		<input class="input100 register-input pass-input-margin" type="password" id="register-pass" name="password" placeholder="Password"/>
+		<input class="input100 register-input pass-input-margin" type="password" id="register-pass" name="password" aria-label="password" placeholder="Password"/>
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-password" style="color:orange;"></span>
 		</div>
