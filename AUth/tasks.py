@@ -45,6 +45,7 @@ def update_open_convo(username, activity):
                     "type":"update.p.chat", "convo_unique_id":convo_id, "activity":activity,
                 }
                 AsyncToSync(channel_layer.send)(open_convo.user_a.channel_name, context)
+        return "updated any open convos :)"
     finally:
         close_old_connections()
 
