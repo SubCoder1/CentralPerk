@@ -9,6 +9,7 @@ django_redis
 redis
 channels
 channels_redis
+Twisted[tls,http2]
 gevent
 celery
 django-session-security
