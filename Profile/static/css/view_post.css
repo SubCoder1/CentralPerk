@@ -213,7 +213,7 @@
     color: orangered;
 }
 
-.m-0 { font-size: 17px; }
+.m-0 { font-size: 11px; }
 .ml-2, .ml-3 { position: unset; }
 
 .post-profile-img { bottom: 0; }
@@ -223,8 +223,8 @@
     border-left: 2px solid blueviolet;
 }
 
-.comment-date-time {
-    font-size: 10px;
+.comment-date-time, .liked-user-full-name {
+    font-size: 11px;
 }
 
 .comment-user {
@@ -273,9 +273,12 @@
     margin-right: 5px;
 }
 
+.mr-1 { height: fit-content; }
+
 .like-date-time {
-    float: right;
-    line-height: 3.8;
+    position: absolute;
+    right: 33px;
+    line-height: 3;
     font-size: 11px;
 }
 
@@ -306,17 +309,26 @@
 /* ------------- Reponsive content -------------- */
 @media only screen and (max-width: 767px) {
     .post-view { flex-direction: column; }
+
     .refresh-btn-container { margin-bottom: 10px; }
+
     .container-fluid,
     .post-view-container,
     .post-view, .post-view-container { padding: 0; }
+
     .status-view, .wrap-img-view, .post-pic-enlarged-view { border-radius: 0; }
+
     .wrap-data-view { 
         border-radius: 0; 
         width: 100%;
     }
     .comment-input { width: 83%; }
+
     .data-view-enlarged { border-radius: 0; }
+
+    .like-date-time {
+        right: 26px;
+    }
 }
 
 @media only screen and (min-width: 768px) and (max-width: 1024px) {

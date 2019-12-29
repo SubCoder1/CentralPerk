@@ -1,13 +1,19 @@
 {% if liked_user_list %}
     <div class="likes-tab" style="text-align: left">
         {% for liked_user in liked_user_list %}
-            <div class="liked-user">
-                <a href="{% url 'view_profile' liked_user.user.username %}">
-                    <img src="{{ liked_user.user.profile_pic.url }}" class="rounded-circle post-profile-img like-prof-margin">
-                    {{ liked_user.user.username }}
-                </a>
+            <div class="d-flex" style="margin-bottom: 5px;">
+                <div class="mr-1">
+                    <img src="{{ liked_user.user.profile_pic.url }}" class="notify-pic-rounded"/>
+                </div>
+                <div class="ml-2 ml-2-align">
+                    <div class="m-0">
+                        <a href="{% url 'view_profile' liked_user.user.username %}">
+                            {{ liked_user.user.username }}
+                        </a>
+                        <h6 class="liked-user-full-name">{{ liked_user.user.full_name }}</h6>
+                    </div>
+                </div>
                 <span class="like-date-time">{{ liked_user.date_time|timesince }} ago</span>
-                <br/>
             </div>
         {% endfor %}
     </div>

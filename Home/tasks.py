@@ -43,6 +43,35 @@ def monitor_user_status(username, session_key, cache_key):
         close_old_connections()
 
 @shared_task
+def share_post_to_users(username, send_to:list, post_id=None, to_wall=True):
+    # This function handles tasks like sending posts of someone user:username followed into his/her wall
+    # OR personal post share through msg!
+    try:
+        if to_wall:
+            user = User.get_user_obj(username=username)
+            # pick out 2 of user's recent posts & send it to newly followed user
+            posts = user.posts.all()[:2]
+            if len(posts):
+                channel_layer = get_channel_layer()
+                for post in posts:
+                    try:
+                        for u_name in send_to:
+                            s_user = User.get_user_obj(username=u_name)
+                            post.send_to.add(s_user)
+                            if s_user.channel_name is not "":
+                                AsyncToSync(channel_layer.send)(s_user.channel_name, { "type" : "update.wall" })
+                    except ObjectDoesNotExist:
+                        continue
+            return "complete :)"
+        else:
+            # post share personally (through convo)
+            # still to be written. . .
+            pass
+
+    finally:
+        close_old_connections()
+
+@shared_task
 def share_posts(username, post_id):
     try:
         try:
