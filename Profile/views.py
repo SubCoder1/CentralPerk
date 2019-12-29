@@ -14,7 +14,7 @@ from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Settings
 from Profile.tasks import update_user_acc_settings
 from Home.models import PostModel, PostComments, PostLikes, Conversations
-from Home.tasks import send_notifications, del_notifications
+from Home.tasks import send_notifications, del_notifications, share_post_to_users
 from Home.forms import CommentForm
 import json, os, pytz
 from PIL import Image
@@ -48,6 +48,8 @@ def manage_relation(request, username, option=None):
                     Conversations.objects.create(user_a=current_user, user_b=follow_unfollow_user, convo={})
                 send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username, private_request=False)
                 Friends.follow(current_user, follow_unfollow_user)
+                # share two of follow_unfollow_user's recent posts *(if any) to request.user's wall
+                share_post_to_users.delay(username=follow_unfollow_user.username, send_to=[str(current_user.username)], to_wall=True)
                 result["option"] = 'Unfollow'
         else:
             Friends.unfollow(current_user, follow_unfollow_user)
@@ -109,6 +111,7 @@ def manage_post_likes(request, post_id):
     except Exception as e:
         print(str(e))
         return redirect(reverse('user_login'))
+
 def view_profile(request, username=None):
     try:
         """ 
@@ -383,7 +386,7 @@ class edit_profile(TemplateView):
                         # create a BytesIO object
                         im_io = BytesIO()
                         # Compress image into thumbnail
-                        size = (200, 200)
+                        size = (150, 150)
                         pic.thumbnail(size, Image.ANTIALIAS)
         
                         # save image to BytesIO object

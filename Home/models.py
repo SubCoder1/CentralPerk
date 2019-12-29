@@ -68,7 +68,7 @@ class PostModel(models.Model):
                 output = BytesIO()
 
                 # Resize/modify the image
-                size = (700, 700)
+                size = (600, 600)
                 im.thumbnail(size, Image.ANTIALIAS)
 
                 # after modifications, save it to the output

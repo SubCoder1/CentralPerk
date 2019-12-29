@@ -3,7 +3,7 @@
     cursor: pointer;
     border-bottom: 1.5px solid transparent;
     margin-bottom: 10px;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
 }
 
 .msg-user-card:hover {
@@ -16,16 +16,18 @@
     padding: 0;
 }
 
+.user-a-activity, .user-b-activity {
+    height: 20px;
+}
+
 .p-chat-last-login {
-    line-height: 1.5;
     font-size: 11px;
 }
 
 .p-chat-cover-b-link {
     height: 0;
     position: relative;
-    top: 13px;
-    transform: all 0.3s;
+    top: 10px;
 }
 
 .fa-chevron-left {
@@ -43,6 +45,8 @@
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    padding-top: 0%;
+    margin-bottom: 0.5rem;
 }
 
 .p-chat-txtbox {
@@ -92,7 +96,7 @@
 
 .rec-txt-wrapper { 
     align-self: flex-end; 
-    background: mediumpurple;   /* Default for received msg */
+    background: mediumorchid;   /* Default for received msg */
 }
 
 .p-chat-sent-txt, .p-chat-rec-txt {
@@ -103,5 +107,9 @@
 @media only screen and (max-width: 767px) {
     .p-chat-txtbox {
         width: 85%;
+    }
+
+    .wrap-p-chat-txt {
+        max-width: 65%;
     }
 }

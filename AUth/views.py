@@ -6,8 +6,6 @@ from django.db import close_old_connections
 from django.core.files import File
 from django.conf import settings
 from Profile.models import Friends
-from channels.layers import get_channel_layer
-from asgiref.sync import AsyncToSync
 from Profile.models import User, Friends, Account_Settings
 from AUth.forms import Registerform
 from AUth.tasks import (
@@ -94,6 +92,8 @@ def register_user(request):
                         default_img.save(im_io, format='JPEG', quality=90, optimize=True)
                         user.profile_pic = File(im_io, name=f"thumb_{str(user.user_id)}.png")
                         user.save()
+                        # Celery handling the task to update user activity
+                        update_user_activity_on_login.delay(username, request.session.session_key)
                         result = 'valid form'
                 else:
                     if form.has_error('username'):

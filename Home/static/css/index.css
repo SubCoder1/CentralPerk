@@ -239,7 +239,7 @@ h6 { font-size: 13px; }
 }
 
 .navbar-profile-pic {
-    height: 35px;
+    height: 32px;
     margin-right: 3px;
     transition: 0.3s;
 }
@@ -308,10 +308,6 @@ h6 { font-size: 13px; }
     height: 2px;
     background: white;
 }
-
-.index_border {
-    width: 100px;
-}
 /* ----------------------------------------------- */
 
 /* --------------- post-container ---------------- */
@@ -322,6 +318,17 @@ h6 { font-size: 13px; }
     flex-direction: column;
     background: transparent;
     flex-wrap: nowrap;
+}
+
+.empty-posts-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fa-ghost {
+    font-size: 50px; 
+    color: mediumpurple;
 }
 /* ----------------------------------------------- */
 
@@ -366,7 +373,7 @@ h6 { font-size: 13px; }
 }
 
 .post-profile-img {
-    height: 40px;
+    height: 32px;
     position: relative;
     bottom: 3px;
 }
@@ -712,7 +719,6 @@ p { margin-bottom: 0; }
 
 .ml-2-align {
     position: relative;
-    top: 4px;
 }
 
 .clear-notify {
@@ -755,7 +761,7 @@ p { margin-bottom: 0; }
 .notify-pic-rounded {
     border-radius: 50%!important;
     overflow: hidden;
-    height: 42px;
+    height: 32px;
 }
 
 .notify-date-time {
@@ -887,7 +893,8 @@ p { margin-bottom: 0; }
 .online-green-ico {
     color: #adff2f;
     font-size: 8px;
-    line-height: 2;
+    position: relative;
+    top: -3px;
 }
 
 .user-pic-margin { margin-right: 5px; }

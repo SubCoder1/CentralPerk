@@ -70,6 +70,17 @@ $(document).ready(function() {
             }, 1500);
             $data.animate({'margin-top': '10px'}, 230);
         }
+        // Update p_chat
+        else if (data['type'] == 'update_p_chat') {
+            var $p_chat_activity_div = $('#'+data['unique_id']);
+            if ($p_chat_activity_div != null) {
+                if (data['activity'] == 'login') {
+                    $p_chat_activity_div.html("<i class='material-icons online-green-ico'>lens</i>");
+                } else {
+                    $p_chat_activity_div.html("<h5 class='p-chat-last-login'>a few seconds ago</h5>");
+                }
+            }
+        }
         // Display friends list
         else if (data['type'] == 'friends_list_f_server') {
             $followers_wrapper.html(data['followers']);
@@ -212,17 +223,19 @@ $(document).ready(function() {
     // Send msg in p-chat
     $p_chat_cover_wrapper.on('click', '.p-chat-snd-btn', function(event) {
         event.preventDefault();
-        var new_txt = "<div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
-        var $data = $(new_txt);
-        $('.p-chat-modal-body').append($data);
-        $('.p-chat-modal-body').animate({
-            scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
-        }, 1500);
-        $data.animate({'margin-top': '10px'}, 230);
-        homeSocket.send(JSON.stringify({
-            'task' : 'p_chat_msg',
-            'msg' : $('.p-chat-txtbox').val(),
-        }));
-        $('.p-chat-txtbox').val("");
+        if (/\S/.test($('.p-chat-txtbox').val())) {
+            var new_txt = "<div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
+            var $data = $(new_txt);
+            $('.p-chat-modal-body').append($data);
+            $('.p-chat-modal-body').animate({
+                scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+            }, 1500);
+            $data.animate({'margin-top': '10px'}, 230);
+            homeSocket.send(JSON.stringify({
+                'task' : 'p_chat_msg',
+                'msg' : $('.p-chat-txtbox').val(),
+            }));
+            $('.p-chat-txtbox').val("");
+        }
     });
 });

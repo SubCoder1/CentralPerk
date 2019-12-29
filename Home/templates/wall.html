@@ -18,6 +18,7 @@
     </div>
 </div>
 {% endif %}
+{% if posts %}
 {% for post in posts %}
     <div class="card post-card index-post-card" id="{{ post.post_id }}">
         <div class="card-header">
@@ -90,3 +91,11 @@
         </div>
     </div>
 {% endfor %}
+{% else %}
+    <div class="empty-posts-section">
+        <br/><br/><br/>
+        <i class="fas fa-ghost"></i>
+        <br/>
+        <h5>Your wall is empty :(</h5>
+    </div>
+{% endif %}
