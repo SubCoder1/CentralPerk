@@ -6,6 +6,7 @@ from django.db import close_old_connections
 from django.contrib.sessions.models import Session
 from channels.layers import get_channel_layer
 from Profile.models import User, Friends
+from Profile.tasks import create_or_update_convo_obj
 from Home.models import PostModel, PostLikes, PostComments, UserNotification, Conversations
 from Home.tasks import send_notifications, del_notifications, monitor_user_status
 import json, asyncio, pytz
@@ -232,11 +233,13 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 notification = UserNotification.objects.get(private_request_id=private_request_hash)
                 request_by = notification.poked_by
                 if option == 'accept_request':
-                    # Create a conversation model btw request_by_user & user
-                    Conversations.objects.create(user_a=request_by, user_b=user, convo={})
+                    # Create or update a conversation model btw request_by_user & user
+                    create_or_update_convo_obj.delay(request_by.username, user.username, 'follow')
                     Friends.follow(request_by, user)
                     send_notifications.delay(username=user.username, reaction="Accept Follow Request", 
                     send_to_username=request_by.username, private_request=False)
+                else:
+                    create_or_update_convo_obj.delay(request_by.username, user.username, 'unfollow')
                 notification.delete()
                 Friends.rm_from_pending(user, request_by)
         finally:
