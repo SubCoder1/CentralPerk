@@ -73,7 +73,7 @@
     color: white;
 }
 
-.p-chat-snd-btn {
+.p-chat-snd-btn, .p-chat-snd-btn:focus {
     border-radius: 50% !important;
     height: 39px;
     width: 40px;
