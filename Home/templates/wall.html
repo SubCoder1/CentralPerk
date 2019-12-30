@@ -84,8 +84,8 @@
                 {% endif %}
                 <form method="POST" class="wall-comment-form" style="margin-top: 8px">
                   <input type="hidden" name="post_id" value="{{ post.post_id }}">
-                  <textarea type="text" class="form-control comment-input" id="comment" name="comment" placeholder="Post a comment" style="height: 42px;"></textarea>
-                  <button type="submit" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
+                  <textarea type="text" class="form-control comment-input" name="comment" placeholder="Post a comment" style="height: 42px;"></textarea>
+                  <button type="submit" name="comment_send_btn" class="btn btn-dark comment-send-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
                 </form>
             </div>
         </div>
