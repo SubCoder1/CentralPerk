@@ -154,7 +154,7 @@ input:focus:-ms-input-placeholder { color:transparent; }
   text-transform: uppercase;
   height: 50px;
   border-radius: 25px;
-  background: mediumslateblue;
+  background: #00b6d1;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;

@@ -4,7 +4,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-from django.db import transaction
+from django.db.models import F
 from django.core.files import File
 from django.contrib.sessions.models import Session
 from django.db import close_old_connections
@@ -12,7 +12,7 @@ from django.contrib.auth import logout
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, Friends, Account_Settings
-from Profile.tasks import update_user_acc_settings
+from Profile.tasks import update_user_acc_settings, create_or_update_convo_obj
 from Home.models import PostModel, PostComments, PostLikes, Conversations
 from Home.tasks import send_notifications, del_notifications, share_post_to_users
 from Home.forms import CommentForm
@@ -44,8 +44,8 @@ def manage_relation(request, username, option=None):
                 result["option"] = 'Requested'
             else:
                 if option == 'follow':
-                    # Create a conversation model btw current_user & follow_unfollow_user
-                    Conversations.objects.create(user_a=current_user, user_b=follow_unfollow_user, convo={})
+                    # Create a conversation model btw current_user & follow_unfollow_user (if doesn't exist already)
+                    create_or_update_convo_obj.delay(current_user.username, follow_unfollow_user.username, 'follow')
                 send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username, private_request=False)
                 Friends.follow(current_user, follow_unfollow_user)
                 # share two of follow_unfollow_user's recent posts *(if any) to request.user's wall
@@ -62,6 +62,7 @@ def manage_relation(request, username, option=None):
                 Friends.rm_from_pending(current_user, follow_unfollow_user)
             # Delete any follow requests sent to follow_unfollow_usrname
             del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
+            create_or_update_convo_obj.delay(current_user.username, follow_unfollow_user.username, 'unfollow')
             result["option"] = 'Follow'
         
         friend = Friends.objects.get(current_user=follow_unfollow_user)
@@ -83,25 +84,24 @@ def manage_post_likes(request, post_id):
         if request.is_ajax():
             action = request.POST.get('action')
             try:
-                with transaction.atomic():
-                    post = PostModel.objects.select_for_update().get(post_id=post_id)
+                post = PostModel.objects.filter(post_id=post_id).first()
 
-                    if action == 'liked':
-                        action = "Liked the post!"
-                    else:
-                        action = "Disliked the post!"
+                if action == 'liked':
+                    action = "Liked the post!"
+                else:
+                    action = "Disliked the post!"
 
-                    if post.post_like_obj.filter(user=request.user).exists():
-                        # Dislike post
-                        post.post_like_obj.filter(user=request.user).delete()
-                        del_notifications.delay(username=request.user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
-                        post.likes_count -= 1
-                        post.save()
-                    else:
-                        # Like post
-                        post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
-                        post.likes_count += 1
-                        post.save()
+                if post.post_like_obj.filter(user=request.user).exists():
+                    # Dislike post
+                    post.post_like_obj.filter(user=request.user).delete()
+                    del_notifications.delay(username=request.user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
+                    post.likes_count = F('likes_count') - 1
+                    post.save()
+                else:
+                    # Like post
+                    post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=request.user))
+                    post.likes_count = F('likes_count') + 1
+                    post.save()
                     # Notify the user whose post is being liked
                     send_notifications.delay(username=request.user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
             except Exception as e:

@@ -1,11 +1,11 @@
 /* ----------- Profile settings  ----------- */
-.settings { background: darkturquoise; }
+.settings, .settings:focus { background: darkturquoise; }
 .settings:hover { background: #15b4a4; }
 .fa-cog { transition: transform 0.3s; }
 .options-link:hover .fa-cog { transform: rotate(90deg); }
 
 
-.edit { background: tomato; }
+.edit, .edit:focus { background: tomato; }
 .edit:hover { background: #f46f24; }
 .options-link:hover .fa-pencil-alt { animation: pencil 1s forwards; }
 
@@ -231,7 +231,7 @@ a:hover span {
 /* ----------------------------------------- */
 
 /* ------------ info alignment ------------- */
-.follow_unfollow_user, .follow_unfollow_user:hover { border: 1px solid mediumslateblue; }
+.follow_unfollow_user, .follow_unfollow_user:hover { border: 1.2px solid mediumslateblue; }
 
 .about-profile {
   display: flex;

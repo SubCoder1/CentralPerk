@@ -73,6 +73,7 @@ def share_post_to_users(username, send_to:list, post_id=None, to_wall=True):
 
 @shared_task
 def share_posts(username, post_id):
+    # This function handles tasks to add recent post of user into any user's follwers wall
     try:
         try:
             post = PostModel.objects.get_post(post_id=post_id)
