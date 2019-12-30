@@ -3,9 +3,9 @@
         <div class="d-flex">
             <div class="mr-1">
                 {% if friend.user_a == user %}
-                    <img src="{{ friend.user_b.profile_pic.url }}" class="notify-pic-rounded"/>
+                    <img src="{{ friend.user_b.profile_pic.url }}" alt="{{ friend.user_b.username}}-prof-pic" class="notify-pic-rounded"/>
                 {% else %}
-                    <img src="{{ friend.user_a.profile_pic.url }}" class="notify-pic-rounded"/>
+                    <img src="{{ friend.user_a.profile_pic.url }}" alt="{{ friend.user_b.username}}-prof-pic" class="notify-pic-rounded"/>
                 {% endif %}
             </div>
             <div class="ml-2 ml-2-align">
@@ -17,6 +17,8 @@
                                 <i class="material-icons online-green-ico">lens</i>
                             {% elif activity_status %}
                                 <h5 class="p-chat-last-login">{{ friend.user_b.last_login|timesince }} ago</h5>
+                            {% else %}
+                                <h5>inactive</h5>
                             {% endif %}
                         </div>
                     {% else %}
@@ -26,6 +28,8 @@
                                 <i class="material-icons online-green-ico">lens</i>
                             {% elif activity_status %}
                                 <h5 class="p-chat-last-login">{{ friend.user_a.last_login|timesince }} ago</h5>
+                            {% else %}
+                                <h5 class="p-chat-last-login">inactive</h5>
                             {% endif %}
                         </div>
                     {% endif %}
@@ -38,5 +42,5 @@
 <div class="modal-body p-chat-modal-body">
 </div>
 
-<textarea type="text" class="form-control p-chat-txtbox" id="send_txt" name="convo" placeholder="Type something" style="height: 42px;"></textarea>
+<textarea type="text" class="form-control p-chat-txtbox" id="send_txt" name="convo" aria-label="send text" placeholder="Type something" style="height: 42px;"></textarea>
 <button type="button" class="btn btn-dark p-chat-snd-btn"><i class="material-icons cmmnt-send-ico">send</i></button>
