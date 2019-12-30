@@ -4,7 +4,7 @@ from django.contrib.auth import update_session_auth_hash
 from django.http import HttpResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-from django.db import transaction
+from django.db.models import F
 from django.core.files import File
 from django.contrib.sessions.models import Session
 from django.db import close_old_connections
