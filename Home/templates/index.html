@@ -22,7 +22,7 @@
     {% block head %}
     {% endblock %}
     {% block title %}
-    <title>Landing Page</title>
+    <title>CentralPerk</title>
     {% endblock %}
   </head>
   <body>
@@ -93,7 +93,7 @@
         <div class="sidebar-container">
           <div class="options-block" id="options">
             <div class="notif-block">
-              <button class="btn btn-dark options-link notif-btn" data-toggle="modal" data-target="#notification">
+              <button class="btn btn-dark options-link notif-btn" name="access-to-notification" data-toggle="modal" data-target="#notification">
                 <i class="fas fa-bell"></i>
               </button>
               <div class="new-notif-indicator"></div>
@@ -119,7 +119,7 @@
                 </div>
               </div>
             </div>
-            <button class="btn btn-dark options-link upload-btn" data-toggle="modal" data-target="#upload">
+            <button class="btn btn-dark options-link upload-btn" name="access-to-post-upload" data-toggle="modal" data-target="#upload">
               <i class="fas fa-plus"></i>
             </button>
             <div class="modal fade" id="upload" tabindex="-1" role="dialog" aria-labelledby="upload-title" aria-hidden="true">
