@@ -86,8 +86,22 @@
     border-color: darkslateblue;
 }
 
-.wrap-p-chat-txt {
+.animate-txt-wrap {
     margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.fa-paper-plane {
+    height: fit-content;
+    position: relative;
+    top: 14px;
+    left: 6px;
+    color: mediumaquamarine;
+}
+
+.wrap-p-chat-txt {
     max-width: 49%;
     width: fit-content;
     background: mediumslateblue;     /* Default for sent msg */
