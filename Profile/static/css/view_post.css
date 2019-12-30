@@ -14,11 +14,15 @@
     height: 50px;
     width: 93px;
     line-height: 2.3;
-    border: 1px solid mediumslateblue;
+    border: 1.2px solid mediumslateblue;
+}
+
+.refresh-btn:focus {
+    background: mediumslateblue;
 }
 
 .refresh-btn:hover {
-    border: 1px solid mediumslateblue;
+    border: 1.2px solid mediumslateblue;
 }
 
 .refresh-loading-gif {
