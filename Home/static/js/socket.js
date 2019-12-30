@@ -224,8 +224,9 @@ $(document).ready(function() {
     $p_chat_cover_wrapper.on('click', '.p-chat-snd-btn', function(event) {
         event.preventDefault();
         if (/\S/.test($('.p-chat-txtbox').val())) {
-            var new_txt = "<div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
-            var $data = $(new_txt);
+            var new_txt = "<div class='animate-txt-wrap'><div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
+            var send_anim = "<i class='far fa-paper-plane'></i></div>";
+            var $data = $(new_txt+send_anim);
             $('.p-chat-modal-body').append($data);
             $('.p-chat-modal-body').animate({
                 scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
@@ -236,6 +237,9 @@ $(document).ready(function() {
                 'msg' : $('.p-chat-txtbox').val(),
             }));
             $('.p-chat-txtbox').val("");
+            setTimeout(function(){
+                $('.fa-paper-plane').remove();
+            }, 400);
         }
     });
 });
