@@ -125,7 +125,7 @@
                       <span aria-hidden="true">&times;</span>
                     </a>
                   </div>
-                  <form method="POST" enctype="multipart/form-data" autocomplete="off">
+                  <form method="POST" aria-label="post-form" enctype="multipart/form-data" autocomplete="off">
                     {% csrf_token %}
                     <div class="modal-body nav-pills-modal-body">
                       <ul class="nav nav-pills mb-3" id="cardtab" role="tablist">
@@ -148,12 +148,12 @@
                       <div class="tab-content" id="cardtabContent">
                         <div class="tab-pane fade show active" id="status" role="tabpanel" aria-labelledby="status-tab">
                           <div class="form-group">
-                            <label class="sr-only" for="message">post</label>
-                              <textarea class="form-control form-alignment status" id="status_caption" name="status_caption" placeholder="What's your status?" style="height: 300px;"></textarea>
+                            <textarea class="form-control form-alignment status" id="status_caption" name="status_caption" aria-label="post" placeholder="What's your status?" style="height: 300px;">
+                            </textarea>
                           </div>
                         </div> 
                         <div class="tab-pane fade" id="image" role="tabpanel" aria-labelledby="image-tab">
-                          <input type="file" id="real-file" name="pic" accept="image/x-png,image/gif,image/jpeg" hidden/>
+                          <input type="file" id="real-file" name="pic" aria-label="upload pic" accept="image/x-png,image/gif,image/jpeg" hidden/>
                           <div class="preview-img-container" id="img-preview-custom">
                             <a href="#" id="img-btn-custom">
                               <i class="fas fa-camera-retro"></i> 
@@ -164,21 +164,21 @@
                         </div>
                         <div class="tab-pane fade" id="location" role="tabpanel" aria-labelledby="location-tab">
                           <div class="form-group">
-                            <input type="text" class="form-control location" id="location" name="location" placeholder="Where are you now?">
+                            <input type="text" class="form-control location" aria-label="location" id="location" name="location" placeholder="Where are you now?">
                           </div>
                         </div>
                       </div>
                     </div>
                   <div class="modal-footer">
                     <div class="btn-group">
-                      <button class="post-btn btn btn-dark" type="submit">Post</button>
+                      <button class="post-btn btn btn-dark" name="post_btn" type="submit">Post</button>
                     </div>
                   </div>
                   </form>
                 </div>
               </div>
             </div>
-            <button class="btn btn-dark options-link online-users-btn" data-toggle="modal" data-target="#online-users">
+            <button class="btn btn-dark options-link online-users-btn" name="followers_list" data-toggle="modal" data-target="#online-users">
               <i class="fas fa-user-alt"></i>
             </button>
             <div class="modal fade" id="online-users" tabindex="-1" role="dialog" aria-labelledby="online-users-title" aria-hidden="true">
@@ -219,7 +219,7 @@
                 </div>
               </div>
             </div>
-            <button class="btn btn-dark options-link search-btn" data-toggle="modal" data-target="#search-users">
+            <button class="btn btn-dark options-link search-btn" name="search_btn" data-toggle="modal" data-target="#search-users">
               <i class="fas fa-search"></i>
             </button>
             <div class="modal fade" id="search-users" tabindex="-1" role="dialog" aria-labelledby="search-title" aria-hidden="true">
@@ -238,7 +238,7 @@
                 </div>
               </div>
             </div>
-            <button class="btn btn-dark options-link chat-btn" data-toggle="modal" data-target="#p-chat">
+            <button class="btn btn-dark options-link chat-btn" name="chat_btn" data-toggle="modal" data-target="#p-chat">
               <i class="fas fa-comment-dots"></i>
             </button>
             <div class="modal fade" id="p-chat" tabindex="-1" role="dialog" aria-labelledby="chat-title" aria-hidden="true">

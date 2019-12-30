@@ -510,6 +510,11 @@ p { margin-bottom: 0; }
     background: #da0076;
 }
 
+.comment-send-btn:focus {
+    background: deeppink;
+    border-color: deeppink;
+}
+
 .cmmnt-send-ico {
     font-size: 16px;
     line-height: 1.5;
@@ -566,7 +571,7 @@ p { margin-bottom: 0; }
     justify-content: flex-end;
 }
 
-.notif-btn {
+.notif-btn, .notif-btn:focus {
     background: #2c1a51;
     margin-left: 0px;
 }
@@ -583,22 +588,22 @@ p { margin-bottom: 0; }
     margin-top: 10px;
 }
 
-.upload-btn { background: mediumorchid; }
+.upload-btn, .upload-btn:focus { background: mediumorchid; }
 .upload-btn:hover { background: #a241ba; }
 .fa-plus { transition: transform 0.3s; }
 .options-link:hover .fa-plus { transform: rotateZ(45deg); }
 
-.online-users-btn { background: #ff7600; }
+.online-users-btn, .online-users-btn:focus { background: #ff7600; }
 .online-users-btn:hover { background: #ff0000; }
 .fa-user-alt { transition: transform 0.3s ease; }
 .options-link:hover .fa-user-alt { transform: scale3d(1.5, 1.5, 1.5); }
 
-.search-btn { background: darkturquoise; }
+.search-btn, .search-btn:focus { background: darkturquoise; }
 .search-btn:hover { background: #14a8a3; }
 .fa-search { transition: transform 0.3s; }
 .options-link:hover .fa-search { transform: rotateZ(20deg); }
 
-.chat-btn { background: #e30b34; }
+.chat-btn, .chat-btn:focus { background: #e30b34; }
 .chat-btn:hover { background: #be0b2d; }
 .fa-comment-dots { transition: transform 0.3s; }
 
