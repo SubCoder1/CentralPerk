@@ -13,7 +13,7 @@ html {
 body {
     height: 100vh;
     /* background: linear-gradient(to right, blueviolet, #4158d0); */
-    background: darkslateblue;
+    background: #1d1d1d;
     font-family: Poppins, sans-serif;
     color: white;
 }
@@ -262,7 +262,7 @@ h6 { font-size: 11.2px; }
 
 .dropdown-menu { 
     top: 92%;
-    background: mediumslateblue;
+    background: black;
     left: -10px;
     text-align: center;
     border-radius: 1rem;
@@ -271,7 +271,7 @@ h6 { font-size: 11.2px; }
 .dropdown-item { color: white; }
 
 .dropdown-item:focus, .dropdown-item:hover {
-    color: #1d1d1d;
+    color: grey;
     text-decoration: none;
     background-color: transparent;
 }
@@ -358,7 +358,7 @@ h6 { font-size: 11.2px; }
 
 /* ----------------- post card ------------------- */
 .post-card {
-    background: #1d1d1d;
+    background: black;
     border-radius: 1.00rem;
 }
 
@@ -478,7 +478,7 @@ p { margin-bottom: 0; }
     bottom: 4px;
     margin-right: 5px;
     padding: 0.9rem 0.1rem;
-    background-color: #1d1d1d;
+    background-color:transparent;
     color: white;
     font-size: 13px;
     overflow-x: auto;
@@ -492,7 +492,7 @@ p { margin-bottom: 0; }
 .comment-input::-webkit-scrollbar { width: 0 !important; }
 
 .comment-input:focus {
-    background-color: #1d1d1d;
+    background-color: transparent;
     box-shadow: none;
     color: white;
 }
@@ -540,7 +540,7 @@ p { margin-bottom: 0; }
     position: -webkit-sticky;
     position: sticky;
     top: 10%;
-    background: #1d1d1d;
+    background: black;
     border-radius: 1.00rem;
     width: 100%;
     height: 220px;
@@ -572,11 +572,11 @@ p { margin-bottom: 0; }
 }
 
 .notif-btn, .notif-btn:focus {
-    background: #2c1a51;
+    background: #5300ff;
     margin-left: 0px;
 }
 
-.notif-btn:hover { background: #17103f; }
+.notif-btn:hover { background: #371ec6; }
 .options-link:hover .fa-bell { animation: ring 1s ease; }
 
 .new-notif-indicator {
@@ -598,8 +598,8 @@ p { margin-bottom: 0; }
 .fa-user-alt { transition: transform 0.3s ease; }
 .options-link:hover .fa-user-alt { transform: scale3d(1.5, 1.5, 1.5); }
 
-.search-btn, .search-btn:focus { background: darkturquoise; }
-.search-btn:hover { background: #14a8a3; }
+.search-btn, .search-btn:focus { background: #12b2b2; }
+.search-btn:hover { background: #129d99; }
 .fa-search { transition: transform 0.3s; }
 .options-link:hover .fa-search { transform: rotateZ(20deg); }
 

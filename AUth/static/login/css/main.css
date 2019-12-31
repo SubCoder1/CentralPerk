@@ -82,7 +82,7 @@ input:focus:-ms-input-placeholder { color:transparent; }
   justify-content: center;
   align-items: center;
   padding: 15px;
-  background: darkslateblue;
+  background: #1d1d1d;
 }
 
 .wrap-auth {
@@ -120,7 +120,7 @@ input:focus:-ms-input-placeholder { color:transparent; }
   display: block;
   width: 320px;
   background: transparent;
-  border-bottom: 2.5px solid mediumturquoise;
+  border-bottom: 1.2px solid mediumspringgreen;
   height: 50px;
   padding: 10px;
 }
@@ -154,7 +154,7 @@ input:focus:-ms-input-placeholder { color:transparent; }
   text-transform: uppercase;
   height: 50px;
   border-radius: 25px;
-  background: #00b6d1;
+  border: 1.2px solid mediumspringgreen;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -170,13 +170,14 @@ input:focus:-ms-input-placeholder { color:transparent; }
 }
 
 .login100-form-btn:hover {
-  background: #1d1d1d;
+  background: black;
+  border: 1.2px solid black;
 }
 
 .login-loading-gif {
   position: absolute;
-  height: 50px;
-  width: 93px;
+  height: 46px;
+  width: 90px;
   border-radius: 25px;
   cursor: pointer;
 }

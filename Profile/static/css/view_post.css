@@ -87,7 +87,7 @@
 /* ----------- post-data on the right ----------- */
 .wrap-data-view, .wrap-potrait-data-view {
     width: 415px;
-    background: #1d1d1d;
+    background: black;
     border-radius: 0rem 1rem 1rem 0rem;    
 }
 
