@@ -1,12 +1,12 @@
 /* ----------- Profile settings  ----------- */
-.settings, .settings:focus { background: darkturquoise; }
-.settings:hover { background: #15b4a4; }
+.settings, .settings:focus { background: mediumslateblue; }
+.settings:hover { background: darkslateblue; }
 .fa-cog { transition: transform 0.3s; }
 .options-link:hover .fa-cog { transform: rotate(90deg); }
 
 
 .edit, .edit:focus { background: tomato; }
-.edit:hover { background: #f46f24; }
+.edit:hover { background: #c64a03; }
 .options-link:hover .fa-pencil-alt { animation: pencil 1s forwards; }
 
 @-webkit-keyframes pencil {
