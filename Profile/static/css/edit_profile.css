@@ -201,6 +201,7 @@ option { background: darkslateblue; }
   height: 50px;
   border-radius: 25px;
   background: mediumslateblue;
+  border: 1.2px solid mediumslateblue;
   padding: 0 25px;
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
@@ -208,7 +209,10 @@ option { background: darkslateblue; }
   transition: all 0.4s;
 }
 
-.edit-prof-form-btn:hover, .change-pass-form-btn:hover { background: #1d1d1d; }
+.edit-prof-form-btn:hover, .change-pass-form-btn:hover { 
+  background: darkslateblue;
+  border: 1.2px solid mediumslateblue;
+}
 
 /*----------------- btn-loading-gif ------------------*/
 .edit-prof-loading-gif, .change-pass-loading-gif {
