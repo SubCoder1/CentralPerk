@@ -110,12 +110,13 @@
 
 .rec-txt-wrapper { 
     align-self: flex-end; 
-    background: mediumorchid;   /* Default for received msg */
+    background: mediumseagreen;   /* Default for received msg */
 }
 
 .p-chat-sent-txt, .p-chat-rec-txt {
     padding: 0.9rem;
     margin-bottom: 0;
+    font-size: 12px;
 }
 
 @media only screen and (max-width: 767px) {
