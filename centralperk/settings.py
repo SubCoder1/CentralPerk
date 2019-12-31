@@ -15,6 +15,11 @@ SESSION_SAVE_EVERY_REQUEST = True # whenever you occur new request, It saves the
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_CACHE_ALIAS = "default"
 
+# HTTP2 PRELOAD
+HTTP2_PRELOAD_HEADERS = True
+HTTP2_PRESEND_CACHED_HEADERS = True
+HTTP2_SERVER_PUSH = False
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -59,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'centralperk.middleware.login_required_middleware',
+    'http2.middleware.HTTP2Middleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
@@ -75,6 +81,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'http2.templatetags',
             ],
         },
     },
