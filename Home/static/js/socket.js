@@ -62,13 +62,15 @@ $(document).ready(function() {
         }
         // Display msg sent from server
         else if (data['type'] == 'p_chat_msg_f_server') {
-            var new_txt = "<div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>";
-            var $data = $(new_txt);
-            $('.p-chat-modal-body').append($data);
-            $('.p-chat-modal-body').animate({
-                scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
-            }, 1500);
-            $data.animate({'margin-top': '10px'}, 230);
+            if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
+                var new_txt = "<div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>";
+                var $data = $(new_txt);
+                $('.p-chat-modal-body').append($data);
+                $('.p-chat-modal-body').animate({
+                    scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+                }, 1500);
+                $data.animate({'margin-top': '10px'}, 230);   
+            }
         }
         // Update p_chat
         else if (data['type'] == 'update_p_chat') {
@@ -232,9 +234,11 @@ $(document).ready(function() {
                 scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
             }, 1500);
             $data.animate({'margin-top': '10px'}, 230);
+            var convo_id = $('.p-chat-modal-body').attr('id');
             homeSocket.send(JSON.stringify({
                 'task' : 'p_chat_msg',
                 'msg' : $('.p-chat-txtbox').val(),
+                'convo_id' : convo_id,
             }));
             $('.p-chat-txtbox').val("");
             setTimeout(function(){
