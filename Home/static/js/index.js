@@ -41,7 +41,17 @@ $(document).ready(function() {
   // Hide new-notification till new notifications pushes-in via socket
   var $new_notif_indicator = $('.new-notif-indicator');
   var $notif_btn = $('.notif-btn');
+  var $notif_modal = $('#notification');
   $notif_btn.on('click', function() {
+    if ($notif_btn.hasClass('updated') == false) {
+      // This piece of code adds a flag to ensure that notif only gets updated from server side
+      $notif_btn.addClass('updated');
+    }
+    $new_notif_indicator.css('display', 'none');
+  });
+  // This code resolves the bug in which new-notif-indicator is shown even after notif-btn is clicked.
+  // although, this happens only on the 1st time but still is annoying af! B|
+  $notif_modal.on('hidden.bs.modal', function (e) {
     $new_notif_indicator.css('display', 'none');
   });
 
@@ -136,13 +146,6 @@ $(document).ready(function() {
   });
 
   // show loading.gif on modal close
-  
-  var $notif_modal = $('#notification');
-  var $notif_wrapper = $('.notif-wrapper');
-  $notif_modal.on('hidden.bs.modal', function (e) {
-    $notif_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
-  });
-
   var $p_chat_modal = $('#p-chat');
   var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
   $p_chat_modal.on('hidden.bs.modal', function (e) {
@@ -150,13 +153,4 @@ $(document).ready(function() {
       $p_chat_cover_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
     }
   });
-
-  var $online_users_modal = $('#online-users');
-  var $followers_wrapper = $('.followers-wrapper');
-  var $following_wrapper = $('.following-wrapper');
-  $online_users_modal.on('hidden.bs.modal', function (e) {
-    $followers_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
-    $following_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
-  });
-  
 })

@@ -16,6 +16,7 @@ $(document).ready(function() {
     var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
     var $followers_wrapper = $('.followers-wrapper');
     var $following_wrapper = $('.following-wrapper');
+    var $p_chat_notif_wrapper = $('.p-chat-notif-wrapper');
 
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
@@ -73,6 +74,13 @@ $(document).ready(function() {
                 }, 1500);
                 $data.animate({'margin-top': '10px'}, 230);   
             }
+        }
+        // Display notif to user that someone has sent a msg
+        else if (data['type'] == 'p_chat_notif_f_server') {
+            $p_chat_notif_wrapper.html(data['p_chat_notif']);
+            setTimeout(function(){
+                $p_chat_notif_wrapper.empty();
+            }, 2000);
         }
         // Update p_chat
         else if (data['type'] == 'update_p_chat') {
@@ -135,9 +143,14 @@ $(document).ready(function() {
     // Get notifications
     var $get_notif = $('.notif-btn');
     $get_notif.on('click', function(event) {
-        homeSocket.send(JSON.stringify({
-            'task' : 'get_notifications',
-        }));
+        event.preventDefault();
+        if ($get_notif.hasClass('updated') == false) {
+            var $notif_wrapper = $('.notif-wrapper');
+            $notif_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+            homeSocket.send(JSON.stringify({
+                'task' : 'get_notifications',
+            }));
+        }
     });
 
     // Clear all notifications
@@ -188,9 +201,15 @@ $(document).ready(function() {
     var $online_users_btn = $('.online-users-btn');
     $online_users_btn.on('click', function(event) {
         event.preventDefault();
-        homeSocket.send(JSON.stringify({
-            'task' : 'get_friends_list',
-        }));
+        if ($online_users_btn.hasClass('updated') == false) {
+            var $followers_wrapper = $('.followers-wrapper');
+            var $following_wrapper = $('.following-wrapper');
+            $followers_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+            $following_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+            homeSocket.send(JSON.stringify({
+                'task' : 'get_friends_list',
+            }));
+        }
     });
 
     // CHAT SECTION
