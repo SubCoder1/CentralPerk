@@ -50,30 +50,6 @@ def update_open_convo(username, activity):
         close_old_connections()
 
 @shared_task
-def close_open_convo(username):
-    try:
-        user = User.get_user_obj(username=username)
-        # Build query
-        query_a = Q(user_a=user)
-        query_a.add(Q(chat_active_from_a=True), Q.AND)
-        open_convo_list_a = Conversations.objects.filter(query_a)
-        query_b = Q(user_b=user)
-        query_b.add(Q(chat_active_from_b=True), Q.AND)
-        open_convo_list_b = Conversations.objects.filter(query_b)
-
-        open_convo_list = list(chain(open_convo_list_a, open_convo_list_b))
-        #print(open_convo_list)
-        for convo in open_convo_list:   # Theoretically this loop should run for at most 1 times
-            if convo.user_a == user:
-                convo.chat_active_from_a = False
-            else:
-                convo.chat_active_from_b = False
-            convo.save()
-        return "closed open conversations :)"
-    finally:
-        close_old_connections()
-
-@shared_task
 def update_user_activity_on_login(username, session_key=None):
     try:
         user = User.get_user_obj(username=username)
@@ -103,8 +79,6 @@ def update_user_activity_on_logout(username):
             app.control.revoke(str(user.monitor_task_id))
             user.monitor_task_id = ""
         user.save()
-        # Close any open conversations from this end
-        close_open_convo.delay(username=username)
         update_open_convo.delay(username=username, activity='logout')
         return "complete :)"
     finally:
