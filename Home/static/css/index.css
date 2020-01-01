@@ -126,7 +126,7 @@ h6 { font-size: 11.2px; }
 /* ----------------------------------------------- */
 
 /*------------- success-notification --------------*/
-.indicator {
+.indicator, .p-chat-notif-indicator {
     position: fixed;
     z-index: 2000;
     top: 15px;
@@ -134,24 +134,30 @@ h6 { font-size: 11.2px; }
     overflow: hidden;
     display: none;
     transition: height 1s;
-  }
+}
+
+.p-chat-notif-indicator {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
   
-  .notif-active {
+.notif-active {
     display: flex;
     justify-content: center;
     align-self: center;
     height: 55px;
-  }
+}
 
-  #update-posts {
+#update-posts {
     height: 0;
     display: flex;
     justify-content: center;
     align-self: center;
     display: none;
-  }
+}
 
-  .lnr-redo {
+.lnr-redo {
     height: 23px;
     width: 35px;
     position: relative;
@@ -160,41 +166,41 @@ h6 { font-size: 11.2px; }
     transition: transform 0.5s ease;
     transform-origin: center center;
     transform-style: preserve-3d;
-  }
+}
 
-  #update-posts:hover .alert-success {
+#update-posts:hover .alert-success {
     background: mediumpurple;
     border: 3px solid mediumpurple;
-  }
+}
 
-  #update-posts:hover .lnr-redo {
-      transform: rotate(620deg);
-  }
+#update-posts:hover .lnr-redo {
+    transform: rotate(620deg);
+}
 
-  .alert {
+.alert {
     border-radius: 2rem;
     margin-bottom: 0rem;
     color: white;
     transition: all 0.3s;
-  }
+}
   
-  .alert-success {
+.alert-success {
     background-color: mediumorchid;
     border: 3px solid mediumorchid;
-  }
+}
 
-  .alert-error {
+.alert-error {
     background-color: orangered;
     border: 3px solid orangered;
-  }
+}
 
-  .close, .close:focus {
+.close, .close:focus {
     outline: none;
     border: none;
     margin-left: 20px;
     position: relative;
     top: 1px;
-  }
+}
 /*------------------------------------------------*/
 
 /* ----------------- nav links ------------------ */
