@@ -130,7 +130,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             elif data_from_client['task'] == 'p_chat_msg':
                 message = data_from_client.get('msg', None)
                 convo_id = data_from_client.get('convo_id', None)
-                await self.send_msg(message=message, convo_id=convo_id)
+                date_time = data_from_client.get('date_time', None)
+                await self.send_msg(message=message, convo_id=convo_id, date_time=date_time)
             # Get friends list
             elif data_from_client['task'] == 'get_friends_list':
                 await self.send_friends_list()
@@ -450,18 +451,19 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print(str(e))
 
-    async def send_msg(self, message, convo_id, event=None):
-        channel_layer = get_channel_layer()
+    async def send_msg(self, message, convo_id, date_time, event=None):
         # This will get the user to which the msg is to be sent
         if convo_id is not None:
             convo_obj, send_to = await self.get_active_convo_send_to(convo_id=convo_id)
             if convo_obj is not None:
                 if send_to.channel_name is not "":
+                    channel_layer = get_channel_layer()
                     # First send the msg to user
                     await channel_layer.send(send_to.channel_name, {
                         "type" : "receive.msg",
                         "msg" : message,
                         "convo_id": convo_obj.id,
+                        "date_time": date_time,
                     })
                 else:
                     # store dm in convo field, to show later as send_to is not active
@@ -475,6 +477,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 'type' : 'p_chat_msg_f_server',
                 'msg' : event['msg'],
                 'convo_id' : event['convo_id'],
+                'date_time' : event['date_time'],
             }))
     
     async def update_p_chat(self, event=None):
