@@ -31,8 +31,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=480).task_id)
                 user.save()
             print(f"session expiry date after update -> {session_obj.expire_date}")
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     async def connect(self):
         if self.scope["user"].is_anonymous:
@@ -148,8 +148,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
             user.channel_name = channel_name
             user.save()
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
     
     @database_sync_to_async
     def get_wall_posts(self):
@@ -157,35 +157,32 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
             posts = user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
             return posts
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def like_post_from_wall(self, post_id):
+        user = self.scope['user']
         try:
-            user = self.scope['user']
-            try:
-                post = PostModel.objects.get_post(post_id=post_id)
-                if post.post_like_obj.filter(user=user).exists():
-                    # Dislike post
-                    post.post_like_obj.filter(user=user).delete()
-                    del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
-                    post.likes_count = F('likes_count') - 1
-                    post.save()
-                    post.refresh_from_db()
-                else:
-                    # Like post
-                    post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
-                    post.likes_count = F('likes_count') + 1
-                    post.save()
-                    post.refresh_from_db()
-                    # Notify the user whose post is being liked
-                    send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-                return post.likes_count
-            except Exception as e:
-                print(str(e))
-        finally:
-            close_old_connections()
+            post = PostModel.objects.get_post(post_id=post_id)
+            if post.post_like_obj.filter(user=user).exists():
+                # Dislike post
+                post.post_like_obj.filter(user=user).delete()
+                del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
+                post.likes_count = F('likes_count') - 1
+                post.save()
+                post.refresh_from_db()
+            else:
+                # Like post
+                post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
+                post.likes_count = F('likes_count') + 1
+                post.save()
+                post.refresh_from_db()
+                # Notify the user whose post is being liked
+                send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
+            return post.likes_count
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def post_comment_from_wall(self, post_id, comment):
@@ -194,38 +191,32 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             if comment.isspace() or not len(comment):
                 # Cannot accept blank comments or comments with only spaces or newlines
                 return 'comment cannot be empty'
-            try:
-                post_obj = PostModel.objects.get_post(post_id=post_id)
-                c = PostComments.objects.create(user=user, post_obj=post_obj, comment=comment)
-                post_obj.post_comment_obj.add(c)
-                post_obj.comment_count = F('comment_count') + 1
-                post_obj.save()
-                post_obj.refresh_from_db()
-                # Notify the user whose post you commented on
-                send_notifications.delay(username=user.username, reaction='Commented', 
-                send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
-                return post_obj.comment_count
-            except Exception as e:
-                print(str(e))
-        finally:
-            close_old_connections()
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+            c = PostComments.objects.create(user=user, post_obj=post_obj, comment=comment)
+            post_obj.post_comment_obj.add(c)
+            post_obj.comment_count = F('comment_count') + 1
+            post_obj.save()
+            post_obj.refresh_from_db()
+            # Notify the user whose post you commented on
+            send_notifications.delay(username=user.username, reaction='Commented', 
+            send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
+            return post_obj.comment_count
+        except Exception as e:
+            print(str(e))
     
     @database_sync_to_async
     def save_unsave_post(self, post_id):
         try:
-            try:
-                user = self.scope['user']
-                post_obj = PostModel.objects.get_post(post_id=post_id)
-                if user in post_obj.saved_by.all():
-                    post_obj.saved_by.remove(user)
-                    return 'unsaved'
-                else:
-                    post_obj.saved_by.add(user)
-                    return 'saved'
-            except Exception as e:
-                print(str(e))
-        finally:
-            close_old_connections()
+            user = self.scope['user']
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+            if user in post_obj.saved_by.all():
+                post_obj.saved_by.remove(user)
+                return 'unsaved'
+            else:
+                post_obj.saved_by.add(user)
+                return 'saved'
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def accept_reject_private_request(self, notif_id, option):
@@ -247,21 +238,18 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     create_or_update_convo_obj.delay(request_by.username, user.username, 'unfollow')
                 notification.delete()
                 Friends.rm_from_pending(user, request_by)
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def del_notifications_all(self):
         try:
-            try:
-                user = self.scope['user']
-                user.notifications.all().delete()
-                return 'cleared all notif :)'
-            except Exception as e:
-                print(str(e))
-                return None
-        finally:
-            close_old_connections()
+            user = self.scope['user']
+            user.notifications.all().delete()
+            return 'cleared all notif :)'
+        except Exception as e:
+            print(str(e))
+            return None
 
     @database_sync_to_async
     def search_results(self, query=None):
@@ -273,8 +261,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return query_res[:10]
         except Exception as e:
             print(str(e))
-        finally:
-            close_old_connections()
 
     @database_sync_to_async
     def get_notifications(self):
@@ -282,8 +268,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
             notifications = user.notifications.select_related('poked_by')
             return notifications
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def close_existing_open_p_chat(self):
@@ -351,8 +337,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return
         except Exception as e:
             print(str(e))
-        finally:
-            close_old_connections()
 
     @database_sync_to_async
     def get_active_convo_send_to(self, convo_id):
@@ -379,8 +363,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     return (None, None, None)
         except Exception as e:
             print(str(e))
-        finally:
-            close_old_connections()
 
     @database_sync_to_async
     def validate_open_convo_by_id(self, convo_id):
