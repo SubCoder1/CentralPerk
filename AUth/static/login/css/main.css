@@ -176,8 +176,8 @@ input:focus:-ms-input-placeholder { color:transparent; }
 
 .login-loading-gif {
   position: absolute;
-  height: 46px;
-  width: 90px;
+  height: 45px;
+  width: 89px;
   border-radius: 25px;
   cursor: pointer;
 }

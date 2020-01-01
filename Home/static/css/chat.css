@@ -89,7 +89,6 @@
 .animate-txt-wrap {
     margin-top: 20px;
     display: flex;
-    flex-direction: row;
     flex-wrap: nowrap;
 }
 
@@ -110,13 +109,28 @@
 
 .rec-txt-wrapper { 
     align-self: flex-end; 
-    background: mediumorchid;   /* Default for received msg */
+    background: mediumseagreen;   /* Default for received msg */
 }
 
 .p-chat-sent-txt, .p-chat-rec-txt {
     padding: 0.9rem;
     margin-bottom: 0;
+    font-size: 14px;
 }
+
+.p-chat-snd-date-time, .p-chat-rec-date-time {
+    position: relative;
+    top: 2px;
+    font-size: 10px;
+}
+
+.p-chat-snd-date-time { left: 14px; }
+
+.p-chat-rec-date-time { 
+    text-align: right;
+    right: 14px; 
+}
+
 
 @media only screen and (max-width: 767px) {
     .p-chat-txtbox {
@@ -125,5 +139,9 @@
 
     .wrap-p-chat-txt {
         max-width: 65%;
+    }
+
+    .p-chat-sent-txt, .p-chat-rec-txt {
+        font-size: 12px;
     }
 }

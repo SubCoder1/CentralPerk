@@ -62,13 +62,17 @@ $(document).ready(function() {
         }
         // Display msg sent from server
         else if (data['type'] == 'p_chat_msg_f_server') {
-            var new_txt = "<div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>";
-            var $data = $(new_txt);
-            $('.p-chat-modal-body').append($data);
-            $('.p-chat-modal-body').animate({
-                scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
-            }, 1500);
-            $data.animate({'margin-top': '10px'}, 230);
+            if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
+                var new_txt = "<div class='animate-txt-wrap' style='justify-content: flex-end; flex-direction: column;'>\
+                <div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>"
+                + "<h6 class='p-chat-rec-date-time'>" + data['date_time'] + "</h6></div>";
+                var $data = $(new_txt);
+                $('.p-chat-modal-body').append($data);
+                $('.p-chat-modal-body').animate({
+                    scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+                }, 1500);
+                $data.animate({'margin-top': '10px'}, 230);   
+            }
         }
         // Update p_chat
         else if (data['type'] == 'update_p_chat') {
@@ -226,16 +230,26 @@ $(document).ready(function() {
         if (/\S/.test($('.p-chat-txtbox').val())) {
             var new_txt = "<div class='animate-txt-wrap'><div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
             var send_anim = "<i class='far fa-paper-plane'></i></div>";
+            var date_time = new Date($.now()).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            var d_t_data = "<h6 class='p-chat-snd-date-time'>"+date_time+"</h6>";
             var $data = $(new_txt+send_anim);
+
             $('.p-chat-modal-body').append($data);
+            $('.p-chat-modal-body').append(d_t_data);
             $('.p-chat-modal-body').animate({
                 scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
             }, 1500);
             $data.animate({'margin-top': '10px'}, 230);
+
+
+            var convo_id = $('.p-chat-modal-body').attr('id');
             homeSocket.send(JSON.stringify({
                 'task' : 'p_chat_msg',
                 'msg' : $('.p-chat-txtbox').val(),
+                'convo_id' : convo_id,
+                'date_time' : date_time,
             }));
+
             $('.p-chat-txtbox').val("");
             setTimeout(function(){
                 $('.fa-paper-plane').remove();
