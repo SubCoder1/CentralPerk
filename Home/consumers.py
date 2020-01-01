@@ -10,6 +10,7 @@ from Profile.tasks import create_or_update_convo_obj
 from Home.models import PostModel, PostLikes, PostComments, UserNotification, Conversations
 from Home.tasks import send_notifications, del_notifications, monitor_user_status
 import json, asyncio, pytz
+from uuid import uuid4
 from hashlib import sha256
 from datetime import datetime, timedelta
 from itertools import chain
@@ -45,7 +46,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         await self.add_channel_name_to_user(channel_name=self.channel_name)
 
     async def disconnect(self, close_code):
-        pass
+        # This code is useful against sudden refresh in landing page
+        # Without this, open convos before refresh will stay open after. . .
+        await self.close_existing_open_p_chat()
 
     async def receive(self, text_data):
         if self.scope["user"].is_anonymous:
@@ -283,22 +286,17 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             close_old_connections()
 
     @database_sync_to_async
-    def get_p_chat_cover(self):
-        try:
-            user = self.scope['user']
-            query = Q(user_a=user)
-            query.add(Q(user_b=user), Q.OR)
-            convo_list = Conversations.objects.filter(query).select_related('user_a', 'user_b')
-            return convo_list
-        finally:
-            # Close any open conversations from this end
-            # Build query
-            query_a = Q(user_a=user)
-            query_a.add(Q(chat_active_from_a=True), Q.AND)
-            open_convo_list_a = Conversations.objects.filter(query_a)
-            query_b = Q(user_b=user)
-            query_b.add(Q(chat_active_from_b=True), Q.AND)
-            open_convo_list_b = Conversations.objects.filter(query_b)
+    def close_existing_open_p_chat(self):
+        # Close any open conversations from this end
+        # Build query
+        user = self.scope['user']
+        query_a = Q(user_a=user)
+        query_a.add(Q(chat_active_from_a=True), Q.AND)
+        query_b = Q(user_b=user)
+        query_b.add(Q(chat_active_from_b=True), Q.AND)
+        with transaction.atomic():
+            open_convo_list_a = Conversations.objects.filter(query_a).select_for_update()
+            open_convo_list_b = Conversations.objects.filter(query_b).select_for_update()
 
             open_convo_list = list(chain(open_convo_list_a, open_convo_list_b))
             for convo in open_convo_list:   # Theoretically this loop should run for at most 1 times
@@ -307,7 +305,14 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 else:
                     convo.chat_active_from_b = False
                 convo.save()
-            close_old_connections()
+
+    @database_sync_to_async
+    def get_p_chat_cover(self):
+        user = self.scope['user']
+        query = Q(user_a=user)
+        query.add(Q(user_b=user), Q.OR)
+        convo_list = Conversations.objects.filter(query).select_related('user_a', 'user_b')
+        return convo_list
     
     @database_sync_to_async
     def get_p_chat(self, username):
@@ -360,18 +365,18 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             open_convo_list_a = Conversations.objects.filter(query_a).first()
             if open_convo_list_a:
                 if convo_id == str(open_convo_list_a.id):
-                    return (open_convo_list_a, open_convo_list_a.user_b)
+                    return (open_convo_list_a, open_convo_list_a.user_b, open_convo_list_a.user_a.username)
                 else:
-                    return (None, None)
+                    return (None, None, None)
 
             query_b = Q(user_b=user)
             query_b.add(Q(chat_active_from_b=True), Q.AND)
             open_convo_list_b = Conversations.objects.filter(query_b).first()
             if open_convo_list_b:
                 if convo_id == str(open_convo_list_b.id):
-                    return (open_convo_list_b, open_convo_list_b.user_a)
+                    return (open_convo_list_b, open_convo_list_b.user_a, open_convo_list_b.user_b.username)
                 else:
-                    return (None, None)
+                    return (None, None, None)
         except Exception as e:
             print(str(e))
         finally:
@@ -425,14 +430,18 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def send_p_chat_cover(self, event=None):
         try:
+            # clean existing open p-chat
+            await self.close_existing_open_p_chat()
+            # get a fresh new list
             friends_list = await self.get_p_chat_cover()
+            # send it to the client!
             await self.send(text_data=json.dumps({
                 'type' : 'p_chat_cover_f_server',
                 'p-chat-cover' : render_to_string("p-chat-cover.html", {'friends':friends_list, 'user':self.scope['user']}),
             }))
         except Exception as e:
             print(str(e))
-    
+
     async def send_p_chat(self, username, event=None):
         try:
             friend, f_activity_status, unique_id = await self.get_p_chat(username=username)
@@ -452,34 +461,52 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             print(str(e))
 
     async def send_msg(self, message, convo_id, date_time, event=None):
-        # This will get the user to which the msg is to be sent
         if convo_id is not None:
-            convo_obj, send_to = await self.get_active_convo_send_to(convo_id=convo_id)
+            # This will get the user to which the msg is to be sent
+            convo_obj, send_to, msg_from = await self.get_active_convo_send_to(convo_id=convo_id)
             if convo_obj is not None:
                 if send_to.channel_name is not "":
                     channel_layer = get_channel_layer()
-                    # First send the msg to user
+                    # send the msg to user
                     await channel_layer.send(send_to.channel_name, {
                         "type" : "receive.msg",
                         "msg" : message,
-                        "convo_id": convo_obj.id,
-                        "date_time": date_time,
+                        "msg_from" : msg_from,
+                        "convo_id" : convo_obj.id,
+                        "date_time" : date_time,
                     })
                 else:
                     # store dm in convo field, to show later as send_to is not active
-                    pass
-                    # Then update convo obj
-        
+                    msg_id = uuid4()
+                    with transaction.atomic():
+                        convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
+                        convo_obj.convo[msg_id] = {"msg": message,"convo_id": convo_obj.id,"date_time": date_time,}
+                        convo_obj.save()
+
     async def receive_msg(self, event=None):
         result = await self.validate_open_convo_by_id(convo_id=event['convo_id'])
         if result:
+            # user is active and has the same convo p-chat open, where this msg is supposed to go!
             await self.send(text_data=json.dumps({
                 'type' : 'p_chat_msg_f_server',
                 'msg' : event['msg'],
                 'convo_id' : event['convo_id'],
                 'date_time' : event['date_time'],
             }))
-    
+        else:
+            # user is active but has different or no p-chat open. . . 
+            # save this msg in convo_obj
+            msg_id = uuid4()
+            with transaction.atomic():
+                convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()
+                convo_obj.convo[msg_id] = {"msg": event['msg'],"convo_id": convo_obj.id,"date_time": event['date_time'],}
+                convo_obj.save()
+            # send a notif to user that someone has sent a msg
+            await self.send(text_data=json.dumps({
+                'type' : 'p_chat_notif_f_server',
+                'p_chat_notif' : render_to_string('p-chat-notif.html', {'msg_from':event['msg_from']}),
+            }))
+ 
     async def update_p_chat(self, event=None):
        await self.send(text_data=json.dumps({
             'type' : 'update_p_chat',
