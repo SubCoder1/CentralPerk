@@ -209,6 +209,7 @@ class Conversations(models.Model):
     sent_by_b_count = models.BigIntegerField(default=0, verbose_name='msg_sent_by_user_b')
     date_time = models.DateTimeField(auto_now_add=True, auto_now=False)
     convo = HStoreField()
+    convo_counter = models.IntegerField(default=0)
     objects = models.Manager()
 
     class Meta:
