@@ -10,7 +10,6 @@ from Profile.tasks import create_or_update_convo_obj
 from Home.models import PostModel, PostLikes, PostComments, UserNotification, Conversations
 from Home.tasks import send_notifications, del_notifications, monitor_user_status
 import json, asyncio, pytz
-from uuid import uuid4
 from hashlib import sha256
 from datetime import datetime, timedelta
 from itertools import chain
@@ -31,8 +30,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 user.monitor_task_id = str(monitor_user_status.apply_async((user.username, session_key, cache_key), countdown=480).task_id)
                 user.save()
             print(f"session expiry date after update -> {session_obj.expire_date}")
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     async def connect(self):
         if self.scope["user"].is_anonymous:
@@ -148,44 +147,45 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
             user.channel_name = channel_name
             user.save()
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
     
+    @database_sync_to_async
+    def get_user_by_username(self, username):   # Helper function
+        return User.get_user_obj(username=username)
+
     @database_sync_to_async
     def get_wall_posts(self):
         try:
             user = self.scope['user']
             posts = user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
             return posts
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def like_post_from_wall(self, post_id):
+        user = self.scope['user']
         try:
-            user = self.scope['user']
-            try:
-                post = PostModel.objects.get_post(post_id=post_id)
-                if post.post_like_obj.filter(user=user).exists():
-                    # Dislike post
-                    post.post_like_obj.filter(user=user).delete()
-                    del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
-                    post.likes_count = F('likes_count') - 1
-                    post.save()
-                    post.refresh_from_db()
-                else:
-                    # Like post
-                    post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
-                    post.likes_count = F('likes_count') + 1
-                    post.save()
-                    post.refresh_from_db()
-                    # Notify the user whose post is being liked
-                    send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-                return post.likes_count
-            except Exception as e:
-                print(str(e))
-        finally:
-            close_old_connections()
+            post = PostModel.objects.get_post(post_id=post_id)
+            if post.post_like_obj.filter(user=user).exists():
+                # Dislike post
+                post.post_like_obj.filter(user=user).delete()
+                del_notifications.delay(username=user.username, reaction="Disliked", send_to_username=post.user.username, post_id=post_id)
+                post.likes_count = F('likes_count') - 1
+                post.save()
+                post.refresh_from_db()
+            else:
+                # Like post
+                post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
+                post.likes_count = F('likes_count') + 1
+                post.save()
+                post.refresh_from_db()
+                # Notify the user whose post is being liked
+                send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
+            return post.likes_count
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def post_comment_from_wall(self, post_id, comment):
@@ -194,38 +194,32 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             if comment.isspace() or not len(comment):
                 # Cannot accept blank comments or comments with only spaces or newlines
                 return 'comment cannot be empty'
-            try:
-                post_obj = PostModel.objects.get_post(post_id=post_id)
-                c = PostComments.objects.create(user=user, post_obj=post_obj, comment=comment)
-                post_obj.post_comment_obj.add(c)
-                post_obj.comment_count = F('comment_count') + 1
-                post_obj.save()
-                post_obj.refresh_from_db()
-                # Notify the user whose post you commented on
-                send_notifications.delay(username=user.username, reaction='Commented', 
-                send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
-                return post_obj.comment_count
-            except Exception as e:
-                print(str(e))
-        finally:
-            close_old_connections()
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+            c = PostComments.objects.create(user=user, post_obj=post_obj, comment=comment)
+            post_obj.post_comment_obj.add(c)
+            post_obj.comment_count = F('comment_count') + 1
+            post_obj.save()
+            post_obj.refresh_from_db()
+            # Notify the user whose post you commented on
+            send_notifications.delay(username=user.username, reaction='Commented', 
+            send_to_username=post_obj.user.username, post_id=post_id, comment_id=c.comment_id)
+            return post_obj.comment_count
+        except Exception as e:
+            print(str(e))
     
     @database_sync_to_async
     def save_unsave_post(self, post_id):
         try:
-            try:
-                user = self.scope['user']
-                post_obj = PostModel.objects.get_post(post_id=post_id)
-                if user in post_obj.saved_by.all():
-                    post_obj.saved_by.remove(user)
-                    return 'unsaved'
-                else:
-                    post_obj.saved_by.add(user)
-                    return 'saved'
-            except Exception as e:
-                print(str(e))
-        finally:
-            close_old_connections()
+            user = self.scope['user']
+            post_obj = PostModel.objects.get_post(post_id=post_id)
+            if user in post_obj.saved_by.all():
+                post_obj.saved_by.remove(user)
+                return 'unsaved'
+            else:
+                post_obj.saved_by.add(user)
+                return 'saved'
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def accept_reject_private_request(self, notif_id, option):
@@ -247,21 +241,18 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     create_or_update_convo_obj.delay(request_by.username, user.username, 'unfollow')
                 notification.delete()
                 Friends.rm_from_pending(user, request_by)
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def del_notifications_all(self):
         try:
-            try:
-                user = self.scope['user']
-                user.notifications.all().delete()
-                return 'cleared all notif :)'
-            except Exception as e:
-                print(str(e))
-                return None
-        finally:
-            close_old_connections()
+            user = self.scope['user']
+            user.notifications.all().delete()
+            return 'cleared all notif :)'
+        except Exception as e:
+            print(str(e))
+            return None
 
     @database_sync_to_async
     def search_results(self, query=None):
@@ -273,8 +264,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             return query_res[:10]
         except Exception as e:
             print(str(e))
-        finally:
-            close_old_connections()
 
     @database_sync_to_async
     def get_notifications(self):
@@ -282,8 +271,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             user = self.scope['user']
             notifications = user.notifications.select_related('poked_by')
             return notifications
-        finally:
-            close_old_connections()
+        except Exception as e:
+            print(str(e))
 
     @database_sync_to_async
     def close_existing_open_p_chat(self):
@@ -342,17 +331,25 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                         else:
                             convo.chat_active_from_b = True
                             convo.save()
-                        
-                        # create convo_unique_id
-                        unique_id = sha256(bytes(str(convo.id), encoding='utf-8')).hexdigest()
-                        # Return convo obj
-                        return (convo, p_chat_user.user_setting.activity_status and user.user_setting.activity_status, unique_id)
+
+                    # check if there are any saved convo (unseen)
+                    clear_convo = False
+                    if convo.convo_counter:
+                        # if any, check if they are sent from opposite user
+                        if convo.convo['0']['msg_from'] != user.username:
+                            clear_convo = True
+                    # create convo_unique_id
+                    unique_id = sha256(bytes(str(convo.id), encoding='utf-8')).hexdigest()
+                    # Return convo obj
+                    return (
+                        convo, unique_id,
+                        p_chat_user.user_setting.activity_status and user.user_setting.activity_status,
+                        clear_convo
+                    )
             # else return None
             return
         except Exception as e:
             print(str(e))
-        finally:
-            close_old_connections()
 
     @database_sync_to_async
     def get_active_convo_send_to(self, convo_id):
@@ -379,8 +376,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     return (None, None, None)
         except Exception as e:
             print(str(e))
-        finally:
-            close_old_connections()
 
     @database_sync_to_async
     def validate_open_convo_by_id(self, convo_id):
@@ -393,6 +388,19 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         elif convo.user_b == user and convo.chat_active_from_b:
             return True
         return False
+
+    @database_sync_to_async
+    def update_convo_obj(self, convo_id, clear_convo): # Helper function
+        with transaction.atomic():
+            convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
+            if clear_convo:
+                convo_obj.convo_counter = 0
+                convo_obj.convo = {}
+                convo_obj.save()
+                return True
+            else:
+                convo_obj.date_time = datetime.now(pytz.UTC)
+                convo_obj.save()  
 
     @database_sync_to_async
     def get_friends_list(self):
@@ -444,19 +452,32 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def send_p_chat(self, username, event=None):
         try:
-            friend, f_activity_status, unique_id = await self.get_p_chat(username=username)
+            friend, unique_id, f_activity_status, clear_convo = await self.get_p_chat(username=username)
             if friend is not None:
                 context = {
                     'friend':friend, 'user':self.scope['user'], 
                     'activity_status':f_activity_status,'unique_id':unique_id,
-                    'convo_id':friend.id,
+                    'convo_id':friend.id, 'unseen_dm' : clear_convo,
                 }
                 await self.send(text_data=json.dumps({
                     'type' : 'p_chat_f_server',
                     'p-chat' : render_to_string("p-chat.html", context),
                 }))
-            else:
-                pass
+
+                # clear saved convo (if any and clear_convo is True)
+                if clear_convo:
+                    signal = await self.update_convo_obj(convo_id=friend.id, clear_convo=True)
+                    if signal:  # signal will be true iff there were some stored convo in obj
+                        send_to = friend.user_a if friend.user_b == self.scope['user'] else friend.user_b
+                        # send seen signal to opposite user if he/she's active
+                        if send_to.channel_name is not "":
+                            channel_layer = get_channel_layer()
+                            await channel_layer.send(send_to.channel_name, {
+                                "type" : "receive.msg",
+                                "signal" : "seen",
+                                "convo_id" : friend.id,
+                            })
+
         except Exception as e:
             print(str(e))
 
@@ -477,39 +498,77 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     })
                 else:
                     # store dm in convo field, to show later as send_to is not active
-                    msg_id = uuid4()
+                    data = {
+                        "msg": message, "convo_id": convo_id,
+                        "date_time": date_time, "msg_from": msg_from,
+                    }
                     with transaction.atomic():
                         convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
-                        convo_obj.convo[msg_id] = {"msg": message,"convo_id": convo_obj.id,"date_time": date_time,}
+                        convo_obj.convo[convo_obj.convo_counter] = data
+                        # sort convo for ordering
+                        convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))}
+                        convo_obj.convo_counter += 1
                         convo_obj.save()
+                # finally, update convo_obj date time so that it shows up on top 
+                # of your & opp. user's p-chat-cover
+                await self.update_convo_obj(convo_id=convo_obj.id, clear_convo=False)
 
     async def receive_msg(self, event=None):
         result = await self.validate_open_convo_by_id(convo_id=event['convo_id'])
         if result:
             # user is active and has the same convo p-chat open, where this msg is supposed to go!
-            await self.send(text_data=json.dumps({
-                'type' : 'p_chat_msg_f_server',
-                'msg' : event['msg'],
-                'convo_id' : event['convo_id'],
-                'date_time' : event['date_time'],
-            }))
+            if event.get('signal', None) == "seen":
+                # It's a 'seen' signal, send it quickly as result is also True
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_msg_seen',
+                    'msg' : 'seen',
+                    'convo_id' : event['convo_id'],
+                }))
+            else:
+                # It's an incoming msg!
+                # First, send the msg to this user         
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_msg_f_server',
+                    'msg' : event['msg'],
+                    'convo_id' : event['convo_id'],
+                    'date_time' : event['date_time'],
+                }))
+                # Then, send 'seen' signal to the opposite user
+                channel_layer = get_channel_layer()
+                send_to = await self.get_user_by_username(username=event['msg_from'])
+                if send_to.channel_name is not "":
+                    await channel_layer.send(send_to.channel_name, {
+                        "type" : "receive.msg",
+                        "signal" : "seen",
+                        "convo_id" : event['convo_id'],
+                    })
         else:
             # user is active but has different or no p-chat open. . . 
             # save this msg in convo_obj
-            msg_id = uuid4()
-            with transaction.atomic():
-                convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()
-                convo_obj.convo[msg_id] = {"msg": event['msg'],"convo_id": convo_obj.id,"date_time": event['date_time'],}
-                convo_obj.save()
-            # send a notif to user that someone has sent a msg
-            await self.send(text_data=json.dumps({
-                'type' : 'p_chat_notif_f_server',
-                'p_chat_notif' : render_to_string('p-chat-notif.html', {'msg_from':event['msg_from']}),
-            }))
- 
+            if event.get('signal', None) != 'seen':
+                data = {
+                    "msg": event['msg'], "convo_id": event['convo_id'],
+                    "date_time": event['date_time'], "msg_from": event['msg_from'],
+                }
+                with transaction.atomic():
+                    convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()
+                    convo_obj.convo[convo_obj.convo_counter] = data
+                    # sort convo for ordering
+                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))} 
+                    convo_obj.convo_counter += 1
+                    convo_obj.save()
+                # send a notif to user that someone has sent a msg
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_notif_f_server',
+                    'p_chat_notif' : render_to_string('p-chat-notif.html', {'msg_from':event['msg_from']}),
+                }))
+    
     async def update_p_chat(self, event=None):
-       await self.send(text_data=json.dumps({
-            'type' : 'update_p_chat',
-            'unique_id' : event['convo_unique_id'],
-            'activity' : event['activity'],
-        }))
+        try:
+            await self.send(text_data=json.dumps({
+                    'type' : 'update_p_chat',
+                    'unique_id' : event['convo_unique_id'],
+                    'activity' : event['activity'],
+            }))
+        except Exception as e:
+            print(str(e))

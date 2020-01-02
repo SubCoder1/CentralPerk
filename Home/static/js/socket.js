@@ -17,6 +17,7 @@ $(document).ready(function() {
     var $followers_wrapper = $('.followers-wrapper');
     var $following_wrapper = $('.following-wrapper');
     var $p_chat_notif_wrapper = $('.p-chat-notif-wrapper');
+    var $p_chat_seen = null;
 
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
@@ -73,6 +74,20 @@ $(document).ready(function() {
                     scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
                 }, 1500);
                 $data.animate({'margin-top': '10px'}, 230);   
+            }
+        }
+        // Display seen signal in p_chat
+        else if (data['type'] == 'p_chat_msg_seen') {
+            if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
+                if ($p_chat_seen != null) {
+                    $p_chat_seen.remove();
+                }
+                $p_chat_seen = $("<h6 class='p-chat-seen'>👀</h6>");
+                $('.p-chat-modal-body').append($p_chat_seen);
+                $('.p-chat-modal-body').animate({
+                    scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+                }, 1500);
+                $p_chat_seen.animate({'margin-top': '10px'}, 230);
             }
         }
         // Display notif to user that someone has sent a msg
