@@ -40,6 +40,25 @@
     </div>
 </div>
 <div class="modal-body p-chat-modal-body" id="{{ convo_id }}">
+    {% if unseen_dm %}
+        {% for key, val in friend.convo.items %}
+            <div class='animate-txt-wrap' style='justify-content:flex-end;flex-direction:column;'>
+                <div class='wrap-p-chat-txt rec-txt-wrapper'>
+                    <h6 class='p-chat-rec-txt'>{{ val.msg }}</h6>
+                </div>
+            </div>
+            <h6 class='p-chat-rec-date-time'>{{ val.date_time }}</h6>
+        {% endfor %}
+    {% else %}
+        {% for key, val in friend.convo.items %}
+        <div class='animate-txt-wrap'>
+            <div class='wrap-p-chat-txt'>
+                <h6 class='p-chat-sent-txt'>{{ val.msg }}</h6>
+            </div>
+        </div>
+        <h6 class='p-chat-snd-date-time'>{{ val.date_time }}</h6>
+        {% endfor %}
+    {% endif %}
 </div>
 
 <textarea type="text" class="form-control p-chat-txtbox" id="send_txt" name="convo" aria-label="send text" placeholder="Type something" style="height: 42px;"></textarea>
