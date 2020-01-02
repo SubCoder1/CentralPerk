@@ -331,11 +331,21 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                         else:
                             convo.chat_active_from_b = True
                             convo.save()
-                        
-                        # create convo_unique_id
-                        unique_id = sha256(bytes(str(convo.id), encoding='utf-8')).hexdigest()
-                        # Return convo obj
-                        return (convo, p_chat_user.user_setting.activity_status and user.user_setting.activity_status, unique_id)
+
+                    # check if there are any saved convo (unseen)
+                    clear_convo = False
+                    if convo.convo_counter:
+                        # if any, check if they are sent from opposite user
+                        if convo.convo['0']['msg_from'] != user.username:
+                            clear_convo = True
+                    # create convo_unique_id
+                    unique_id = sha256(bytes(str(convo.id), encoding='utf-8')).hexdigest()
+                    # Return convo obj
+                    return (
+                        convo, unique_id,
+                        p_chat_user.user_setting.activity_status and user.user_setting.activity_status,
+                        clear_convo
+                    )
             # else return None
             return
         except Exception as e:
@@ -380,8 +390,17 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         return False
 
     @database_sync_to_async
-    def update_convo_obj(self, convo_id): # Helper function
-        pass
+    def update_convo_obj(self, convo_id, clear_convo): # Helper function
+        with transaction.atomic():
+            convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
+            if clear_convo:
+                convo_obj.convo_counter = 0
+                convo_obj.convo = {}
+                convo_obj.save()
+                return True
+            else:
+                convo_obj.date_time = datetime.now(pytz.UTC)
+                convo_obj.save()  
 
     @database_sync_to_async
     def get_friends_list(self):
@@ -433,97 +452,109 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
 
     async def send_p_chat(self, username, event=None):
         try:
-            friend, f_activity_status, unique_id = await self.get_p_chat(username=username)
+            friend, unique_id, f_activity_status, clear_convo = await self.get_p_chat(username=username)
             if friend is not None:
                 context = {
                     'friend':friend, 'user':self.scope['user'], 
                     'activity_status':f_activity_status,'unique_id':unique_id,
-                    'convo_id':friend.id,
+                    'convo_id':friend.id, 'unseen_dm' : clear_convo,
                 }
                 await self.send(text_data=json.dumps({
                     'type' : 'p_chat_f_server',
                     'p-chat' : render_to_string("p-chat.html", context),
                 }))
-            else:
-                pass
+
+                # clear saved convo (if any and clear_convo is True)
+                if clear_convo:
+                    signal = await self.update_convo_obj(convo_id=friend.id, clear_convo=True)
+                    if signal:  # signal will be true iff there were some stored convo in obj
+                        send_to = friend.user_a if friend.user_b == self.scope['user'] else friend.user_b
+                        # send seen signal to opposite user if he/she's active
+                        if send_to.channel_name is not "":
+                            channel_layer = get_channel_layer()
+                            await channel_layer.send(send_to.channel_name, {
+                                "type" : "receive.msg",
+                                "signal" : "seen",
+                                "convo_id" : friend.id,
+                            })
+
         except Exception as e:
             print(str(e))
 
     async def send_msg(self, message, convo_id, date_time, event=None):
-        try:
-            if convo_id is not None:
-                # This will get the user to which the msg is to be sent
-                convo_obj, send_to, msg_from = await self.get_active_convo_send_to(convo_id=convo_id)
-                if convo_obj is not None:
-                    if send_to.channel_name is not "":
-                        channel_layer = get_channel_layer()
-                        # send the msg to user
-                        await channel_layer.send(send_to.channel_name, {
-                            "type" : "receive.msg",
-                            "msg" : message,
-                            "msg_from" : msg_from,
-                            "convo_id" : convo_obj.id,
-                            "date_time" : date_time,
-                        })
-                    else:
-                        # store dm in convo field, to show later as send_to is not active
-                        with transaction.atomic():
-                            convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
-                            data = {
-                                "msg": message, "convo_id": convo_obj.id,
-                                "date_time": date_time, "msg_from": msg_from,
-                            }
-                            convo_obj.convo[convo_obj.convo_counter] = data
-                            # sort convo for ordering
-                            convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda k: int(k))}
-                            convo_obj.convo_counter += 1
-                            convo_obj.save()
-        except Exception as e:
-            print(str(e))
+        if convo_id is not None:
+            # This will get the user to which the msg is to be sent
+            convo_obj, send_to, msg_from = await self.get_active_convo_send_to(convo_id=convo_id)
+            if convo_obj is not None:
+                if send_to.channel_name is not "":
+                    channel_layer = get_channel_layer()
+                    # send the msg to user
+                    await channel_layer.send(send_to.channel_name, {
+                        "type" : "receive.msg",
+                        "msg" : message,
+                        "msg_from" : msg_from,
+                        "convo_id" : convo_obj.id,
+                        "date_time" : date_time,
+                    })
+                else:
+                    # store dm in convo field, to show later as send_to is not active
+                    data = {
+                        "msg": message, "convo_id": convo_id,
+                        "date_time": date_time, "msg_from": msg_from,
+                    }
+                    with transaction.atomic():
+                        convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
+                        convo_obj.convo[convo_obj.convo_counter] = data
+                        # sort convo for ordering
+                        convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))}
+                        convo_obj.convo_counter += 1
+                        convo_obj.save()
+                # finally, update convo_obj date time so that it shows up on top 
+                # of your & opp. user's p-chat-cover
+                await self.update_convo_obj(convo_id=convo_obj.id, clear_convo=False)
 
     async def receive_msg(self, event=None):
-        try:
-            result = await self.validate_open_convo_by_id(convo_id=event['convo_id'])
-            if result:
-                # user is active and has the same convo p-chat open, where this msg is supposed to go!
-                if event['msg'] == "seen":
-                    # It's a 'seen' signal, send it quickly as result is also True
-                    await self.send(text_data=json.dumps({
-                        'type' : 'p_chat_msg_seen',
-                        'msg' : 'seen',
-                        'convo_id' : event['convo_id'],
-                    }))
-                else:
-                    # It's an incoming msg!
-                    # First, send the msg to this user         
-                    await self.send(text_data=json.dumps({
-                        'type' : 'p_chat_msg_f_server',
-                        'msg' : event['msg'],
-                        'convo_id' : event['convo_id'],
-                        'date_time' : event['date_time'],
-                    }))
-                    # Then, send 'seen' signal to the opposite user
-                    channel_layer = get_channel_layer()
-                    send_to = await self.get_user_by_username(username=event['msg_from'])
-                    if send_to.channel_name is not "":
-                        await channel_layer.send(send_to.channel_name, {
-                            "type" : "receive.msg",
-                            "msg" : "seen",
-                            "convo_id" : event['convo_id'],
-                        })
+        result = await self.validate_open_convo_by_id(convo_id=event['convo_id'])
+        if result:
+            # user is active and has the same convo p-chat open, where this msg is supposed to go!
+            if event.get('signal', None) == "seen":
+                # It's a 'seen' signal, send it quickly as result is also True
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_msg_seen',
+                    'msg' : 'seen',
+                    'convo_id' : event['convo_id'],
+                }))
             else:
-                # user is active but has different or no p-chat open. . . 
-                # save this msg in convo_obj
+                # It's an incoming msg!
+                # First, send the msg to this user         
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_msg_f_server',
+                    'msg' : event['msg'],
+                    'convo_id' : event['convo_id'],
+                    'date_time' : event['date_time'],
+                }))
+                # Then, send 'seen' signal to the opposite user
+                channel_layer = get_channel_layer()
+                send_to = await self.get_user_by_username(username=event['msg_from'])
+                if send_to.channel_name is not "":
+                    await channel_layer.send(send_to.channel_name, {
+                        "type" : "receive.msg",
+                        "signal" : "seen",
+                        "convo_id" : event['convo_id'],
+                    })
+        else:
+            # user is active but has different or no p-chat open. . . 
+            # save this msg in convo_obj
+            if event.get('signal', None) != 'seen':
+                data = {
+                    "msg": event['msg'], "convo_id": event['convo_id'],
+                    "date_time": event['date_time'], "msg_from": event['msg_from'],
+                }
                 with transaction.atomic():
                     convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()
-                    data = {
-                        "msg": event['msg'], "convo_id": convo_obj.id,
-                        "date_time": event['date_time'], "msg_from": event['msg_from'],
-                    }
                     convo_obj.convo[convo_obj.convo_counter] = data
                     # sort convo for ordering
-                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda k: int(k))}
-                    
+                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))} 
                     convo_obj.convo_counter += 1
                     convo_obj.save()
                 # send a notif to user that someone has sent a msg
@@ -531,9 +562,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     'type' : 'p_chat_notif_f_server',
                     'p_chat_notif' : render_to_string('p-chat-notif.html', {'msg_from':event['msg_from']}),
                 }))
-        except Exception as e:
-            print(str(e))
- 
+    
     async def update_p_chat(self, event=None):
         try:
             await self.send(text_data=json.dumps({
