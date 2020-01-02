@@ -486,9 +486,13 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             result = await self.validate_open_convo_by_id(convo_id=event['convo_id'])
             if result:
                 # user is active and has the same convo p-chat open, where this msg is supposed to go!
-                if event['msg'] is "seen":
-                    # It's a 'seen' signal
-                    pass
+                if event['msg'] == "seen":
+                    # It's a 'seen' signal, send it quickly as result is also True
+                    await self.send(text_data=json.dumps({
+                        'type' : 'p_chat_msg_seen',
+                        'msg' : 'seen',
+                        'convo_id' : event['convo_id'],
+                    }))
                 else:
                     # It's an incoming msg!
                     # First, send the msg to this user         
@@ -501,12 +505,12 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     # Then, send 'seen' signal to the opposite user
                     channel_layer = get_channel_layer()
                     send_to = await self.get_user_by_username(username=event['msg_from'])
-                    if send_to is not None:
-                        if send_to.channel_name is not "":
-                            await channel_layer.send(send_to.channel_name, {
-                                "type" : "receive.msg",
-                                "msg" : "seen",
-                            })
+                    if send_to.channel_name is not "":
+                        await channel_layer.send(send_to.channel_name, {
+                            "type" : "receive.msg",
+                            "msg" : "seen",
+                            "convo_id" : event['convo_id'],
+                        })
             else:
                 # user is active but has different or no p-chat open. . . 
                 # save this msg in convo_obj
