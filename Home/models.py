@@ -3,7 +3,7 @@ from django.db.models import Prefetch
 from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from django.core.files import File
-from django.contrib.postgres.fields import HStoreField
+from django.contrib.postgres.fields import JSONField
 import uuid, pytz
 from Profile.models import User
 from datetime import datetime
@@ -208,7 +208,7 @@ class Conversations(models.Model):
     user_b = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_b')
     sent_by_b_count = models.BigIntegerField(default=0, verbose_name='msg_sent_by_user_b')
     date_time = models.DateTimeField(auto_now_add=True, auto_now=False)
-    convo = HStoreField()
+    convo = JSONField()
     convo_counter = models.IntegerField(default=0)
     objects = models.Manager()
 
