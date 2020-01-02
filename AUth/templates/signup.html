@@ -11,7 +11,7 @@
 
 {% block body %}
 	<h1 class="headline">Say Hello!</h1>
-	<form method="POST" autocomplete="off">
+	<form method="POST" class="register-form" autocomplete="off">
 		{% csrf_token %}
 		<input class="input100 register-input" type="text" id="register-username" name="username" aria-label="username" placeholder="Username" maxlength="20"/>
 		<div class="text-center p-t-12 signup-error">
@@ -44,6 +44,8 @@
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-password" style="color:orange;"></span>
 		</div>
+		<br/>
+		<h6>Password should contain at least 1 symbolic & numeric character</h6>
 		<br/>
 		<div class="container-register-form-btn"> 
 			<button class="login100-form-btn" id="signup-btn" type="submit">sign up
