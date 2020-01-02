@@ -16,6 +16,8 @@ $(document).ready(function() {
     var $p_chat_cover_wrapper = $('.p-chat-cover-wrapper');
     var $followers_wrapper = $('.followers-wrapper');
     var $following_wrapper = $('.following-wrapper');
+    var $p_chat_notif_wrapper = $('.p-chat-notif-wrapper');
+    var $p_chat_seen = null;
 
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
@@ -62,13 +64,38 @@ $(document).ready(function() {
         }
         // Display msg sent from server
         else if (data['type'] == 'p_chat_msg_f_server') {
-            var new_txt = "<div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>";
-            var $data = $(new_txt);
-            $('.p-chat-modal-body').append($data);
-            $('.p-chat-modal-body').animate({
-                scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
-            }, 1500);
-            $data.animate({'margin-top': '10px'}, 230);
+            if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
+                var new_txt = "<div class='animate-txt-wrap' style='justify-content: flex-end; flex-direction: column;'>\
+                <div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>"
+                + "<h6 class='p-chat-rec-date-time'>" + data['date_time'] + "</h6></div>";
+                var $data = $(new_txt);
+                $('.p-chat-modal-body').append($data);
+                $('.p-chat-modal-body').animate({
+                    scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+                }, 1500);
+                $data.animate({'margin-top': '10px'}, 230);   
+            }
+        }
+        // Display seen signal in p_chat
+        else if (data['type'] == 'p_chat_msg_seen') {
+            if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
+                if ($p_chat_seen != null) {
+                    $p_chat_seen.remove();
+                }
+                $p_chat_seen = $("<h6 class='p-chat-seen'>👀</h6>");
+                $('.p-chat-modal-body').append($p_chat_seen);
+                $('.p-chat-modal-body').animate({
+                    scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
+                }, 1500);
+                $p_chat_seen.animate({'margin-top': '10px'}, 230);
+            }
+        }
+        // Display notif to user that someone has sent a msg
+        else if (data['type'] == 'p_chat_notif_f_server') {
+            $p_chat_notif_wrapper.html(data['p_chat_notif']);
+            setTimeout(function(){
+                $p_chat_notif_wrapper.empty();
+            }, 2000);
         }
         // Update p_chat
         else if (data['type'] == 'update_p_chat') {
@@ -131,9 +158,14 @@ $(document).ready(function() {
     // Get notifications
     var $get_notif = $('.notif-btn');
     $get_notif.on('click', function(event) {
-        homeSocket.send(JSON.stringify({
-            'task' : 'get_notifications',
-        }));
+        event.preventDefault();
+        if ($get_notif.hasClass('updated') == false) {
+            var $notif_wrapper = $('.notif-wrapper');
+            $notif_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+            homeSocket.send(JSON.stringify({
+                'task' : 'get_notifications',
+            }));
+        }
     });
 
     // Clear all notifications
@@ -184,9 +216,15 @@ $(document).ready(function() {
     var $online_users_btn = $('.online-users-btn');
     $online_users_btn.on('click', function(event) {
         event.preventDefault();
-        homeSocket.send(JSON.stringify({
-            'task' : 'get_friends_list',
-        }));
+        if ($online_users_btn.hasClass('updated') == false) {
+            var $followers_wrapper = $('.followers-wrapper');
+            var $following_wrapper = $('.following-wrapper');
+            $followers_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+            $following_wrapper.html("<img class='modal-loading-gif loading-gif-active' src='/static/img/loading.gif'/>");
+            homeSocket.send(JSON.stringify({
+                'task' : 'get_friends_list',
+            }));
+        }
     });
 
     // CHAT SECTION
@@ -226,16 +264,26 @@ $(document).ready(function() {
         if (/\S/.test($('.p-chat-txtbox').val())) {
             var new_txt = "<div class='animate-txt-wrap'><div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
             var send_anim = "<i class='far fa-paper-plane'></i></div>";
+            var date_time = new Date($.now()).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            var d_t_data = "<h6 class='p-chat-snd-date-time'>"+date_time+"</h6>";
             var $data = $(new_txt+send_anim);
+
             $('.p-chat-modal-body').append($data);
+            $('.p-chat-modal-body').append(d_t_data);
             $('.p-chat-modal-body').animate({
                 scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
             }, 1500);
             $data.animate({'margin-top': '10px'}, 230);
+
+
+            var convo_id = $('.p-chat-modal-body').attr('id');
             homeSocket.send(JSON.stringify({
                 'task' : 'p_chat_msg',
                 'msg' : $('.p-chat-txtbox').val(),
+                'convo_id' : convo_id,
+                'date_time' : date_time,
             }));
+
             $('.p-chat-txtbox').val("");
             setTimeout(function(){
                 $('.fa-paper-plane').remove();

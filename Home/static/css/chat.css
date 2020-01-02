@@ -89,7 +89,6 @@
 .animate-txt-wrap {
     margin-top: 20px;
     display: flex;
-    flex-direction: row;
     flex-wrap: nowrap;
 }
 
@@ -102,7 +101,7 @@
 }
 
 .wrap-p-chat-txt {
-    max-width: 49%;
+    max-width: 50%;
     width: fit-content;
     background: mediumslateblue;     /* Default for sent msg */
     border-radius: 2rem;
@@ -110,13 +109,44 @@
 
 .rec-txt-wrapper { 
     align-self: flex-end; 
-    background: mediumorchid;   /* Default for received msg */
+    background: mediumseagreen;   /* Default for received msg */
 }
 
 .p-chat-sent-txt, .p-chat-rec-txt {
     padding: 0.9rem;
     margin-bottom: 0;
+    font-size: 14px;
 }
+
+.p-chat-snd-date-time, .p-chat-rec-date-time {
+    position: relative;
+    top: 2px;
+    font-size: 10px;
+}
+
+.p-chat-snd-date-time { 
+    left: 14px; 
+    margin-bottom: 0;
+}
+
+.p-chat-rec-date-time { 
+    text-align: right;
+    right: 14px;
+    margin-bottom: 0;
+}
+
+.p-chat-seen {
+    position: relative;
+    left: 14px;
+    width: 7%;
+    text-align: center;
+    border-top: 1.5px solid mediumspringgreen;
+    padding: 5px;
+    margin-bottom: 0;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
 
 @media only screen and (max-width: 767px) {
     .p-chat-txtbox {
@@ -125,5 +155,13 @@
 
     .wrap-p-chat-txt {
         max-width: 65%;
+    }
+
+    .p-chat-sent-txt, .p-chat-rec-txt {
+        font-size: 12px;
+    }
+
+    .p-chat-seen {
+        font-size: 16px;
     }
 }
