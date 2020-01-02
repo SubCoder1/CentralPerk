@@ -79,9 +79,7 @@ $(document).ready(function() {
         // Display seen signal in p_chat
         else if (data['type'] == 'p_chat_msg_seen') {
             if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
-                if ($p_chat_seen != null) {
-                    $p_chat_seen.remove();
-                }
+                $('.p-chat-seen').remove();
                 $p_chat_seen = $("<h6 class='p-chat-seen'>👀</h6>");
                 $('.p-chat-modal-body').append($p_chat_seen);
                 $('.p-chat-modal-body').animate({
