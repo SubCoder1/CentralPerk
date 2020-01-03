@@ -196,7 +196,7 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 
 STATICFILES_STORAGE = 'centralperk.storage.WhiteNoiseStaticFilesStorage'
 
-STATIC_HOST = config.get('DJANGO_STATIC_HOST', '') if not DEBUG else ''
+STATIC_HOST = config.get('section', 'DJANGO_STATIC_HOST') if not DEBUG else ''
 
 STATIC_URL = STATIC_HOST + '/static/'
 
