@@ -990,15 +990,35 @@ p { margin-bottom: 0; }
         height: 120px;
     }
 
-    .comment-input {
-        width: 87%;
-    }
-
     .card-header, .card-footer {
         padding: 0.7rem;
     }
 
     .account-settings-loading-gif, .modal-loading-gif {
         height: 200px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .comment-input {
+        width: 91%;
+    }
+}
+
+@media only screen and (min-width: 500px) and (max-width: 540px) {
+    .comment-input {
+        width: 90%;
+    }
+}
+
+@media only screen and (max-width: 499px) {
+    .comment-input {
+        width: 87%;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    .comment-input {
+        width: 84%;
     }
 }

@@ -149,9 +149,6 @@
 
 
 @media only screen and (max-width: 767px) {
-    .p-chat-txtbox {
-        width: 85%;
-    }
 
     .wrap-p-chat-txt {
         max-width: 65%;
@@ -163,5 +160,29 @@
 
     .p-chat-seen {
         font-size: 16px;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .p-chat-txtbox {
+        width: 91%;
+    }
+}
+
+@media only screen and (min-width: 500px) and (max-width: 540px) {
+    .p-chat-txtbox {
+        width: 90%;
+    }
+}
+
+@media only screen and (max-width: 499px) {
+    .p-chat-txtbox {
+        width: 87%;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    .comment-input {
+        width: 84%;
     }
 }
