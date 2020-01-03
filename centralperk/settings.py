@@ -177,20 +177,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-DEFAULT_FILE_STORAGE = 'storages.backends.dropbox.DropBoxStorage'
-
-DROPBOX_OAUTH2_TOKEN = config.get('section', 'DROPBOX_OAUTH2_TOKEN')
-
-DROPBOX_ROOT_PATH = 'media'
-
-# Absolute filesystem path to the directory that will hold user-uploaded files.
-# Example: "/home2/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
-# URL that handles the media served from MEDIA_ROOT.
-MEDIA_URL = '/media/'
-
 # Max size of post file upload
 DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 
@@ -204,6 +190,29 @@ STATIC_HOST = config.get('section', 'DJANGO_STATIC_HOST') if not DEBUG else ''
 STATIC_URL = STATIC_HOST + '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# AWS S3 settings
+AWS_ACCESS_KEY_ID = config.get('aws', 'AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = config.get('aws', 'AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = config.get('aws', 'AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = config.get('aws', 'AWS_S3_CUSTOM_DOMAIN')
+AWS_S3_OBJECT_PARAMETERS = {    
+    'CacheControl': 'max-age=86400',
+}
+
+DEFAULT_FILE_STORAGE = 'centralperk.storage.MediaStorage'
+
+ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
+AWS_DEFAULT_ACL = None
+
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home2/media/media.lawrence.com/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+# URL that handles the media served from MEDIA_ROOT.
+MEDIA_URL = '/media/'
 
 LOGIN_URL  = '/'
 
