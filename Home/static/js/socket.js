@@ -193,14 +193,22 @@ $(document).ready(function() {
 
     // Send Search query to server
     var $search_bar = $('.search-bar');
+    var searching = null;
     $search_bar.on('input', function(event) {
+        event.preventDefault();
         if ($search_bar.val() == '') {
             $wrap_search.html("");
         } else {
-            homeSocket.send(JSON.stringify({
-                'task' : 'search',
-                'query' : $search_bar.val(),
-            }));
+            if (searching == null) {
+                searching = true;
+                homeSocket.send(JSON.stringify({
+                    'task' : 'search',
+                    'query' : $search_bar.val(),
+                }));
+                setTimeout(function(){
+                    searching = null;
+                }, 2000);
+            }
         }
     });
 
