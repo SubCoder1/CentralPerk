@@ -133,7 +133,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 message = data_from_client.get('msg', None)
                 convo_id = data_from_client.get('convo_id', None)
                 date_time = data_from_client.get('date_time', None)
-                await self.send_msg(message=message, convo_id=convo_id, date_time=date_time)
+                signal = data_from_client.get('signal', None)
+                await self.send_msg(message=message, convo_id=convo_id, date_time=date_time, signal=signal)
             # Get friends list
             elif data_from_client['task'] == 'get_friends_list':
                 await self.send_friends_list()
@@ -481,34 +482,47 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print(str(e))
 
-    async def send_msg(self, message, convo_id, date_time, event=None):
+    async def send_msg(self, message, convo_id, date_time, signal, event=None):
         if convo_id is not None:
             # This will get the user to which the msg is to be sent
             convo_obj, send_to, msg_from = await self.get_active_convo_send_to(convo_id=convo_id)
             if convo_obj is not None:
                 if send_to.channel_name is not "":
                     channel_layer = get_channel_layer()
-                    # send the msg to user
-                    await channel_layer.send(send_to.channel_name, {
-                        "type" : "receive.msg",
-                        "msg" : message,
-                        "msg_from" : msg_from,
-                        "convo_id" : convo_obj.id,
-                        "date_time" : date_time,
-                    })
+                    # check if it's a signal (typing...) instead of msg
+                    if signal == 'typing...' and message is None and date_time is None:
+                        await channel_layer.send(send_to.channel_name, {
+                            "type" : "receive.msg",
+                            "signal" : "typing...",
+                            "msg_from" : msg_from,
+                            "convo_id" : convo_obj.id,
+                        })
+                    else:
+                        # It's a plain-old msg
+                        # send the msg to user
+                        unique_id = sha256(bytes(str(convo_obj.id), encoding='utf-8')).hexdigest()
+                        await channel_layer.send(send_to.channel_name, {
+                            "type" : "receive.msg",
+                            "msg" : message,
+                            "msg_from" : msg_from,
+                            "convo_id" : convo_obj.id,
+                            "date_time" : date_time,
+                            "unique_id" : unique_id,
+                        })
                 else:
                     # store dm in convo field, to show later as send_to is not active
-                    data = {
-                        "msg": message, "convo_id": convo_id,
-                        "date_time": date_time, "msg_from": msg_from,
-                    }
-                    with transaction.atomic():
-                        convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
-                        convo_obj.convo[convo_obj.convo_counter] = data
-                        # sort convo for ordering
-                        convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))}
-                        convo_obj.convo_counter += 1
-                        convo_obj.save()
+                    if signal == None:
+                        data = {
+                            "msg": message, "convo_id": convo_id,
+                            "date_time": date_time, "msg_from": msg_from,
+                        }
+                        with transaction.atomic():
+                            convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
+                            convo_obj.convo[convo_obj.convo_counter] = data
+                            # sort convo for ordering
+                            convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))}
+                            convo_obj.convo_counter += 1
+                            convo_obj.save()
                 # finally, update convo_obj date time so that it shows up on top 
                 # of your & opp. user's p-chat-cover
                 await self.update_convo_obj(convo_id=convo_obj.id, clear_convo=False)
@@ -524,6 +538,15 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     'msg' : 'seen',
                     'convo_id' : event['convo_id'],
                 }))
+            elif event.get('signal', None) == 'typing...':
+                # It's a 'typing...' signal, send it quickly as result is also True
+                unique_id = sha256(bytes(str(event['convo_id']), encoding='utf-8')).hexdigest()
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_typing_signal',
+                    'msg' : 'typing...',
+                    'convo_id' : event['convo_id'],
+                    'unique_id' : unique_id,
+                }))
             else:
                 # It's an incoming msg!
                 # First, send the msg to this user         
@@ -532,6 +555,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     'msg' : event['msg'],
                     'convo_id' : event['convo_id'],
                     'date_time' : event['date_time'],
+                    'unique_id' : event['unique_id'],
                 }))
                 # Then, send 'seen' signal to the opposite user
                 channel_layer = get_channel_layer()
@@ -545,7 +569,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         else:
             # user is active but has different or no p-chat open. . . 
             # save this msg in convo_obj
-            if event.get('signal', None) != 'seen':
+            if event.get('signal', None) == None:
                 data = {
                     "msg": event['msg'], "convo_id": event['convo_id'],
                     "date_time": event['date_time'], "msg_from": event['msg_from'],
