@@ -61,9 +61,9 @@
             </div>
         </div>
         {% if date_now == val.date %}
-            <h6 class='p-chat-rec-date-time'>{{ val.time }}</h6>
+            <h6 class='p-chat-snd-date-time'>{{ val.time }}</h6>
         {% else %}
-            <h6 class='p-chat-rec-date-time'>{{ val.date }}, {{ val.time }}</h6>
+            <h6 class='p-chat-snd-date-time'>{{ val.date }}, {{ val.time }}</h6>
         {% endif %}
         {% endfor %}
     {% endif %}
