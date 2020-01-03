@@ -194,7 +194,7 @@
 }
 
 @media only screen and (max-width: 372px) {
-    .comment-input {
+    .p-chat-txtbox {
         width: 83%;
     }
 }
