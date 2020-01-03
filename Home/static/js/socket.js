@@ -69,6 +69,10 @@ $(document).ready(function() {
                 <div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>"
                 + "<h6 class='p-chat-rec-date-time'>" + data['date_time'] + "</h6></div>";
                 var $data = $(new_txt);
+                var $p_chat_activity_div = $('#'+data['unique_id']);
+                if ($p_chat_activity_div.find('.online-green-ico').length == 0) {
+                    $p_chat_activity_div.html("<i class='material-icons online-green-ico'>lens</i>");
+                }
                 $('.p-chat-modal-body').append($data);
                 $('.p-chat-modal-body').animate({
                     scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
@@ -86,6 +90,18 @@ $(document).ready(function() {
                     scrollTop: $('.p-chat-modal-body').get(0).scrollHeight
                 }, 1500);
                 $p_chat_seen.animate({'margin-top': '10px'}, 230);
+            }
+        }
+        // Display typing... signal in p_chat
+        else if (data['type'] == 'p_chat_typing_signal') {
+            var $p_chat_activity_div = $('#'+data['unique_id']);
+            if ($p_chat_activity_div != null) {
+                if ($p_chat_activity_div.find('.online-green-ico').length) {
+                    $p_chat_activity_div.html("<h6>Typing. . .</h6>");
+                    setTimeout(function(){
+                        $p_chat_activity_div.html("<i class='material-icons online-green-ico'>lens</i>");
+                    },1500);
+                }
             }
         }
         // Display notif to user that someone has sent a msg
@@ -285,7 +301,27 @@ $(document).ready(function() {
             $('.p-chat-txtbox').val("");
             setTimeout(function(){
                 $('.fa-paper-plane').remove();
-            }, 400);
+            }, 410);
+        }
+    });
+
+    // Send typing. . . notif in p-chat
+    var typing = null;
+    $p_chat_cover_wrapper.on('input', '.p-chat-txtbox', function(event) {
+        event.preventDefault();
+        var convo_id = $('.p-chat-modal-body').attr('id');
+        if (convo_id != null) {
+            if (typing == null) {
+                typing = true;
+                homeSocket.send(JSON.stringify({
+                    'task' : 'p_chat_msg',
+                    'signal' : 'typing...',
+                    'convo_id' : convo_id,
+                }));
+                setTimeout(function(){
+                    typing = null;
+                }, 2000);
+            }
         }
     });
 });
