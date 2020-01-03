@@ -180,6 +180,17 @@ USE_TZ = True
 # Max size of post file upload
 DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 
+import mimetypes
+# Additional MIME Types for web fonts
+mimetypes.add_type("application/font-woff2", ".woff2", strict=True)
+mimetypes.add_type("application/font-woff", ".woff", strict=True)
+mimetypes.add_type("application/vnd.ms-fontobject", ".eot", strict=True)
+mimetypes.add_type("application/x-font-opentype", ".otf", strict=True)
+mimetypes.add_type("application/x-font-ttf", ".ttf", strict=True)
+mimetypes.add_type("image/svg+xml", ".svg", strict=True)
+# HTML5 video webm support
+mimetypes.add_type("video/webm", ".webm", strict=True)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
