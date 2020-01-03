@@ -3,8 +3,9 @@ pytz
 Pillow
 argon2-cffi
 django-redis-cache
-django-storages[dropbox]
-whitenoise
+django-storages
+boto3
+whitenoise[brotli]
 django_redis
 redis
 channels
