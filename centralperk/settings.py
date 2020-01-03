@@ -195,11 +195,11 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 31457280
 
 STATICFILES_STORAGE = 'centralperk.storage.WhiteNoiseStaticFilesStorage'
 
-STATIC_URL = '/static/'
+STATIC_HOST = "https://d1fp6ypw6ojkja.cloudfront.net" if not DEBUG else ''
+
+STATIC_URL = STATIC_HOST + '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 LOGIN_URL  = '/'
 
