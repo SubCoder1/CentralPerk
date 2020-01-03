@@ -6,6 +6,7 @@ config.read('/etc/centralperk/settings.ini')
 
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
+CORS_ORIGIN_ALLOW_ALL = True
 #CSRF_COOKIE_DOMAIN = None
 #CSRF_COOKIE_SECURE = False
 #SESSION_COOKIE_SECURE = False
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
 
     #third party
     #'debug_toolbar',
+    'corsheaders',
     'django_extensions',
     'storages',
     
@@ -53,6 +55,7 @@ AUTH_USER_MODEL = 'Profile.User'    # Custom User model is used
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
