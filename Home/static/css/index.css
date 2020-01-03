@@ -569,7 +569,7 @@ p { margin-bottom: 0; }
     margin-left: 5px;
 }
 
-.notif-block {
+.notif-block, .p-chat-new-msg-notif-block {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
@@ -585,13 +585,17 @@ p { margin-bottom: 0; }
 .notif-btn:hover { background: #371ec6; }
 .options-link:hover .fa-bell { animation: ring 1s ease; }
 
-.new-notif-indicator {
+.new-notif-indicator, .new-msg-indicator {
     position: absolute;
     height: 5px;
     width: 5px;
     border-radius: 50% !important;
     background: red;
     margin-top: 10px;
+}
+
+.new-msg-indicator {
+    margin-left: 3px;
 }
 
 .upload-btn, .upload-btn:focus { background: mediumorchid; }
