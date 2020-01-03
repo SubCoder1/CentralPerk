@@ -134,7 +134,15 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 convo_id = data_from_client.get('convo_id', None)
                 date_time = data_from_client.get('date_time', None)
                 signal = data_from_client.get('signal', None)
-                await self.send_msg(message=message, convo_id=convo_id, date_time=date_time, signal=signal)
+                if date_time is not None:
+                    try:
+                        # date_time is only attached if msg is sent, format checking is done here!
+                        d_t = datetime.strptime(str(date_time), "%m/%d/%Y, %H:%M %p")
+                        await self.send_msg(message=message, convo_id=convo_id, date_time=date_time, signal=signal)
+                    except Exception as e:
+                        print(str(e))
+                else:
+                    await self.send_msg(message=message, convo_id=convo_id, date_time=date_time, signal=signal)
             # Get friends list
             elif data_from_client['task'] == 'get_friends_list':
                 await self.send_friends_list()
@@ -459,6 +467,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     'friend':friend, 'user':self.scope['user'], 
                     'activity_status':f_activity_status,'unique_id':unique_id,
                     'convo_id':friend.id, 'unseen_dm' : clear_convo,
+                    'date_now': datetime.now().strftime("%m/%d/%Y") ,
                 }
                 await self.send(text_data=json.dumps({
                     'type' : 'p_chat_f_server',
@@ -512,9 +521,10 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 else:
                     # store dm in convo field, to show later as send_to is not active
                     if signal == None:
+                        date, time = event['date_time'].split(',')
                         data = {
                             "msg": message, "convo_id": convo_id,
-                            "date_time": date_time, "msg_from": msg_from,
+                            "date": date, "time":time, "msg_from": msg_from,
                         }
                         with transaction.atomic():
                             convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
@@ -570,9 +580,10 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # user is active but has different or no p-chat open. . . 
             # save this msg in convo_obj
             if event.get('signal', None) == None:
+                date, time = event['date_time'].split(',')
                 data = {
                     "msg": event['msg'], "convo_id": event['convo_id'],
-                    "date_time": event['date_time'], "msg_from": event['msg_from'],
+                    "date": date, "time":time, "msg_from": event['msg_from'],
                 }
                 with transaction.atomic():
                     convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()

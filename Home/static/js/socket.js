@@ -66,10 +66,16 @@ $(document).ready(function() {
         // Display msg sent from server
         else if (data['type'] == 'p_chat_msg_f_server') {
             if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
+                var date_time = new Date($.now()).toLocaleString('en-US', { day : '2-digit', month : '2-digit', 
+                year : 'numeric'});
+                if (data['date_time'].split(",")[0] == date_time) {
+                    data['date_time'] = data['date_time'].split(",")[1];
+                }
                 var new_txt = "<div class='animate-txt-wrap' style='justify-content: flex-end; flex-direction: column;'>\
                 <div class='wrap-p-chat-txt rec-txt-wrapper'><h6 class='p-chat-rec-txt'>" + data['msg'] + "</h6></div>"
                 + "<h6 class='p-chat-rec-date-time'>" + data['date_time'] + "</h6></div>";
                 var $data = $(new_txt);
+
                 var $p_chat_activity_div = $('#'+data['unique_id']);
                 if ($p_chat_activity_div.find('.online-green-ico').length == 0) {
                     $p_chat_activity_div.html("<i class='material-icons online-green-ico'>lens</i>");
@@ -288,7 +294,7 @@ $(document).ready(function() {
         if (/\S/.test($('.p-chat-txtbox').val())) {
             var new_txt = "<div class='animate-txt-wrap'><div class='wrap-p-chat-txt'><h6 class='p-chat-sent-txt'>" + $('.p-chat-txtbox').val() + "</h6></div>";
             var send_anim = "<i class='far fa-paper-plane'></i></div>";
-            var date_time = new Date($.now()).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+            var date_time = new Date($.now()).toLocaleString('en-US', {hour: '2-digit', minute: '2-digit', hour12: true });
             var d_t_data = "<h6 class='p-chat-snd-date-time'>"+date_time+"</h6>";
             var $data = $(new_txt+send_anim);
 
@@ -301,11 +307,13 @@ $(document).ready(function() {
 
 
             var convo_id = $('.p-chat-modal-body').attr('id');
+            var d_t = new Date($.now()).toLocaleString('en-US', { day : '2-digit', month : '2-digit', 
+            year : 'numeric' , hour: '2-digit', minute: '2-digit', hour12: true });
             homeSocket.send(JSON.stringify({
                 'task' : 'p_chat_msg',
                 'msg' : $('.p-chat-txtbox').val(),
                 'convo_id' : convo_id,
-                'date_time' : date_time,
+                'date_time' : d_t,
             }));
 
             $('.p-chat-txtbox').val("");
