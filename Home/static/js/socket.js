@@ -90,7 +90,9 @@ $(document).ready(function() {
         // Display seen signal in p_chat
         else if (data['type'] == 'p_chat_msg_seen') {
             if ($('.p-chat-modal-body').is("#"+data['convo_id'])) {
-                $('.p-chat-seen').remove();
+                if ($p_chat_seen != null) {
+                    $p_chat_seen.remove();
+                }
                 $p_chat_seen = $("<h6 class='p-chat-seen'>👀</h6>");
                 $('.p-chat-modal-body').append($p_chat_seen);
                 $('.p-chat-modal-body').animate({
@@ -104,7 +106,7 @@ $(document).ready(function() {
             var $p_chat_activity_div = $('#'+data['unique_id']);
             if ($p_chat_activity_div != null) {
                 if ($p_chat_activity_div.find('.online-green-ico').length) {
-                    $p_chat_activity_div.html("<h6>Typing. . .</h6>");
+                    $p_chat_activity_div.html("<h6>Typing . . .</h6>");
                     setTimeout(function(){
                         $p_chat_activity_div.html("<i class='material-icons online-green-ico'>lens</i>");
                     }, 2000);

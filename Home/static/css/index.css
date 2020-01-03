@@ -507,8 +507,8 @@ p { margin-bottom: 0; }
     border-radius: 50% !important;
     height: 39px;
     width: 40px;
-    background: deeppink;
-    border-color: deeppink;
+    background: #cb0972;
+    border-color: #cb0972;
 }
 
 .comment-send-btn:hover {
