@@ -165,24 +165,36 @@
 
 @media only screen and (max-width: 600px) {
     .p-chat-txtbox {
-        width: 91%;
+        width: 90%;
     }
 }
 
 @media only screen and (min-width: 500px) and (max-width: 540px) {
     .p-chat-txtbox {
-        width: 90%;
+        width: 89%;
     }
 }
 
-@media only screen and (max-width: 499px) {
+@media only screen and (min-width: 425px) and (max-width: 499px) {
+    .p-chat-txtbox {
+        width: 88%;
+    }
+}
+
+@media only screen and (min-width: 399px) and (max-width: 424px) {
     .p-chat-txtbox {
         width: 87%;
     }
 }
 
-@media only screen and (max-width: 360px) {
+@media only screen and (min-width: 373px) and (max-width: 398px) {
+    .p-chat-txtbox {
+        width: 86%;
+    }
+}
+
+@media only screen and (max-width: 372px) {
     .comment-input {
-        width: 84%;
+        width: 83%;
     }
 }
