@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     #third party
     #'debug_toolbar',
     'django_extensions',
+    'storages',
     
     #own
     'AUth',
