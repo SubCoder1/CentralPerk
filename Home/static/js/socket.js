@@ -17,6 +17,7 @@ $(document).ready(function() {
     var $followers_wrapper = $('.followers-wrapper');
     var $following_wrapper = $('.following-wrapper');
     var $p_chat_notif_wrapper = $('.p-chat-notif-wrapper');
+    var $new_msg_indicator = $('.new-msg-indicator');
     var $p_chat_seen = null;
 
     homeSocket.onmessage = function(server_response) {
@@ -100,13 +101,14 @@ $(document).ready(function() {
                     $p_chat_activity_div.html("<h6>Typing. . .</h6>");
                     setTimeout(function(){
                         $p_chat_activity_div.html("<i class='material-icons online-green-ico'>lens</i>");
-                    },1500);
+                    }, 2000);
                 }
             }
         }
         // Display notif to user that someone has sent a msg
         else if (data['type'] == 'p_chat_notif_f_server') {
             $p_chat_notif_wrapper.html(data['p_chat_notif']);
+            $new_msg_indicator.css('display', 'block');
             setTimeout(function(){
                 $p_chat_notif_wrapper.empty();
             }, 2000);

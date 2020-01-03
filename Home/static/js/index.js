@@ -55,6 +55,19 @@ $(document).ready(function() {
     $new_notif_indicator.css('display', 'none');
   });
 
+  // Hide new-msg-indicator till new msgs pushes-in via socket
+  var $new_msg_indicator = $('.new-msg-indicator');
+  var $p_chat_btn = $('.chat-btn');
+  var $p_chat_modal = $('#p-chat');
+  $p_chat_btn.on('click', function() {
+    $new_msg_indicator.css('display', 'none');
+  });
+  // This code resolves bug where p-chat-cover is open and indicator is shown in background
+  // (maybe because new chat can push via socket & as user hasn't open any specific p-chat)
+  $p_chat_modal.on('hidden.bs.modal', function (e) {
+    $new_msg_indicator.css('display', 'none');
+  });
+
   // JS code for slide-in-as-you-scroll-down-post-cards
   (function($) {
     $.fn.visible = function(partial) {
