@@ -34,7 +34,6 @@
     font-size: 17px;
     color: mediumpurple;
     position: relative;
-    transform: all 0.3s;
 }
 
 .p-chat-cover-b-link:hover .fa-chevron-left { color: mediumslateblue; }
@@ -97,6 +96,7 @@
 
 .fa-paper-plane {
     height: fit-content;
+    height: -moz-fit-content;
     position: relative;
     top: 14px;
     left: 6px;
@@ -106,6 +106,7 @@
 .wrap-p-chat-txt {
     max-width: 50%;
     width: fit-content;
+    width: -moz-fit-content;
     background: mediumslateblue;     /* Default for sent msg */
     border-radius: 2rem;
 }
