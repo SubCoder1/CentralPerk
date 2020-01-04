@@ -28,7 +28,6 @@
 			<form class="wrap-loginform" method="POST">
 				{% csrf_token %}
 				<input class="input100" type="text" id="login-username" name="username" aria-label="username" placeholder="Username">
-				<br/>
 				<input class="input100 password-margin" id="login-pass" type="password" name="password" aria-label="password" placeholder="Password">
 				<div class="text-center p-t-12 login-error">
 					<span class="txt1" id="form-error" style="color:orange;"></span>
@@ -36,10 +35,9 @@
 				<div class="container-login100-form-btn"> 
 					<button class="login100-form-btn" id="login-btn" type="submit">
 						Login
-						<img class="login-loading-gif" id="loading-gif" src="{% static 'login/img/loading.gif' %}">
+						<img class="login-loading-gif" alt="loading-gif" id="loading-gif" src="{% static 'login/img/loading.gif' %}">
 					</button>
 				</div>
-				<br/>
 				<div class="text-center p-t-12">
 					<span class="txt1">Forgot</span>
 					<a class="txt2" href="#">Username / Password?</a>

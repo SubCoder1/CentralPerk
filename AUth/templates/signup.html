@@ -17,17 +17,14 @@
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-username" style="color:orange;"></span>
 		</div>
-		<br/>
 		<input class="input100 register-input" type="text" id="register-fullname" name="full_name" aria-label="full name" placeholder="Full Name" maxlength="50"/>
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-fullname" style="color:orange;"></span>
 		</div>
-		<br/>
 		<input class="input100 register-input" type="email" id="register-email" name="email" aria-label="email" placeholder="Email" maxlength="254"/>
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-email" style="color:orange;"></span>
 		</div>
-		<br/>
 		<div class="input100 register-input gender-select-container" id="register-gender">
 			<select class="gender-selection-dropdown" name="gender" aria-label="gender" id="choice">
 				<option selected disabled>Gender</option>
@@ -39,17 +36,14 @@
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-gender" style="color:orange;"></span>
 		</div>
-		<br/>
 		<input class="input100 register-input pass-input-margin" type="password" id="register-pass" name="password" aria-label="password" placeholder="Password"/>
 		<div class="text-center p-t-12 signup-error">
 			<span class="txt1" id="form-error-password" style="color:orange;"></span>
 		</div>
-		<br/>
-		<h6>Password should contain at least 1 symbolic & numeric character</h6>
-		<br/>
+		<h6 style="margin-top: 25px;">*Password should contain at least 1 symbolic & numeric character</h6>
 		<div class="container-register-form-btn"> 
 			<button class="login100-form-btn" id="signup-btn" type="submit">sign up
-			<img class="signup-loading-gif" id="loading-gif" src="{% static 'login/img/loading.gif' %}">
+			<img class="signup-loading-gif" alt="loading-gif" id="loading-gif" src="{% static 'login/img/loading.gif' %}">
 			</button>
 		</div>
 	</form>
