@@ -67,7 +67,15 @@ input {
 
 .card::-webkit-scrollbar { width: 0 !important; }
 
+.card {
+    scrollbar-color: #1d1d1d black;
+}
+
 .card-body::-webkit-scrollbar { width: 0 !important; }
+
+.card-body {
+    scrollbar-color: #1d1d1d black;
+}
 
 .display-2 {
     font-size: 25px;
@@ -146,7 +154,6 @@ h6 { font-size: 11.2px; }
     display: flex;
     justify-content: center;
     align-self: center;
-    height: 55px;
 }
 
 #update-posts {
@@ -499,6 +506,10 @@ p { margin-bottom: 0; }
 
 .comment-input::-webkit-scrollbar { width: 0 !important; }
 
+.comment-input {
+    scrollbar-color: #1d1d1d black;
+}
+
 .comment-input:focus {
     background-color: transparent;
     box-shadow: none;
@@ -732,6 +743,10 @@ p { margin-bottom: 0; }
 
 /* ---------------- Notifications ---------------- */
 .modal-body::-webkit-scrollbar { width: 0 !important; }
+
+.modal-body {
+    scrollbar-color: #1d1d1d black;
+}
 
 .ml-2 {
     font-size: 13px;
@@ -1024,6 +1039,14 @@ p { margin-bottom: 0; }
 
     .account-settings-loading-gif, .modal-loading-gif {
         height: 200px;
+    }
+
+    .display-2 {
+        font-size: 21px;
+    }
+
+    h4 {
+        font-size: 15px;
     }
 }
 

@@ -66,6 +66,9 @@
 }
 
 .p-chat-txtbox::-webkit-scrollbar { width: 0 !important; }
+.p-chat-txtbox {
+    scrollbar-color: #1d1d1d black;
+}
 
 .p-chat-txtbox:focus {
     background-color: #1d1d1d;
