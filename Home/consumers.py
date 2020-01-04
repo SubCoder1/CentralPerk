@@ -176,7 +176,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     def like_post_from_wall(self, post_id):
         user = self.scope['user']
         try:
-            post = PostModel.objects.get_post(post_id=post_id)
+            post = PostModel.objects.filter(post_id=post_id).select_related('post_like_obj', 'user').first()
             if post.post_like_obj.filter(user=user).exists():
                 # Dislike post
                 post.post_like_obj.filter(user=user).delete()
