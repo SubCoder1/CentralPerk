@@ -34,7 +34,7 @@ $(document).ready(function() {
         }
         // Update notifications wrapper
         else if (data['type'] == 'updated_notif') {
-            $new_notif_indicator.css('display', 'block');
+            $new_notif_indicator.css('background', 'red');
             $notif_wrapper.html(data['notif']);
         }
         // Update wall
@@ -116,7 +116,7 @@ $(document).ready(function() {
         // Display notif to user that someone has sent a msg
         else if (data['type'] == 'p_chat_notif_f_server') {
             $p_chat_notif_wrapper.html(data['p_chat_notif']);
-            $new_msg_indicator.css('display', 'block');
+            $new_msg_indicator.css('background', 'red');
             setTimeout(function(){
                 $p_chat_notif_wrapper.empty();
             }, 2000);
