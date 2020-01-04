@@ -196,9 +196,7 @@ mimetypes.add_type("video/webm", ".webm", strict=True)
 
 STATICFILES_STORAGE = 'centralperk.storage.WhiteNoiseStaticFilesStorage'
 
-STATIC_HOST = config.get('section', 'DJANGO_STATIC_HOST') if not DEBUG else ''
-
-STATIC_URL = STATIC_HOST + '/static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
