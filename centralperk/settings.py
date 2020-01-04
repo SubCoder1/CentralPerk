@@ -215,7 +215,7 @@ AWS_S3_OBJECT_PARAMETERS = {
 DEFAULT_FILE_STORAGE = 'centralperk.storage.MediaStorage'
 
 ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-AWS_DEFAULT_ACL = None
+AWS_DEFAULT_ACL = 'public-read'
 
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
