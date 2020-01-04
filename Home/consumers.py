@@ -186,7 +186,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 post.refresh_from_db()
             else:
                 # Like post
-                post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
+                post_like_obj = PostLikes.objects.create(post_obj=post, user=user)
+                post.post_like_obj.add(post_like_obj)
                 post.likes_count = F('likes_count') + 1
                 post.save()
                 post.refresh_from_db()
