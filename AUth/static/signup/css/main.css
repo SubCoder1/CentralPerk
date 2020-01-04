@@ -1,5 +1,7 @@
 #register-username, #register-fullname, #register-email, #register-gender, #register-pass {
-  border-bottom: 1.2px solid #19a46e;
+  border-bottom: 2px solid #19a46e;
+  margin-top: 20px;
+  margin-bottom: 0;
 }
 
 .register-form {
@@ -45,7 +47,7 @@ option {
   display: flex;
   position: relative;
   justify-content: center;
-  top: 15px;
+  top: 20px;
 }
 
 /*------------ signup-btn-loading-gif -----------*/

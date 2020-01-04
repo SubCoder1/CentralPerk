@@ -47,12 +47,12 @@ $(document).ready(function() {
       // This piece of code adds a flag to ensure that notif only gets updated from server side
       $notif_btn.addClass('updated');
     }
-    $new_notif_indicator.css('display', 'none');
+    $new_notif_indicator.css('background', 'transparent');
   });
   // This code resolves the bug in which new-notif-indicator is shown even after notif-btn is clicked.
   // although, this happens only on the 1st time but still is annoying af! B|
   $notif_modal.on('hidden.bs.modal', function (e) {
-    $new_notif_indicator.css('display', 'none');
+    $new_notif_indicator.css('background', 'transparent');
   });
 
   // Hide new-msg-indicator till new msgs pushes-in via socket
@@ -60,12 +60,12 @@ $(document).ready(function() {
   var $p_chat_btn = $('.chat-btn');
   var $p_chat_modal = $('#p-chat');
   $p_chat_btn.on('click', function() {
-    $new_msg_indicator.css('display', 'none');
+    $new_msg_indicator.css('background', 'transparent');
   });
   // This code resolves bug where p-chat-cover is open and indicator is shown in background
   // (maybe because new chat can push via socket & as user hasn't open any specific p-chat)
   $p_chat_modal.on('hidden.bs.modal', function (e) {
-    $new_msg_indicator.css('display', 'none');
+    $new_msg_indicator.css('background', 'transparent');
   });
 
   // JS code for slide-in-as-you-scroll-down-post-cards

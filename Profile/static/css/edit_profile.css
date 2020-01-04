@@ -5,6 +5,10 @@
 
 textarea::-webkit-scrollbar { width: 0 !important; }
 
+textarea {
+  scrollbar-color: #1d1d1d black;
+}
+
 button {
 	outline: none !important;
 	border: none;
@@ -22,6 +26,10 @@ option { background: darkslateblue; }
 
 #change-pass-form { min-height: 600px; }
 
+.edit-prof-headline {
+  margin-bottom: 1.5%;
+}
+
 /*-------------- edit-profile-container --------------*/
 .wrap-edit-profile {
   display: flex;
@@ -29,7 +37,7 @@ option { background: darkslateblue; }
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-top: 10px;
+  margin-top: 10%;
 }
 /*----------------------------------------------------*/
 
@@ -55,11 +63,12 @@ option { background: darkslateblue; }
   line-height: 1.5;
   color: white;
   display: block;
-  width: 370px;
+  width: 300px;
   background: transparent;
   border-bottom: 2.5px solid mediumturquoise;
   height: 50px;
   padding: 10px;
+  margin-top: 5%;
 }
 
 .edit-prof-error {
@@ -103,6 +112,10 @@ option { background: darkslateblue; }
 /*----------------------------------------------------*/
 
 /*----------------- birthdate-picker -----------------*/
+.date {
+  height: 65px;
+}
+
 .datepicker-dropdown { 
   background: #1d1d1d;
   border-radius: 1rem;
@@ -176,6 +189,7 @@ option { background: darkslateblue; }
   height: 100px;
   overflow-x: auto;
   resize: none;
+  width: 300px;
 }
 /*----------------------------------------------------*/
 
@@ -189,6 +203,8 @@ option { background: darkslateblue; }
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
+  margin-top: 6%;
+  margin-bottom: 6%;
 }
 
 .edit-prof-form-btn, .change-pass-form-btn {
@@ -201,29 +217,42 @@ option { background: darkslateblue; }
   height: 50px;
   border-radius: 25px;
   background: mediumslateblue;
-  border: 1.2px solid mediumslateblue;
+  border: 2px solid mediumslateblue;
   padding: 0 25px;
   -webkit-transition: all 0.4s;
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
   transition: all 0.4s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .edit-prof-form-btn:hover, .change-pass-form-btn:hover { 
   background: darkslateblue;
-  border: 1.2px solid mediumslateblue;
+  border: 2px solid mediumslateblue;
 }
 
 /*----------------- btn-loading-gif ------------------*/
 .edit-prof-loading-gif, .change-pass-loading-gif {
   position: absolute;
-  max-height: 50px;
+  max-height: 46.5px;
   border-radius: 2rem;
   cursor: pointer;
   pointer-events: none;
-  width: 103.57px;
+  width: 102.57px;
   display: none;
 }
 
 .loading-gif-active { display: block; }
 /*----------------------------------------------------*/
+
+@media only screen and (max-width: 767px) {
+  .wrap-edit-profile {
+    margin-top: 22%;
+  }
+
+  .edit-prof-headline {
+    margin-bottom: 6%;
+  }
+}
