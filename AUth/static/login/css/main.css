@@ -20,6 +20,11 @@ body, html {
 	font-family: Poppins-Regular, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  scrollbar-color:#1d1d1d black;
+}
+
 ::placeholder {
   color: white;
   opacity: 1;
