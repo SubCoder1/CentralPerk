@@ -517,16 +517,16 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 else:
                     # store dm in convo field, to show later as send_to is not active
                     if signal == None:
-                        date, time = event['date_time'].split(',')
+                        date, time = date_time.split(',')
                         data = {
                             "msg": message, "convo_id": convo_id,
                             "date": date, "time":time, "msg_from": msg_from,
                         }
                         with transaction.atomic():
                             convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
-                            convo_obj.convo[convo_obj.convo_counter] = data
+                            convo_obj.convo[str(convo_obj.convo_counter)] = data
                             # sort convo for ordering
-                            convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))}
+                            convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo)}
                             convo_obj.convo_counter += 1
                             convo_obj.save()
                 # finally, update convo_obj date time so that it shows up on top 
@@ -583,9 +583,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 }
                 with transaction.atomic():
                     convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()
-                    convo_obj.convo[convo_obj.convo_counter] = data
+                    convo_obj.convo[str(convo_obj.convo_counter)] = data
                     # sort convo for ordering
-                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))} 
+                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo)} 
                     convo_obj.convo_counter += 1
                     convo_obj.save()
                 # send a notif to user that someone has sent a msg
