@@ -43,6 +43,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # fix session timeout of 10mins & schedule a monitoring task
             await self.update_session_exp_datetime()
         await self.add_channel_name_to_user(channel_name=self.channel_name)
+        # edge case for newly signed-up user
+        await self.update_session_exp_datetime()
 
     async def disconnect(self, close_code):
         # This code is useful against sudden refresh in landing page
