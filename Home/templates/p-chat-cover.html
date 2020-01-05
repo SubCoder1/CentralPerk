@@ -16,6 +16,13 @@
                                 <h6>{{ friend.user_b.full_name }}</h6>
                             </div>
                         </div>
+                        {% if friend.convo_counter %}
+                            {% if friend.convo.0.msg_from == friend.user_b.username %}
+                                <div class="unread-msg">
+                                    <h5 class="unread-msg-counter">{{ friend.convo_counter }}</h5>
+                                </div>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -34,6 +41,13 @@
                                 <h6>{{ friend.user_a.full_name }}</h6>
                             </div>
                         </div>
+                        {% if friend.convo_counter %}
+                            {% if friend.convo.0.msg_from == friend.user_a.username %}
+                                <div class="unread-msg">
+                                    <h5 class="unread-msg-counter">{{ friend.convo_counter }}</h5>
+                                </div>
+                            {% endif %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
