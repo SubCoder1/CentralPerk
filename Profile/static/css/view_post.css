@@ -33,6 +33,10 @@
     height: 47px;
     width: 90px;
     border-radius: 2.25rem !important;
+    -webkit-border-radius: 2.25rem !important;
+    -ms-border-radius: 2.25rem !important;
+    -moz-border-radius: 2.25rem !important;
+    -o-border-radius: 2.25rem !important;
     cursor: pointer;
 }
 
@@ -63,6 +67,11 @@
 
 .status-view {
     border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -o-border-radius: 1rem;
+    
     width: 100%;
     justify-content: center;
 }
@@ -72,6 +81,10 @@
     background: black;
     overflow: hidden;
     border-radius: 1.5rem 0rem 0rem 1.5rem;
+    -webkit-border-radius: 1.5rem 0rem 0rem 1.5rem;
+    -ms-border-radius: 1.5rem 0rem 0rem 1.5rem;
+    -moz-border-radius: 1.5rem 0rem 0rem 1.5rem;
+    -o-border-radius: 1.5rem 0rem 0rem 1.5rem;  
 }
 
 .potrait-hw {
@@ -84,6 +97,10 @@
 .post-pic-enlarged-view {
     width: 100%;
     border-radius: 1rem 0rem 0rem 1rem;
+    -webkit-border-radius: 1rem 0rem 0rem 1rem;
+    -ms-border-radius: 1rem 0rem 0rem 1rem;
+    -moz-border-radius: 1rem 0rem 0rem 1rem;
+    -o-border-radius: 1rem 0rem 0rem 1rem;  
 }
 
 .potrait-height {
@@ -95,7 +112,11 @@
 .wrap-data-view, .wrap-potrait-data-view {
     width: 415px;
     background: black;
-    border-radius: 0rem 1rem 1rem 0rem;    
+    border-radius: 0rem 1rem 1rem 0rem;
+    -webkit-border-radius: 0rem 1rem 1rem 0rem;
+    -ms-border-radius: 0rem 1rem 1rem 0rem;
+    -moz-border-radius: 0rem 1rem 1rem 0rem;
+    -o-border-radius: 0rem 1rem 1rem 0rem;    
 }
 
 .data-view-enlarged { 
@@ -298,6 +319,10 @@
 .post-view-like-btn {
     background: transparent;
     border-radius: 50% !important;
+    -webkit-border-radius: 50% !important;
+    -ms-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -o-border-radius: 50% !important;
     height: 39px;
     width: 40px;
     opacity: 1;
@@ -331,6 +356,10 @@
 
     .wrap-data-view { 
         border-radius: 0; 
+        -webkit-border-radius: 0;
+        -ms-border-radius: 0;
+        -moz-border-radius: 0;
+        -o-border-radius: 0;
         width: 100%;
     }
     .comment-input { width: 83%; }
@@ -349,14 +378,26 @@
 
     .wrap-img-view {
         border-radius: 1.5rem 1.5rem 0rem 0rem;
+        -webkit-border-radius: 1.5rem 1.5rem 0rem 0rem;
+        -ms-border-radius: 1.5rem 1.5rem 0rem 0rem;
+        -moz-border-radius: 1.5rem 1.5rem 0rem 0rem;
+        -o-border-radius: 1.5rem 1.5rem 0rem 0rem;
     }
 
     .post-pic-enlarged-view {
         border-radius: 0;
+        -webkit-border-radius: 0;
+        -ms-border-radius: 0;
+        -moz-border-radius: 0;
+        -o-border-radius: 0;
     }
 
     .wrap-data-view {
         border-radius: 0rem 0rem 2rem 2rem;
+        -webkit-border-radius: 0rem 0rem 2rem 2rem;
+        -ms-border-radius: 0rem 0rem 2rem 2rem;
+        -moz-border-radius: 0rem 0rem 2rem 2rem;
+        -o-border-radius: 0rem 0rem 2rem 2rem;
         width: 100%;
     }
 
