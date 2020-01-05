@@ -61,12 +61,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # like/Dislike posts from wall-posts
             if data_from_client['task'] == 'post_like':
                 post_id = data_from_client.get('post_id', None)
-                response = await self.like_post_from_wall(post_id=post_id)
-                await self.send(text_data=json.dumps({
-                    'type' : 'likes_count',
-                    'post_id' : post_id,
-                    'count' : response,
-                }))
+                if post_id is not None:
+                    await self.like_post_from_wall(post_id=post_id)
             # Post comments from wall-posts
             elif data_from_client['task'] == 'post_comment':
                 post_id = data_from_client.get('post_id', None)
@@ -193,7 +189,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 post.refresh_from_db()
                 # Notify the user whose post is being liked
                 send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-            return post.likes_count
         except Exception as e:
             print(str(e))
 
@@ -522,16 +517,16 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 else:
                     # store dm in convo field, to show later as send_to is not active
                     if signal == None:
-                        date, time = event['date_time'].split(',')
+                        date, time = date_time.split(',')
                         data = {
                             "msg": message, "convo_id": convo_id,
                             "date": date, "time":time, "msg_from": msg_from,
                         }
                         with transaction.atomic():
                             convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
-                            convo_obj.convo[convo_obj.convo_counter] = data
+                            convo_obj.convo[str(convo_obj.convo_counter)] = data
                             # sort convo for ordering
-                            convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))}
+                            convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo)}
                             convo_obj.convo_counter += 1
                             convo_obj.save()
                 # finally, update convo_obj date time so that it shows up on top 
@@ -588,9 +583,9 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 }
                 with transaction.atomic():
                     convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()
-                    convo_obj.convo[convo_obj.convo_counter] = data
+                    convo_obj.convo[str(convo_obj.convo_counter)] = data
                     # sort convo for ordering
-                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))} 
+                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo)} 
                     convo_obj.convo_counter += 1
                     convo_obj.save()
                 # send a notif to user that someone has sent a msg

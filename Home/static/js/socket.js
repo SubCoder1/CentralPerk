@@ -22,13 +22,8 @@ $(document).ready(function() {
 
     homeSocket.onmessage = function(server_response) {
         var data = JSON.parse(server_response.data);
-        // Update likes count for a particular post
-        if (data['type'] == 'likes_count') {
-            var post_id = '#' + data['post_id'];
-            $(post_id).children('.card-footer').children('.upper-row').children('.likes-counter').text(data['count']);
-        }
         // Update comment count for a particular post 
-        else if (data['type'] == 'comment_count') {
+        if (data['type'] == 'comment_count') {
             var post_id = '#' + data['post_id'];
             $(post_id).children('.card-footer').children('.upper-row').children('.comment-counter').text(data['count']);
         }
@@ -147,10 +142,34 @@ $(document).ready(function() {
     var $wall_post_like_btn = $('.wall-post-like');
     $wall_post_like_btn.on('click', function(event) {
         event.preventDefault();
-        var post_id = $(this).closest('.card').attr('id');
+        var $post_upper_row = $(this).closest('.upper-row');
+        var post_id = $post_upper_row.attr('id');
+        var activity = null;
+        if ($(this).children('.liked').length) {
+            // this post was previously being liked by user
+            // send dislike activity
+            var $liked_ico = $(this).children('.liked');
+            $liked_ico.removeClass('liked');
+            $liked_ico.addClass('unliked');
+            activity = "dislike";
+            
+            var post_likes = parseInt($post_upper_row.children('.likes-counter').text(), 10) - 1;
+            $post_upper_row.children('.likes-counter').text(post_likes.toString());
+        } else {
+            // this post was previously not being liked/disliked by user
+            // send like activity
+            var $liked_ico = $(this).children('.unliked');
+            $liked_ico.removeClass('unliked');
+            $liked_ico.addClass('liked');
+            activity = "like";
+            
+            var post_likes = parseInt($post_upper_row.children('.likes-counter').text(), 10) + 1;
+            $post_upper_row.children('.likes-counter').text(post_likes.toString());
+        }
         homeSocket.send(JSON.stringify({
             'task' : 'post_like',
             'post_id' : post_id,
+            'activity' : activity,
         }));
     });
 
@@ -171,11 +190,16 @@ $(document).ready(function() {
         event.preventDefault();
         var post_id = $(this).children('input').val();
         var comment = $(this).children('textarea').val();
-        homeSocket.send(JSON.stringify({
-            'task' : 'post_comment',
-            'post_id' : post_id,
-            'comment' : comment,
-        }));
+        if (/\S/.test(comment)) {
+            homeSocket.send(JSON.stringify({
+                'task' : 'post_comment',
+                'post_id' : post_id,
+                'comment' : comment,
+            }));
+            var $comment_counter = $(this).parent().siblings('.upper-row').children('.comment-counter');
+            var comment_count = parseInt($comment_counter.text(), 10) + 1;
+            $comment_counter.text(comment_count.toString());
+        }
         $(this).children('textarea').val("");
     });
 
