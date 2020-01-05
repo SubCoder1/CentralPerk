@@ -1,6 +1,12 @@
 .card::-webkit-scrollbar { width: 0 !important; }
 
+.card { scrollbar-color: #1d1d1d black; }
+
 .card-body::-webkit-scrollbar { width: 0 !important; }
+
+.card-body {
+    scrollbar-color: #1d1d1d black;
+}
 
 .refresh-btn-container {
     display: flex;
@@ -13,19 +19,19 @@
 .refresh-btn {
     height: 50px;
     width: 93px;
-    line-height: 2.3;
-    border: 1.2px solid mediumslateblue;
+    line-height: 2.1;
+    border: 2px solid mediumslateblue;
 }
 
 .refresh-btn:hover {
-    border: 1.2px solid mediumslateblue;
+    border: 2px solid mediumslateblue;
 }
 
 .refresh-loading-gif {
     position: absolute;
     display: block;
-    height: 50px;
-    width: 93px;
+    height: 47px;
+    width: 90px;
     border-radius: 2.25rem !important;
     cursor: pointer;
 }
@@ -46,6 +52,7 @@
     justify-content: center;
     align-items: center;
     padding: 20px;
+    margin-top: 5%;
 }
 
 .post-view, .potrait-view {
@@ -315,6 +322,10 @@
     .container-fluid,
     .post-view-container,
     .post-view, .post-view-container { padding: 0; }
+
+    .post-view-container {
+        margin-top: 15%;
+    }
 
     .status-view, .wrap-img-view, .post-pic-enlarged-view { border-radius: 0; }
 

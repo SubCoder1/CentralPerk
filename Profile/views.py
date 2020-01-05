@@ -7,7 +7,7 @@ from django.template.loader import render_to_string
 from django.db.models import F
 from django.core.files import File
 from django.contrib.sessions.models import Session
-from django.db import close_old_connections
+from django.db import close_old_connections, transaction
 from django.contrib.auth import logout
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm

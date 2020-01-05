@@ -20,9 +20,19 @@ body, html {
 	font-family: Poppins-Regular, sans-serif;
 }
 
+html {
+  scroll-behavior: smooth;
+  scrollbar-color:#1d1d1d black;
+}
+
 ::placeholder {
   color: white;
   opacity: 1;
+}
+
+::selection {
+  background: black;
+  color: white;
 }
 
 h1, h2, h3, h4, h5, h6 { color: white; }
@@ -120,13 +130,15 @@ input:focus:-ms-input-placeholder { color:transparent; }
   display: block;
   width: 320px;
   background: transparent;
-  border-bottom: 1.2px solid mediumspringgreen;
+  border-bottom: 2px solid mediumspringgreen;
   height: 50px;
   padding: 10px;
+  margin-bottom: 15px;
 }
 
 .password-margin {
   margin-top: 10px;
+  margin-bottom: 5px;
 }
 
 .login-error {
@@ -143,7 +155,8 @@ input:focus:-ms-input-placeholder { color:transparent; }
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  padding-top: 20px;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 .login100-form-btn {
@@ -154,7 +167,7 @@ input:focus:-ms-input-placeholder { color:transparent; }
   text-transform: uppercase;
   height: 50px;
   border-radius: 25px;
-  border: 1.2px solid mediumspringgreen;
+  border: 2px solid mediumspringgreen;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -167,11 +180,12 @@ input:focus:-ms-input-placeholder { color:transparent; }
   -o-transition: all 0.4s;
   -moz-transition: all 0.4s;
   transition: all 0.4s;
+  margin-bottom: 10px;
 }
 
 .login100-form-btn:hover {
   background: black;
-  border: 1.2px solid black;
+  border: 2px solid black;
 }
 
 .login-loading-gif {

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from django.db.models import F, Prefetch
+from django.db.models import F, Prefetch, Count, Q
 from django.db import close_old_connections
 from django.urls import reverse
 from django.contrib import messages
@@ -22,7 +22,8 @@ class home_view(TemplateView):
     def get(self, request):
         try:
             form = PostForm()
-            posts = request.user.connections.prefetch_related(Prefetch('saved_by')).select_related('user')
+            user = request.user
+            posts = user.connections.prefetch_related('saved_by', 'post_like_obj').annotate(liked=Count('post_like_obj', filter=Q(post_like_obj__user=user))).select_related('user')
             #notifications = request.user.notifications.select_related('poked_by', 'post')
             #followers, following = Friends.get_friends_list(current_user=request.user)
 

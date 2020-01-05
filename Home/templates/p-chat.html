@@ -47,7 +47,11 @@
                     <h6 class='p-chat-rec-txt'>{{ val.msg }}</h6>
                 </div>
             </div>
-            <h6 class='p-chat-rec-date-time'>{{ val.date_time }}</h6>
+            {% if date_now == val.date %}
+                <h6 class='p-chat-rec-date-time'>{{ val.time }}</h6>
+            {% else %}
+                <h6 class='p-chat-rec-date-time'>{{ val.date }}, {{ val.time }}</h6>
+            {% endif %}
         {% endfor %}
     {% else %}
         {% for key, val in friend.convo.items %}
@@ -56,7 +60,11 @@
                 <h6 class='p-chat-sent-txt'>{{ val.msg }}</h6>
             </div>
         </div>
-        <h6 class='p-chat-snd-date-time'>{{ val.date_time }}</h6>
+        {% if date_now == val.date %}
+            <h6 class='p-chat-snd-date-time'>{{ val.time }}</h6>
+        {% else %}
+            <h6 class='p-chat-snd-date-time'>{{ val.date }}, {{ val.time }}</h6>
+        {% endif %}
         {% endfor %}
     {% endif %}
 </div>

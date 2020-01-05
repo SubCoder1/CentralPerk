@@ -46,22 +46,18 @@
                 <div class="text-center p-t-12 edit-prof-error">
 			        <span class="txt1" id="form-error-prof-pic" style="color:orange;"></span>
 		        </div>
-                <br/>
                 <input class="input100 edit-prof-input" type="text" id="edit-username" name="username" value="{{ user.username }}" placeholder="Username" maxlength="20"/>
 		        <div class="text-center p-t-12 edit-prof-error">
 			        <span class="txt1" id="form-error-username" style="color:orange;"></span>
 		        </div>
-		        <br/>
                 <input class="input100 edit-prof-input" type="text" id="edit-fullname" name="full_name" value="{{ user.full_name }}" placeholder="Full Name" maxlength="50"/>
                 <div class="text-center p-t-12 edit-prof-error">
                     <span class="txt1" id="form-error-fullname" style="color:orange;"></span>
                 </div>
-                <br/>
                 <input class="input100 edit-prof-input" type="email" id="edit-email" name="email" value="{{ user.email }}" placeholder="Email" maxlength="254"/>
                 <div class="text-center p-t-12 edit-prof-error">
                     <span class="txt1" id="form-error-email" style="color:orange;"></span>
                 </div>
-                <br/>
                 <div class="date" data-provide="datepicker">
                     <input type="text" class="input100 edit-prof-input" id="edit-birthdate" name="birthdate" value="{{ user.birthdate }}" placeholder="Birthdate">
                     <div class="input-group-addon">
@@ -96,12 +92,12 @@
                 <div class="text-center p-t-12 edit-prof-error">
                     <span class="txt1" id="form-error-bio" style="color:orange;"></span>
                 </div>
-                <br/>
                 <div class="container-edit-prof-form-btn"> 
-					<button class="edit-prof-form-btn" id="edit-prof-btn" type="submit">update</button>
-                    <img class="edit-prof-loading-gif" id="edit-prof-loading-gif" src="{% static 'login/img/loading.gif' %}">
+					<button class="edit-prof-form-btn" id="edit-prof-btn" type="submit">
+                        update
+                        <img class="edit-prof-loading-gif" id="edit-prof-loading-gif" src="{% static 'login/img/loading.gif' %}">
+                    </button>
 				</div>
-                <br/>
             </form>
 		</div>
         <div class="tab-pane fade" id="change_pass" role="tabpanel" aria-labelledby="change_pass-tab">
@@ -111,17 +107,14 @@
 		        <div class="text-center p-t-12 edit-prof-error">
 			        <span class="txt1" id="form-error-old-pass" style="color:orange;"></span>
 		        </div>
-                <br/>
                 <input class="input100 edit-prof-input" type="password" id="edit-new-password1" name="new_password1" placeholder="New password"/>
 		        <div class="text-center p-t-12 edit-prof-error">
 			        <span class="txt1" id="form-error-new-pass1" style="color:orange;"></span>
 		        </div>
-                <br/>
                 <input class="input100 edit-prof-input" type="password" id="edit-new-password2" name="new_password2" placeholder="And Again!"/>
 		        <div class="text-center p-t-12 edit-prof-error">
 			        <span class="txt1" id="form-error-new-pass2" style="color:orange;"></span>
 		        </div>
-                <br/>
                 <div class="container-change-pass-btn"> 
 					<button class="change-pass-form-btn" id="change-pass-btn" type="submit">update</button>
                     <img class="change-pass-loading-gif" id="change-pass-loading-gif" src="{% static 'login/img/loading.gif' %}">
@@ -136,4 +129,5 @@
 {% block script %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script src="{% static 'js/edit_profile.js' %}"></script>
+<script src="{% static 'js/index.js' %}"></script>
 {% endblock %}

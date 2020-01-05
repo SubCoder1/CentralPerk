@@ -61,12 +61,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # like/Dislike posts from wall-posts
             if data_from_client['task'] == 'post_like':
                 post_id = data_from_client.get('post_id', None)
-                response = await self.like_post_from_wall(post_id=post_id)
-                await self.send(text_data=json.dumps({
-                    'type' : 'likes_count',
-                    'post_id' : post_id,
-                    'count' : response,
-                }))
+                if post_id is not None:
+                    await self.like_post_from_wall(post_id=post_id)
             # Post comments from wall-posts
             elif data_from_client['task'] == 'post_comment':
                 post_id = data_from_client.get('post_id', None)
@@ -133,7 +129,16 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 message = data_from_client.get('msg', None)
                 convo_id = data_from_client.get('convo_id', None)
                 date_time = data_from_client.get('date_time', None)
-                await self.send_msg(message=message, convo_id=convo_id, date_time=date_time)
+                signal = data_from_client.get('signal', None)
+                if date_time is not None:
+                    try:
+                        # date_time is only attached if msg is sent, format checking is done here!
+                        d_t = datetime.strptime(str(date_time), "%m/%d/%Y, %H:%M %p")
+                        await self.send_msg(message=message, convo_id=convo_id, date_time=date_time, signal=signal)
+                    except Exception as e:
+                        print(str(e))
+                else:
+                    await self.send_msg(message=message, convo_id=convo_id, date_time=date_time, signal=signal)
             # Get friends list
             elif data_from_client['task'] == 'get_friends_list':
                 await self.send_friends_list()
@@ -167,7 +172,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     def like_post_from_wall(self, post_id):
         user = self.scope['user']
         try:
-            post = PostModel.objects.get_post(post_id=post_id)
+            post = PostModel.objects.filter(post_id=post_id).prefetch_related(Prefetch('post_like_obj')).select_related('user').first()
             if post.post_like_obj.filter(user=user).exists():
                 # Dislike post
                 post.post_like_obj.filter(user=user).delete()
@@ -177,13 +182,13 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 post.refresh_from_db()
             else:
                 # Like post
-                post.post_like_obj.add(PostLikes.objects.create(post_obj=post, user=user))
+                post_like_obj = PostLikes.objects.create(post_obj=post, user=user)
+                post.post_like_obj.add(post_like_obj)
                 post.likes_count = F('likes_count') + 1
                 post.save()
                 post.refresh_from_db()
                 # Notify the user whose post is being liked
                 send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-            return post.likes_count
         except Exception as e:
             print(str(e))
 
@@ -458,6 +463,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     'friend':friend, 'user':self.scope['user'], 
                     'activity_status':f_activity_status,'unique_id':unique_id,
                     'convo_id':friend.id, 'unseen_dm' : clear_convo,
+                    'date_now': datetime.now().strftime("%m/%d/%Y") ,
                 }
                 await self.send(text_data=json.dumps({
                     'type' : 'p_chat_f_server',
@@ -481,34 +487,48 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print(str(e))
 
-    async def send_msg(self, message, convo_id, date_time, event=None):
+    async def send_msg(self, message, convo_id, date_time, signal, event=None):
         if convo_id is not None:
             # This will get the user to which the msg is to be sent
             convo_obj, send_to, msg_from = await self.get_active_convo_send_to(convo_id=convo_id)
             if convo_obj is not None:
                 if send_to.channel_name is not "":
                     channel_layer = get_channel_layer()
-                    # send the msg to user
-                    await channel_layer.send(send_to.channel_name, {
-                        "type" : "receive.msg",
-                        "msg" : message,
-                        "msg_from" : msg_from,
-                        "convo_id" : convo_obj.id,
-                        "date_time" : date_time,
-                    })
+                    # check if it's a signal (typing...) instead of msg
+                    if signal == 'typing...' and message is None and date_time is None:
+                        await channel_layer.send(send_to.channel_name, {
+                            "type" : "receive.msg",
+                            "signal" : "typing...",
+                            "msg_from" : msg_from,
+                            "convo_id" : convo_obj.id,
+                        })
+                    else:
+                        # It's a plain-old msg
+                        # send the msg to user
+                        unique_id = sha256(bytes(str(convo_obj.id), encoding='utf-8')).hexdigest()
+                        await channel_layer.send(send_to.channel_name, {
+                            "type" : "receive.msg",
+                            "msg" : message,
+                            "msg_from" : msg_from,
+                            "convo_id" : convo_obj.id,
+                            "date_time" : date_time,
+                            "unique_id" : unique_id,
+                        })
                 else:
                     # store dm in convo field, to show later as send_to is not active
-                    data = {
-                        "msg": message, "convo_id": convo_id,
-                        "date_time": date_time, "msg_from": msg_from,
-                    }
-                    with transaction.atomic():
-                        convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
-                        convo_obj.convo[convo_obj.convo_counter] = data
-                        # sort convo for ordering
-                        convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))}
-                        convo_obj.convo_counter += 1
-                        convo_obj.save()
+                    if signal == None:
+                        date, time = date_time.split(',')
+                        data = {
+                            "msg": message, "convo_id": convo_id,
+                            "date": date, "time":time, "msg_from": msg_from,
+                        }
+                        with transaction.atomic():
+                            convo_obj = Conversations.objects.filter(id=convo_id).select_for_update().first()
+                            convo_obj.convo[str(convo_obj.convo_counter)] = data
+                            # sort convo for ordering
+                            convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo)}
+                            convo_obj.convo_counter += 1
+                            convo_obj.save()
                 # finally, update convo_obj date time so that it shows up on top 
                 # of your & opp. user's p-chat-cover
                 await self.update_convo_obj(convo_id=convo_obj.id, clear_convo=False)
@@ -524,6 +544,15 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     'msg' : 'seen',
                     'convo_id' : event['convo_id'],
                 }))
+            elif event.get('signal', None) == 'typing...':
+                # It's a 'typing...' signal, send it quickly as result is also True
+                unique_id = sha256(bytes(str(event['convo_id']), encoding='utf-8')).hexdigest()
+                await self.send(text_data=json.dumps({
+                    'type' : 'p_chat_typing_signal',
+                    'msg' : 'typing...',
+                    'convo_id' : event['convo_id'],
+                    'unique_id' : unique_id,
+                }))
             else:
                 # It's an incoming msg!
                 # First, send the msg to this user         
@@ -532,6 +561,7 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                     'msg' : event['msg'],
                     'convo_id' : event['convo_id'],
                     'date_time' : event['date_time'],
+                    'unique_id' : event['unique_id'],
                 }))
                 # Then, send 'seen' signal to the opposite user
                 channel_layer = get_channel_layer()
@@ -545,16 +575,17 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
         else:
             # user is active but has different or no p-chat open. . . 
             # save this msg in convo_obj
-            if event.get('signal', None) != 'seen':
+            if event.get('signal', None) == None:
+                date, time = event['date_time'].split(',')
                 data = {
                     "msg": event['msg'], "convo_id": event['convo_id'],
-                    "date_time": event['date_time'], "msg_from": event['msg_from'],
+                    "date": date, "time":time, "msg_from": event['msg_from'],
                 }
                 with transaction.atomic():
                     convo_obj = Conversations.objects.filter(id=event['convo_id']).select_for_update().first()
-                    convo_obj.convo[convo_obj.convo_counter] = data
+                    convo_obj.convo[str(convo_obj.convo_counter)] = data
                     # sort convo for ordering
-                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo, key=lambda x: int(x))} 
+                    convo_obj.convo = {k : convo_obj.convo[k] for k in sorted(convo_obj.convo)} 
                     convo_obj.convo_counter += 1
                     convo_obj.save()
                 # send a notif to user that someone has sent a msg

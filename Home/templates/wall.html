@@ -21,7 +21,7 @@
 {% endif %}
 {% if posts %}
 {% for post in posts %}
-    <div class="card post-card index-post-card" id="{{ post.post_id }}">
+    <div class="card post-card index-post-card">
         <div class="card-header">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex justify-content-between align-items-center">
@@ -69,8 +69,16 @@
             </div>
         {% endif %}
         <div class="card-footer">
-            <div class="upper-row">
-                <a href="#" class="wall-post-like" style="float:left"><i class="fas fa-fire-alt home-like-ico"></i></a>
+            <div class="upper-row" id="{{ post.post_id }}" style="margin-bottom: 1%;">
+                {% if post.liked %}
+                    <a href="#" class="wall-post-like" style="float:left">
+                        <i class="fas fa-fire-alt home-like-ico liked"></i>
+                    </a>
+                {% else %}
+                    <a href="#" class="wall-post-like" style="float:left">
+                        <i class="fas fa-fire-alt home-like-ico unliked"></i>
+                    </a>
+                {% endif %}    
                 <span class="likes-counter">{{ post.likes_count }}</span>
                 <a href="{% url 'view_post' post.post_id %}"><i class="fas fa-comment-alt"></i></a>
                 <span class="comment-counter">{{ post.comment_count }}</span>
@@ -94,9 +102,7 @@
 {% endfor %}
 {% else %}
     <div class="empty-posts-section">
-        <br/><br/><br/>
         <i class="fas fa-ghost"></i>
-        <br/>
         <h5>Your wall is empty :(</h5>
     </div>
 {% endif %}
