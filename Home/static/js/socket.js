@@ -190,11 +190,16 @@ $(document).ready(function() {
         event.preventDefault();
         var post_id = $(this).children('input').val();
         var comment = $(this).children('textarea').val();
-        homeSocket.send(JSON.stringify({
-            'task' : 'post_comment',
-            'post_id' : post_id,
-            'comment' : comment,
-        }));
+        if (/\S/.test(comment)) {
+            homeSocket.send(JSON.stringify({
+                'task' : 'post_comment',
+                'post_id' : post_id,
+                'comment' : comment,
+            }));
+            var $comment_counter = $(this).parent().siblings('.upper-row').children('.comment-counter');
+            var comment_count = parseInt($comment_counter.text(), 10) + 1;
+            $comment_counter.text(comment_count.toString());
+        }
         $(this).children('textarea').val("");
     });
 
