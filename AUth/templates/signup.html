@@ -1,6 +1,11 @@
 {% extends 'login.html' %}
 {% load static %}
 
+{% block meta_description %}
+	<meta name="description" content="Create an account in CentralPerk, A social network application 
+	powered by WebSockets where you can upload photos & status, follow & chat with your friends!">
+{% endblock %}
+
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'signup/css/main.css' %}">
 {% endblock %}
