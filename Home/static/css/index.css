@@ -437,12 +437,19 @@ p { margin-bottom: 0; }
 .fa-fire-alt {
     font-size: 15px;
     vertical-align: middle;
-    color: orangered;
 }
 
 .home-like-ico {
     position: relative;
     top: 2px;
+}
+
+.liked {
+    color: orangered;
+}
+
+.unliked {
+    color: darkgrey;
 }
 
 .likes-counter {

@@ -61,12 +61,8 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             # like/Dislike posts from wall-posts
             if data_from_client['task'] == 'post_like':
                 post_id = data_from_client.get('post_id', None)
-                response = await self.like_post_from_wall(post_id=post_id)
-                await self.send(text_data=json.dumps({
-                    'type' : 'likes_count',
-                    'post_id' : post_id,
-                    'count' : response,
-                }))
+                if post_id is not None:
+                    await self.like_post_from_wall(post_id=post_id)
             # Post comments from wall-posts
             elif data_from_client['task'] == 'post_comment':
                 post_id = data_from_client.get('post_id', None)
@@ -193,7 +189,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
                 post.refresh_from_db()
                 # Notify the user whose post is being liked
                 send_notifications.delay(username=user.username, reaction="Liked", send_to_username=post.user.username, post_id=post_id)
-            return post.likes_count
         except Exception as e:
             print(str(e))
 
