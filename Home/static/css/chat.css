@@ -11,6 +11,21 @@
     border-radius: 0;
 }
 
+.unread-msg {
+    height: 8px;
+    width: 8px;
+    background: orangered;
+    border-radius: 25px;
+}
+
+.unread-msg-counter {
+    height: fit-content;
+    height: -moz-fit-content;
+    position: relative;
+    top: 7px;
+    right: 4px;
+}
+
 /* ------------ p-chat-user-card-(top) ------------- */
 .p-chat-upper-card-body {
     padding: 0;
