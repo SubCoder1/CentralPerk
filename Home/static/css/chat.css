@@ -9,6 +9,10 @@
 .msg-user-card:hover {
     border-bottom: 1.5px solid mediumslateblue;
     border-radius: 0;
+    -webkit-border-radius: 0;
+    -ms-border-radius: 0;
+    -moz-border-radius: 0;
+    -o-border-radius: 0;
 }
 
 .unread-msg {
@@ -16,6 +20,10 @@
     width: 8px;
     background: orangered;
     border-radius: 25px;
+    -webkit-border-radius: 25px;
+    -ms-border-radius: 25px;
+    -moz-border-radius: 25px;
+    -o-border-radius: 25px;
 }
 
 .unread-msg-counter {
@@ -74,6 +82,10 @@
     overflow-x: auto;
     resize: none;
     border-radius: 0rem;
+    -webkit-border-radius: 0rem;
+    -ms-border-radius: 0rem;
+    -moz-border-radius: 0rem;
+    -o-border-radius: 0rem;
     height: 45px;
     float: left;
     width: 91%;
@@ -92,6 +104,10 @@
 
 .p-chat-snd-btn, .p-chat-snd-btn:focus {
     border-radius: 50% !important;
+    -webkit-border-radius: 50% !important;
+    -ms-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -o-border-radius: 50% !important;
     height: 39px;
     width: 40px;
     background: mediumslateblue;
@@ -124,6 +140,10 @@
     width: -moz-fit-content;
     background: mediumslateblue;     /* Default for sent msg */
     border-radius: 2rem;
+    -webkit-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -o-border-radius: 2rem;
 }
 
 .rec-txt-wrapper { 
