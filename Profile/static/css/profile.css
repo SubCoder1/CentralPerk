@@ -36,7 +36,7 @@
 	70%   { transform:rotateZ(15deg); }
 	80%   { transform:rotateZ(30deg); }
 	90%   { transform:rotateZ(15deg); }
-	100%  { transform:rotateZ(30deg); }
+  100%  { transform:rotateZ(30deg); }
 }
 
 @-webkit-keyframes pencil {
@@ -172,6 +172,10 @@
   flex: 0 0 auto;
   margin: 5px;
   border-radius: 0;
+  -webkit-border-radius: 0;
+  -ms-border-radius: 0;
+  -moz-border-radius: 0;
+  -o-border-radius: 0;
   transition: transform 0.1s;
 }
 
@@ -258,6 +262,10 @@
 /* ------------- Profile Pic --------------- */
 .profile-pic-rounded {
     border-radius: 50%!important;
+    -webkit-border-radius: 50% !important;
+    -ms-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -o-border-radius: 50% !important;
     overflow: hidden;
     height: 110px;
 }

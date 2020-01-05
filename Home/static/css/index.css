@@ -41,7 +41,7 @@ input {
 }
 
 ::selection {
-    background: #1d1d1d;
+    background: black;
     color: white;
 }
 
@@ -59,9 +59,15 @@ input {
 .come-in {
     transform: translateY(150px);
     animation: come-in 0.8s ease forwards;
+    -webkit-animation: come-in 0.8s ease forwards;
+    -moz-animation: come-in 0.8s ease forwards;
+    -o-animation: come-in 0.8s ease forwards;
 }
 .come-in:nth-child(odd) {
     animation-duration: 0.6s; /* So they look staggered */
+    -webkit-animation-duration: 0.6s;
+    -moz-animation-duration: 0.6s;
+    -o-animation-duration: 0.6s;
 }
   
 @keyframes come-in {
@@ -89,6 +95,10 @@ button:focus { outline: none; }
 .btn-dark {
     background: mediumslateblue;
     border-radius: 2.25rem;
+    -webkit-border-radius: 2.25rem;
+    -ms-border-radius: 2.25rem;
+    -moz-border-radius: 2.25rem;
+    -o-border-radius: 2.25rem;
     color: white;
     border: none;
     outline: none;
@@ -128,6 +138,9 @@ h6 { font-size: 11.2px; }
     width: 100%;
     height: 100%;
     transition: 1s;
+    -webkit-transition: 1s;
+    -o-transition: 1s;
+    -moz-transition: 1s;
     z-index: 999;
 }
 /* ----------------------------------------------- */
@@ -149,6 +162,9 @@ h6 { font-size: 11.2px; }
     overflow: hidden;
     display: none;
     transition: height 1s;
+    -webkit-transition: height 1s;
+    -o-transition: height 1s;
+    -moz-transition: height 1s;
 }
 
 .p-chat-notif-indicator {
@@ -193,6 +209,10 @@ h6 { font-size: 11.2px; }
 
 .alert {
     border-radius: 2rem;
+    -webkit-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -o-border-radius: 2rem;
     margin-bottom: 0rem;
     color: white;
     transition: all 0.3s;
@@ -286,6 +306,10 @@ h6 { font-size: 11.2px; }
     left: -10px;
     text-align: center;
     border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -o-border-radius: 1rem;
 }
 
 .dropdown-item { color: white; }
@@ -357,6 +381,10 @@ h6 { font-size: 11.2px; }
 /* ------- input form control (status box) ------- */
 .form-control {
     border-radius: 0rem;
+    -webkit-border-radius: 0rem;
+    -ms-border-radius: 0rem;
+    -moz-border-radius: 0rem;
+    -o-border-radius: 0rem;
     background-color: #1d1d1d;
     color: white;
     border: none;
@@ -381,7 +409,11 @@ h6 { font-size: 11.2px; }
 /* ----------------- post card ------------------- */
 .post-card {
     background: black;
-    border-radius: 1.00rem;
+    border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -o-border-radius: 1rem;
 }
 
 .index-post-card {
@@ -512,7 +544,11 @@ p { margin-bottom: 0; }
     font-size: 13px;
     overflow-x: auto;
     resize: none;
-    border-radius: 0rem;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -ms-border-radius: 0;
+    -moz-border-radius: 0;
+    -o-border-radius: 0;
     height: 45px;
     float: left;
     width: 92%;
@@ -532,6 +568,10 @@ p { margin-bottom: 0; }
 
 .comment-send-btn {
     border-radius: 50% !important;
+    -webkit-border-radius: 50% !important;
+    -ms-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -o-border-radius: 50% !important;
     height: 39px;
     width: 40px;
     background: #cb0972;
@@ -575,7 +615,11 @@ p { margin-bottom: 0; }
     position: sticky;
     top: 10%;
     background: black;
-    border-radius: 1.00rem;
+    border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -o-border-radius: 1rem;
     width: 100%;
     height: 220px;
     margin-top: 15%;
@@ -594,6 +638,10 @@ p { margin-bottom: 0; }
     width: 40px;
     border: none;
     border-radius: 50% !important;
+    -webkit-border-radius: 50% !important;
+    -ms-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -o-border-radius: 50% !important;
     margin-left: 5px;
 }
 
@@ -621,6 +669,10 @@ p { margin-bottom: 0; }
     height: 5px;
     width: 5px;
     border-radius: 50% !important;
+    -webkit-border-radius: 50% !important;
+    -ms-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -o-border-radius: 50% !important;
     background: red;
     margin-left: 1px;
 }
@@ -718,6 +770,10 @@ p { margin-bottom: 0; }
 .modal-content {
     background: #1d1d1d;
     border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -o-border-radius: 1rem;
 }
 
 .modal-body {
@@ -792,7 +848,11 @@ p { margin-bottom: 0; }
 
 .notification {
     background: #1d1d1d;
-    border-radius: 1.00rem;
+    border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -o-border-radius: 1rem;
     margin: 2px;
     -webkit-transition: all 0.4s;
     -o-transition: all 0.4s;
@@ -806,10 +866,18 @@ p { margin-bottom: 0; }
     padding-right: 12px;
     padding-bottom: 12px;
     border-radius: 25px;
+    -webkit-border-radius: 25px;
+    -ms-border-radius: 25px;
+    -moz-border-radius: 25px;
+    -o-border-radius: 25px;
 }
 
 .notify-pic-rounded {
     border-radius: 50%!important;
+    -webkit-border-radius: 50% !important;
+    -ms-border-radius: 50% !important;
+    -moz-border-radius: 50% !important;
+    -o-border-radius: 50% !important;
     overflow: hidden;
     height: 32px;
 }
@@ -899,6 +967,10 @@ p { margin-bottom: 0; }
     background: transparent;
     border: 5px solid #161515;
     border-radius: 2rem;
+    -webkit-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -o-border-radius: 2rem;
 }
 
 #img-btn-custom {
@@ -922,6 +994,10 @@ p { margin-bottom: 0; }
     max-width: 100%;
     height: 100%;
     border-radius: 1rem;
+    -webkit-border-radius: 1rem;
+    -ms-border-radius: 1rem;
+    -moz-border-radius: 1rem;
+    -o-border-radius: 1rem;
     display: none;
     cursor: pointer;
 }
@@ -1024,6 +1100,10 @@ p { margin-bottom: 0; }
 
     .stories-block {
         border-radius: 0;
+        -webkit-border-radius: 0;
+        -ms-border-radius: 0;
+        -moz-border-radius: 0;
+        -o-border-radius: 0;
     }
 
     .navbar {
@@ -1031,7 +1111,11 @@ p { margin-bottom: 0; }
     }
 
     .post-card {
-        border-radius: 0rem;
+        border-radius: 0;
+        -webkit-border-radius: 0;
+        -ms-border-radius: 0;
+        -moz-border-radius: 0;
+        -o-border-radius: 0;
     }
 
     .post-container {

@@ -177,7 +177,7 @@ $(document).ready(function() {
     var $post_bookmark = $('.lnr-bookmark');
     $post_bookmark.on("click", function(event) {
         event.preventDefault();
-        var post_id = $(this).closest('.card').attr('id');
+        var post_id = $(this).closest('.card-header').siblings('.card-footer').children('.upper-row').attr('id');
         homeSocket.send(JSON.stringify({
             'task' : 'save_unsave_post',
             'post_id' : post_id,
