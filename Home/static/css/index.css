@@ -116,6 +116,10 @@ h6 { font-size: 11.2px; }
     flex-direction: column;
 }
 
+.landing-pg-container {
+    overflow-x: hidden;
+}
+
 /* ------------ flex-items-container ------------- */
 .loader {
     position: fixed;
