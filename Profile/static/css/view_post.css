@@ -362,12 +362,13 @@
 
     .potrait-hw {
         width: unset;
+        height: unset;
     }
 
     .potrait-height {
         height: unset;
     }
-    
+
     .wrap-potrait-data-view {
         width: unset;
         border-radius: 0;
@@ -401,6 +402,7 @@
 
     .potrait-hw {
         width: unset;
+        height: unset;
     }
 
     .potrait-height {
