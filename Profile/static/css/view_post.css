@@ -332,6 +332,10 @@
 .liked { color: orangered; }
 .disliked { color: darkgrey; }
 
+#likes_count {
+    font-size: 17px;
+}
+
 .post-view-like-btn:hover {
     background-color: black;
     border-color: black;
@@ -357,7 +361,10 @@
 
     .wrap-potrait-data-view {
         width: 100%;
+    }
 
+    #likes_count {
+        font-size: 15px;
     }
 
     .potrait-hw {
