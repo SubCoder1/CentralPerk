@@ -360,6 +360,23 @@
 
     }
 
+    .potrait-hw {
+        width: unset;
+    }
+
+    .potrait-height {
+        height: unset;
+    }
+    
+    .wrap-potrait-data-view {
+        width: unset;
+        border-radius: 0;
+         -webkit-border-radius: 0;
+        -ms-border-radius: 0;
+        -moz-border-radius: 0;
+        -o-border-radius: 0;
+    }
+
     .wrap-data-view { 
         border-radius: 0; 
         -webkit-border-radius: 0;
