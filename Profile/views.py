@@ -12,7 +12,10 @@ from django.contrib.auth import logout
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
 from Profile.models import User, UserBlockList, Friends, Account_Settings
-from Profile.tasks import update_user_acc_settings, create_or_update_convo_obj
+from Profile.tasks import (
+    update_user_acc_settings, create_or_update_convo_obj,
+    block_user
+)
 from Home.models import PostModel, PostComments, PostLikes, Conversations
 from Home.tasks import send_notifications, del_notifications, share_post_to_users
 from Home.forms import CommentForm
@@ -58,15 +61,7 @@ def manage_relation(request, username, option=None):
             if option == 'block':
                 if not curr_user_block_obj.blocked_user.filter(username=follow_unfollow_user.username).exists():
                     # block the user
-                    # delete relationship from both end!
-                    Friends.unfollow(current_user, follow_unfollow_user)
-                    Friends.unfollow(follow_unfollow_user, current_user)
-                    curr_user_block_obj.blocked_user.add(follow_unfollow_user)
-                    # in case, user requested to follow then blocked em
-                    # private account corner case
-                    Friends.rm_from_pending(current_user, follow_unfollow_user)
-                    Friends.rm_from_pending(follow_unfollow_user, current_user)
-                    del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
+                    block_user.delay(current_user.username, follow_unfollow_user.username)
                     result['option'] = 'Unblock'
             else:
                 if curr_user_block_obj.blocked_user.filter(username=follow_unfollow_user.username).exists():
@@ -241,7 +236,9 @@ def post_view(request, post_id):
     """
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
-        if post_obj is None:
+        post_user_block_obj = UserBlockList.objects.filter(current_user=post_obj.user).first()
+
+        if post_obj is None or post_user_block_obj.blocked_user.filter(username=request.user.username).exists():
             return render(request, 'post_500.html', {})
         else:
             if post_obj.user != request.user:
