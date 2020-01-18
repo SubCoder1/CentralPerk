@@ -163,32 +163,65 @@ $(window).on("load", function(){
         }
     });
 
-    // handle follow unfollow request response using ajax
-    var $follow_unfollow_user = $('.follow_unfollow_user');
+    // handle follow/unfollow request/response using ajax
     var $follower_count = $('#follower_count');
     var $following_count = $('#following_count');
     var $prof_posts = $('#prof-posts');
-    $follow_unfollow_user.on('click', function(event) {
+    $('.edit-prof-link').on('click', '.follow_unfollow_user', function(event) {
         event.preventDefault();
         $.ajax({
-            url : window.location.href + "/" + $follow_unfollow_user.attr('id'),
+            url : window.location.href + "/" + $(this).attr('id'),
             type : "POST",
             data : {
                 csrfmiddlewaretoken : csrftoken,
-                option : $(this).attr('id'),
+                option : $('.follow_unfollow_user').attr('id'),
             },
             complete : function(response) {
-                $follow_unfollow_user.text(response.responseJSON["option"]);
+                $('.follow_unfollow_user').text(response.responseJSON["option"]);
                 if (response.responseJSON['option'] == 'Requested') {
-                    $follow_unfollow_user.attr('id', 'unfollow');    
+                    $('.follow_unfollow_user').attr('id', 'unfollow');    
                 } else {
-                    $follow_unfollow_user.attr('id', response.responseJSON["option"].toLowerCase());
+                    $('.follow_unfollow_user').attr('id', response.responseJSON["option"].toLowerCase());
                 }
-                $follower_count.text(response.responseJSON["follower_count"]);
-                $following_count.text(response.responseJSON["following_count"]);
+                var follower_count = parseInt($('#follower_count').text(), 10);
+                if (response.responseJSON['option'] == 'Unfollow') {
+                    $follower_count.text((follower_count+1).toString());
+                } else if (response.responseJSON['option'] == 'Follow') {
+                    if (follower_count) {
+                        $follower_count.text((follower_count-1).toString());
+                    }
+                }
+
                 if (response.responseJSON['prof_posts']) {
                     $prof_posts.html(response.responseJSON['prof_posts']);
                 }
+            }
+        });
+    });
+
+    // handle block/unblock request/response using ajax
+    var $block_unblock_user = $('.block_unblock_user');
+    $block_unblock_user.on('click', function(event) {
+        event.preventDefault();
+        var option = $block_unblock_user.attr('id');
+        if ($block_unblock_user.attr('id') == 'block') {
+            $block_unblock_user.attr('id', 'unblock');
+            $block_unblock_user.text("Unblock");
+            $('.follow_unfollow_user').remove();
+        } else {
+            $block_unblock_user.attr('id', 'block');
+            $block_unblock_user.text("Block");
+            $block_unblock_user.parent().append("<a class='btn btn-dark follow_unfollow_user' href='#' id='follow'>Follow</a>");
+        }
+        $.ajax({
+            url : window.location.href + "/" + option,
+            type : "POST",
+            data : {
+                csrfmiddlewaretoken : csrftoken,
+            },
+            complete : function(response) {
+                $follower_count.text(response.responseJSON['follower_count']);
+                $following_count.text(response.responseJSON['following_count']);
             }
         });
     });

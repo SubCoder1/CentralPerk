@@ -105,6 +105,8 @@ input:focus:-ms-input-placeholder { color:transparent; }
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;
+  margin-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 /*------------------ headline ------------------*/

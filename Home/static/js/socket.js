@@ -247,8 +247,7 @@ $(document).ready(function() {
     });
 
     // Accept/Reject private friend requests
-    var $accept_request = $('.accept-request');
-    $accept_request.on('click', function(event) {
+    $notif_wrapper.on('click', '.accept-request', function(event) {
         event.preventDefault();
         homeSocket.send(JSON.stringify({
             'task' : 'accept_reject_p_request',
@@ -257,8 +256,7 @@ $(document).ready(function() {
         }));
         $(this).parent().parent().parent().fadeOut(300, function(){ $(this).remove();});;
     });
-    var $reject_request = $('.reject-request');
-    $reject_request.on('click', function(event) {
+    $notif_wrapper.on('click', '.reject-request', function(event) {
         event.preventDefault();
         homeSocket.send(JSON.stringify({
             'task' : 'accept_reject_p_request',

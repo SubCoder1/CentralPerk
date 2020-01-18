@@ -11,8 +11,11 @@ from django.db import close_old_connections, transaction
 from django.contrib.auth import logout
 from AUth.tasks import check_username_validity, check_email_validity, check_fullname_validity
 from Profile.forms import NonAdminChangeForm, CustomPasswordChangeForm
-from Profile.models import User, Friends, Account_Settings
-from Profile.tasks import update_user_acc_settings, create_or_update_convo_obj
+from Profile.models import User, UserBlockList, Friends, Account_Settings
+from Profile.tasks import (
+    update_user_acc_settings, create_or_update_convo_obj,
+    block_user
+)
 from Home.models import PostModel, PostComments, PostLikes, Conversations
 from Home.tasks import send_notifications, del_notifications, share_post_to_users
 from Home.forms import CommentForm
@@ -35,9 +38,12 @@ def manage_relation(request, username, option=None):
     try:
         current_user = request.user
         follow_unfollow_user = User.get_user_obj(username=username)
+        if current_user == follow_unfollow_user:
+            return
+        curr_user_block_obj = UserBlockList.objects.filter(current_user=current_user).first()
         user_acc_settings = Account_Settings.objects.get(user=follow_unfollow_user)
         result = {}
-        if option in ('follow', 'follow_back'):
+        if option in ('follow', 'follow_back') and not curr_user_block_obj.blocked_user.filter(username=follow_unfollow_user.username).exists():
             if user_acc_settings.private_acc:
                 send_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username, private_request=True)
                 Friends.add_to_pending(current_user, follow_unfollow_user)
@@ -51,7 +57,20 @@ def manage_relation(request, username, option=None):
                 # share two of follow_unfollow_user's recent posts *(if any) to request.user's wall
                 share_post_to_users.delay(username=follow_unfollow_user.username, send_to=[str(current_user.username)], to_wall=True)
                 result["option"] = 'Unfollow'
-        else:
+        elif option in ('block', 'unblock'):
+            if option == 'block':
+                if not curr_user_block_obj.blocked_user.filter(username=follow_unfollow_user.username).exists():
+                    # block the user
+                    block_user.delay(current_user.username, follow_unfollow_user.username)
+                    result['option'] = 'Unblock'
+            else:
+                if curr_user_block_obj.blocked_user.filter(username=follow_unfollow_user.username).exists():
+                    # unblock the user
+                    curr_user_block_obj.blocked_user.remove(follow_unfollow_user)
+                    result['option'] = 'Block'
+            friend = Friends.objects.get(current_user=follow_unfollow_user)
+            result["follower_count"], result["following_count"] = friend.followers.count(), friend.following.count()
+        elif option == 'unfollow':
             Friends.unfollow(current_user, follow_unfollow_user)
             if user_acc_settings.private_acc:
                 # To deny users to view posts of they just unfollowed.
@@ -64,9 +83,7 @@ def manage_relation(request, username, option=None):
             del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
             create_or_update_convo_obj.delay(current_user.username, follow_unfollow_user.username, 'unfollow')
             result["option"] = 'Follow'
-        
-        friend = Friends.objects.get(current_user=follow_unfollow_user)
-        result["follower_count"], result["following_count"] = friend.followers.count(), friend.following.count()
+
         return HttpResponse(json.dumps(result), content_type="application/json")
     except Exception as e:
         print(str(e))
@@ -126,6 +143,20 @@ def view_profile(request, username=None):
             user, editable = (request.user, True) if username == request.user.username else (User.objects.get(username=username), False)
         except ObjectDoesNotExist:
             return render(request, 'profile_500.html', {})
+        
+        # check if request.user is being blocked by the user's profile he/she's trying to view
+        # if request.user is not username
+        isBlocked = None
+        if not editable:
+            user_block_obj = UserBlockList.objects.get(current_user=user)
+            isBlocked = user_block_obj.blocked_user.filter(username=request.user.username).exists()
+            if isBlocked:
+                # This user has blocked request.user, return to home page
+                return redirect(reverse('user_login'))
+            # check if request.user has blocked user or not
+            user_block_obj = UserBlockList.objects.get(current_user=request.user)
+            isBlocked = user_block_obj.blocked_user.filter(username=user.username).exists()
+        
 
         current_user= Friends.objects.get(current_user=user)
         isFollower, isFollowing, isPending, follow_count, follower_count = None, None, None, 0, 0
@@ -147,7 +178,7 @@ def view_profile(request, username=None):
 
         # Get user account settings
         user_acc_settings = Account_Settings.objects.get(user=user)
-        if user != request.user:
+        if not editable:
             # if account_settings of the user is set to Private, then request.user can only see user's photos or vidoes
             # iff isFollowing is True
             if user_acc_settings.private_acc:
@@ -185,7 +216,8 @@ def view_profile(request, username=None):
         context = { 'profile':user, 'posts':user_posts, 'user_posts_count':user_posts_count, 
                     'saved_posts':saved_posts, 'editable':editable, 'isFollowing':isFollowing, 
                     'isFollower': isFollower, 'isPending':isPending, 'follow_count':follow_count, 
-                    'follower_count':follower_count, 'private_msg':show_private_msg }
+                    'follower_count':follower_count, 'private_msg':show_private_msg, 'isBlocked':isBlocked,
+                }
 
         return render(request, 'profile.html', context=context)
     except Exception as e:
@@ -204,7 +236,9 @@ def post_view(request, post_id):
     """
     try:
         post_obj = PostModel.objects.get_post(post_id=post_id)
-        if post_obj is None:
+        post_user_block_obj = UserBlockList.objects.filter(current_user=post_obj.user).first()
+
+        if post_obj is None or post_user_block_obj.blocked_user.filter(username=request.user.username).exists():
             return render(request, 'post_500.html', {})
         else:
             if post_obj.user != request.user:
