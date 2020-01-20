@@ -10,7 +10,7 @@
 {% endblock %}
 
 {% block body %}
-	<h1 class="headline">Say Hello!</h1>
+	<h1 class="headline" style="top: 10px;">Say Hello!</h1>
 	<form method="POST" class="register-form" autocomplete="off">
 		{% csrf_token %}
 		<input class="input100 register-input" type="text" id="register-username" name="username" aria-label="username" placeholder="Username" maxlength="20"/>
