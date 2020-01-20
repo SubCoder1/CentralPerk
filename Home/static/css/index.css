@@ -613,7 +613,6 @@ p { margin-bottom: 0; }
 .stories-block {
     position: -webkit-sticky;
     position: sticky;
-    top: 10%;
     background: black;
     border-radius: 1rem;
     -webkit-border-radius: 1rem;
