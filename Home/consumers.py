@@ -5,7 +5,7 @@ from django.db.models import F, Count, Prefetch, Q
 from django.db import close_old_connections, transaction
 from django.contrib.sessions.models import Session
 from channels.layers import get_channel_layer
-from Profile.models import User, Friends
+from Profile.models import User, Friends, UserBlockList
 from Profile.tasks import create_or_update_convo_obj
 from Home.models import PostModel, PostLikes, PostComments, UserNotification, Conversations
 from Home.tasks import (
@@ -175,10 +175,11 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
     def like_post_from_wall(self, post_id):
         user = self.scope['user']
         try:
-            post_obj = PostModel.objects.filter(post_id=post_id).prefetch_related(Prefetch('post_like_obj')).select_related('user').first()
-            post_user_block_obj = UserBlockList.objects.filter(current_user=post_obj.user).first()
+            post = PostModel.objects.filter(post_id=post_id).prefetch_related(Prefetch('post_like_obj')).select_related('user').first()
+            post_user_block_obj = UserBlockList.objects.filter(current_user=post.user).first()
             # check if user's not being blocked by post.user
             if not post_user_block_obj.blocked_user.filter(username=user.username).exists():
+                print("waah bc")
                 if post.post_like_obj.filter(user=user).exists():
                     # Dislike post
                     post.post_like_obj.filter(user=user).delete()
