@@ -6,7 +6,7 @@ from django.db import close_old_connections
 from django.core.files import File
 from django.conf import settings
 from Profile.models import Friends
-from Profile.models import User, Friends, Account_Settings
+from Profile.models import User, Friends, Account_Settings, UserBlockList
 from AUth.forms import Registerform
 from AUth.tasks import (
     update_user_activity_on_login, update_user_activity_on_logout, 
@@ -83,6 +83,7 @@ def register_user(request):
                         login(request, user)
                         Account_Settings.objects.create(user=user)
                         Friends.objects.create(current_user=user)
+                        UserBlockList.objects.create(current_user=user)
                         default_img = None
                         if gender in ['Male', 'male', 'MALE']:
                             default_img = Image.open(settings.STATIC_ROOT + '/signup/img/default.jpeg')
