@@ -40,7 +40,7 @@ class PostModel(models.Model):
     unique_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     post_id = models.CharField(max_length=10, editable=False, default='', db_index=True)
     date_time = models.DateTimeField(auto_now_add=True)
-    status_caption = models.CharField(max_length=500, blank=True)
+    status_caption = models.CharField(max_length=2500, blank=True)
     location = models.CharField(max_length=200, blank=True)
     pic = models.ImageField(upload_to=pic_directory_path, blank=True)
     pic_thumbnail = models.ImageField(upload_to=thumb_directory_path, blank=True)
