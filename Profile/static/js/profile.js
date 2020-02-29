@@ -258,7 +258,7 @@ $(window).on("load", function(){
     if ($prof_posts.prop('offsetHeight') < $prof_posts.prop('scrollHeight') || 
         $prof_posts.prop('offsetWidth') < $prof_posts.prop('scrollWidth')) {
         // Profile post container is overflowing, increase height
-        var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 8;
+        var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 10;
         $prof_posts.css("height", change_height+"em");
     }
     
