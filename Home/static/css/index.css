@@ -76,6 +76,8 @@ input {
 
 .card::-webkit-scrollbar { width: 0 !important; }
 
+.index-post-card-body::-webkit-scrollbar { width: 0 !important; }
+
 .card {
     scrollbar-color: #1d1d1d black;
 }
