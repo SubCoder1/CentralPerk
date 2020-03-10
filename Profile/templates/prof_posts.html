@@ -4,10 +4,10 @@
         {% if post.status_caption and not post.pic_thumbnail %}
         <div class="card prof-post-card">
         {% else %}
-        <div class="card prof-post-card" style="height: {{post.pic_thumbnail.height}}px; width: {{post.pic_thumbnail.width}}px">
+        <div class="card prof-post-card">
         {% endif %}
     {% else %}
-        <div class="card prof-post-card" style="height: {{post.pic_thumbnail.height}}px; width: {{post.pic_thumbnail.width}}px">
+        <div class="card prof-post-card">
     {% endif %}
         {% if post.status_caption and not post.pic_thumbnail %}
             <a href="{% url 'view_post' post.post_id %}" class="card-body display-3 prof-post-card-body" id="status_caption-container">

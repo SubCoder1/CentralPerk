@@ -156,7 +156,7 @@
 #prof-posts, #saved-posts {
   display: flex;
   flex-flow: column wrap;
-  height: 16em;
+  height: 26em;
   width: 58em;
   align-content: start;
 }
@@ -293,6 +293,7 @@ a:hover span {
 
 .about-profile {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   width: 100%;
 }
