@@ -61,6 +61,15 @@ class User(AbstractBaseUser):
 def submission_delete(sender, instance, **kwargs):
     instance.profile_pic.delete(False)
 
+class UserBlockList(models.Model):
+    current_user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user_block_list')
+    blocked_user = models.ManyToManyField(User, related_name='blocked_users')
+    
+    objects = models.Manager()
+
+    def __str__(self):
+        return str(self.current_user) + "blocked_users_obj"
+
 POST_NOTIF_CHOICES = (('Disable', 'Disable'), ('From People I Follow', 'From People I Follow'), ('From Everyone', 'From Everyone'))
 class Account_Settings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="user_setting")

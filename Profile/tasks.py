@@ -3,8 +3,11 @@ from celery import shared_task
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import close_old_connections, transaction
 from django.db.models import Q
-from Profile.models import User, Account_Settings, Friends
-from Home.models import Conversations
+from channels.layers import get_channel_layer
+from asgiref.sync import AsyncToSync
+from Profile.models import User, Account_Settings, Friends, UserBlockList
+from Home.models import Conversations, PostModel
+from Home.tasks import del_notifications
 from datetime import datetime
 import pytz
 
@@ -34,6 +37,38 @@ def update_user_acc_settings(username, data):
         return 'User object not found :('
     except:
         return 'User account settings was not successfully updated :('
+    finally:
+        close_old_connections()
+
+@shared_task
+def block_user(current_user_username, follow_unfollow_username):
+    try:
+        current_user = User.get_user_obj(username=current_user_username)
+        curr_user_block_obj = UserBlockList.objects.filter(current_user=current_user).first()
+        follow_unfollow_user = User.get_user_obj(username=follow_unfollow_username)
+        # block the user
+        # delete relationship from both end!
+        Friends.unfollow(current_user, follow_unfollow_user)
+        Friends.unfollow(follow_unfollow_user, current_user)
+        # add follow_unfollow_user to block list
+        curr_user_block_obj.blocked_user.add(follow_unfollow_user)
+        # delete convo_obj
+        create_or_update_convo_obj.delay(current_user.username, follow_unfollow_user.username, 'delete')
+        # in case, user requested to follow then blocked em
+        # private account corner case
+        Friends.rm_from_pending(current_user, follow_unfollow_user)
+        Friends.rm_from_pending(follow_unfollow_user, current_user)
+        # delete any posts from blocked user's wall
+        follow_unfollow_user.connections.remove(*PostModel.objects.filter(user=current_user))
+        current_user.connections.remove(*PostModel.objects.filter(user=follow_unfollow_user))
+        if follow_unfollow_user.channel_name is not "":
+            channel_layer = get_channel_layer()
+            AsyncToSync(channel_layer.send)(follow_unfollow_user.channel_name, { "type" : "update.wall" })
+        del_notifications.delay(username=current_user.username, reaction="Sent Follow Request", send_to_username=follow_unfollow_user.username)
+
+        return "User blocked successfully :)"
+    except Exception as e:
+        print(str(e))
     finally:
         close_old_connections()
 

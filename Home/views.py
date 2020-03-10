@@ -59,6 +59,8 @@ class home_view(TemplateView):
                         # Now save the thumbnail into model's pic_thumbnail
                         # create a django-friendly Files object
                         post.pic_thumbnail = File(im_io, name=f"thumb_{str(post.unique_id)}.jpg")
+                    else:
+                        post.pic_thumbnail = post.pic
                 post.save()
                 
                 post.send_to.add(request.user)

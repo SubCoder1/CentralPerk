@@ -181,7 +181,7 @@ def del_notifications(reaction, username=None, send_to_username=None, post_id=No
         query = None
         if reaction == 'Comment':
             query = Q(notif_id=notif_id)
-        elif reaction == 'Sent Follow Request':
+        elif reaction == 'Sent Follow Request' or reaction == 'Accept Follow Request':
             query = Q(user_to_notify=to_notify)
             query.add(Q(poked_by=poked_by), Q.AND)
             query.add(Q(reaction='Sent Follow Request'), Q.AND)

@@ -171,14 +171,22 @@
             </a>
         {% endif %}
         {% if not editable %}
-            {% if isFollowing %}
-                <a class="btn btn-dark follow_unfollow_user" href="#" id="unfollow">Unfollow</a>
-            {% elif isFollower %}
-                <a class="btn btn-dark follow_unfollow_user" href="#" id="follow_back">Follow Back</a>
-            {% elif isPending %}
-                <a class="btn btn-dark follow_unfollow_user" href="#" id="unfollow">Requested</a>
+            {% if isBlocked %}
+                <a class="btn btn-dark block_unblock_user" href="#" id="unblock">Unblock</a>
             {% else %}
-                <a class="btn btn-dark follow_unfollow_user" href="#" id="follow">Follow</a>
+                <a class="btn btn-dark block_unblock_user" href="#" id="block">Block</a>
+            {% endif %}
+
+            {% if not isBlocked %}
+                {% if isFollowing %}
+                    <a class="btn btn-dark follow_unfollow_user" href="#" id="unfollow">Unfollow</a>
+                {% elif isFollower %}
+                    <a class="btn btn-dark follow_unfollow_user" href="#" id="follow_back">Follow Back</a>
+                {% elif isPending %}
+                    <a class="btn btn-dark follow_unfollow_user" href="#" id="unfollow">Requested</a>
+                {% else %}
+                    <a class="btn btn-dark follow_unfollow_user" href="#" id="follow">Follow</a>
+                {% endif %}
             {% endif %}
         {% endif %}
         </div>
