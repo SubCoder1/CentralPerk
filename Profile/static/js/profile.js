@@ -255,7 +255,7 @@ $(window).on("load", function(){
 
     // Gallery masonry effect
     var $prof_posts = $('#prof-posts');
-    if ($prof_posts.prop('offsetHeight') < $prof_posts.prop('scrollHeight') || 
+    while ($prof_posts.prop('offsetHeight') < $prof_posts.prop('scrollHeight') || 
         $prof_posts.prop('offsetWidth') < $prof_posts.prop('scrollWidth')) {
         // Profile post container is overflowing, increase height
         var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 10;
