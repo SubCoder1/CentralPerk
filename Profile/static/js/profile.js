@@ -255,11 +255,14 @@ $(window).on("load", function(){
 
     // Gallery masonry effect
     var $prof_posts = $('#prof-posts');
+    var i = 0;
     while ($prof_posts.prop('offsetHeight') < $prof_posts.prop('scrollHeight') || 
         $prof_posts.prop('offsetWidth') < $prof_posts.prop('scrollWidth')) {
         // Profile post container is overflowing, increase height
         var change_height = $prof_posts.height() / parseFloat($("body").css("font-size")) + 10;
         $prof_posts.css("height", change_height+"em");
+        i += 1;
+        if (i > 4) { break; }
     }
     
   // JS code for slide-in-as-you-scroll-down-post-cards
