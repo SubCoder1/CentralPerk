@@ -179,7 +179,6 @@ class CentralPerkHomeConsumer(AsyncWebsocketConsumer):
             post_user_block_obj = UserBlockList.objects.filter(current_user=post.user).first()
             # check if user's not being blocked by post.user
             if not post_user_block_obj.blocked_user.filter(username=user.username).exists():
-                print("waah bc")
                 if post.post_like_obj.filter(user=user).exists():
                     # Dislike post
                     post.post_like_obj.filter(user=user).delete()
